@@ -19,7 +19,7 @@ assert.deepEqual(errors.map(x=>x.formattedMessage),[],'Solidity compilation fail
 function artifact(file,name){return output.contracts[file][name];}
 
 test('deploy five contracts and execute real EVM Star sale + LP + metadata + free claim',async()=>{
-  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true},wallet:{totalAccounts:3}}));
+  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:3}}));
   const signer=await provider.getSigner(0);
   const addr=await signer.getAddress();
   async function deploy(file,name,args=[]){
