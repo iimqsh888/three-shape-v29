@@ -11,3 +11,7 @@ test('burn checks shares without consuming; claim consumes one share',()=>{const
 test('three independent burns and minimum star thresholds',()=>{assert.ok(src.includes('ids.length!=uint256(tier)*3'));assert.ok(src.includes('stars>=1:stars>=3'));assert.ok(src.includes('fruit!=0'))});
 test('stars continue selling after game end',()=>{const buy=src.split('function buyStars(')[1];assert.ok(!buy.includes('!ended()'));assert.ok(buy.includes('starsSold+quantity<=MAX_STARS'))});
 test('no owner-controlled mint or withdrawals',()=>assert.ok(!/function (ownerMint|adminMint|withdraw|setOwner|setCap)\(/.test(src)));
+
+test('NFT metadata is on-chain emoji JSON without SVG',()=>{assert.ok(src.includes('function tokenURI('));assert.ok(src.includes('data:application/json;base64,'));assert.ok(src.includes('🍏'));assert.ok(src.includes('🌟'));assert.ok(!src.includes('image/svg+xml'))});
+test('USDT price uses token decimals',()=>{assert.ok(src.includes('IERC20Metadata(usdt_).decimals()'));assert.ok(src.includes('usdtUnit=10**uint256(decimals)'));assert.ok(src.includes(')*usdtUnit'))});
+test('unsafe LP spot-price mint is disabled',()=>{assert.ok(src.includes('LP_DISABLED_PENDING_SECURITY_REVIEW'));assert.ok(!src.includes('router.addLiquidity('))});
