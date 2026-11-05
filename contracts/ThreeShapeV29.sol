@@ -186,7 +186,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"quantity");
         for(uint256 i=0;i<quantity;i++)payment+=starPrice(starsSold+i);
     }
-    function lpAllowance() external view returns(uint256){return starsSold*LP_PER_STAR-lpBudgetExpired;}
+    function lpMintedActual() external view returns(uint256){return token.lpMinted();}
     function buyStars(uint256 quantity,uint256 maxPayment) external nonReentrant {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"sold out/quantity");
         require(uint256(starsBought[msg.sender])+quantity<=6,"wallet limit");
@@ -216,7 +216,7 @@ interface IRouterV29 {
     function addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)
         external returns(uint256,uint256,uint256);
 }
-interface IGameLPV29 {function lpAllowance() external view returns(uint256);}
+interface IGameLPV29 {}
 contract ThreeShapeLiquidityV29 is ReentrancyGuard {
     using SafeERC20 for IERC20;
     address public constant BURN=0x000000000000000000000000000000000000dEaD;
