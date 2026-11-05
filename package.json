@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs",
     "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol",
     "test:evm": "node --test test/evm.integration.test.mjs"
   },
