@@ -19,7 +19,7 @@ assert.deepEqual(errors.map(x=>x.formattedMessage),[],'Solidity compilation fail
 function artifact(file,name){return output.contracts[file][name];}
 
 test('deploy five contracts and execute real EVM Star sale + LP + metadata + free claim',async()=>{
-  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:3}}));
+  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8}}));
   const signer=await provider.getSigner(0);
   const addr=await signer.getAddress();
   async function deploy(file,name,args=[]){
@@ -60,6 +60,25 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
   assert.equal(await nft.kind(2),1n);
   assert.equal(await nft.kind(3),1n);
   assert.equal(await nft.kind(4),2n);
+  // Six Agent wallets receive deterministic fruit distribution.
+  // The sixth wallet receives the next pair of green apples.
+  const other=[];
+  for(let i=1;i<=5;i++){
+    const wallet=await provider.getSigner(i);
+    other.push(wallet);
+    await (await game.connect(wallet).claimFree()).wait();
+  }
+  assert.equal(await nft.kind(17),1n);
+  await (await nft.connect(other[4]).transferFrom(await other[4].getAddress(),addr,17)).wait();
+  assert.equal(await game.canBurn(addr,[2,3,17]),false);
+  assert.equal(await game.canBurn(addr,[2,1,17]),true);
+  await (await game.burnForTier([2,1,17])).wait();
+  assert.equal(await game.totalClaims(),0n,'burn does not consume shares');
+  assert.equal(await game.state(addr),1n,'player may choose reward or continue');
+  await (await game.claimReward(1_000_000n*10n**18n)).wait();
+  assert.equal(await game.totalClaims(),1n);
+  assert.equal(await token.balanceOf(addr),1_000_000n*10n**18n);
+  assert.equal(await game.state(addr),6n,'settled after reward');
   await (await game.buyStars(1,10_000_000n)).wait();
   assert.equal(await token.lpMinted(),28_600_000n*10n**18n);
   assert.equal(await game.lpBudgetExpired(),28_600_000n*10n**18n);
