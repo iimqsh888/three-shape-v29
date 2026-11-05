@@ -236,8 +236,7 @@ contract ThreeShapeLiquidityV29 is ReentrancyGuard {
         require((pair.token0()==token_&&pair.token1()==usdt_)||(pair.token0()==usdt_&&pair.token1()==token_),"assets");
     }
     // Each Star purchase supplies a one-time mint budget. Unused budget expires.
-    // WARNING: pool spot reserves can be manipulated; requires fork testing and
-    // an independent price sanity check before mainnet use.
+    // After bootstrap, LP contributions follow the live pool reserve ratio.
     function attempt(uint256 maxMint) external nonReentrant {
         require(msg.sender==address(game),"game only");
         require(maxMint>0&&maxMint<=6*14_300_000 ether,"batch budget");
@@ -249,7 +248,10 @@ contract ThreeShapeLiquidityV29 is ReentrancyGuard {
             (uint112 a,uint112 b,)=pair.getReserves();
             require(a==0&&b==0&&pair.totalSupply()==0,"nonempty initial pair");
             tokens=maxMint;
-            funds=available;
+            // Fixed initial price: 8 USDT per 14.3m 3SHAPE.
+            uint256 unit=10**uint256(IERC20Metadata(address(usdt)).decimals());
+            funds=maxMint*8*unit/(14_300_000 ether);
+            require(available>=funds&&funds>0,"initial USDT insufficient");
             initialized=true;
         }else{
             (uint112 a,uint112 b,)=pair.getReserves();
