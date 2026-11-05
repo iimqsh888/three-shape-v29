@@ -10,7 +10,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 interface IAgentRegistryV29 { function handleOf(address account) external view returns (string memory); }
-interface ILPManagerV29 { function attempt() external; }
+interface ILPManagerV29 { function attempt(uint256 maxMint) external; }
 
 contract ThreeShapeTokenV29 is ERC20 {
     uint256 public constant PLAYER_CAP = 1_430_000_000_000 ether;
@@ -85,6 +85,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     uint256 public totalClaims;
     uint256 public immutable usdtUnit;
     uint256 public starsSold;
+    uint256 public lpBudgetExpired;
     uint256 public nextFreeIndex;
     mapping(address=>bool) public freeClaimed;
     mapping(address=>uint8) public starsBought;
@@ -185,7 +186,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"quantity");
         for(uint256 i=0;i<quantity;i++)payment+=starPrice(starsSold+i);
     }
-    function lpAllowance() external view returns(uint256){return starsSold*LP_PER_STAR;}
+    function lpAllowance() external view returns(uint256){return starsSold*LP_PER_STAR-lpBudgetExpired;}
     function buyStars(uint256 quantity,uint256 maxPayment) external nonReentrant {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"sold out/quantity");
         require(uint256(starsBought[msg.sender])+quantity<=6,"wallet limit");
@@ -196,7 +197,10 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         usdt.safeTransferFrom(msg.sender,treasury,payment-payment*80/100);
         for(uint256 i=0;i<quantity;i++)nft.mintTo(msg.sender,9);
         emit StarsPurchased(msg.sender,quantity,payment);
-        try ILPManagerV29(liquidity).attempt() {} catch {emit LPAttemptFailed();}
+        uint256 batchBudget=quantity*LP_PER_STAR;
+        // The full batch budget expires whether LP addition succeeds or fails.
+        lpBudgetExpired+=batchBudget;
+        try ILPManagerV29(liquidity).attempt(batchBudget) {} catch {emit LPAttemptFailed();}
     }
 }
 
@@ -231,7 +235,43 @@ contract ThreeShapeLiquidityV29 is ReentrancyGuard {
         require(IFactoryV29(router.factory()).getPair(token_,usdt_)==pair_,"invalid pair");
         require((pair.token0()==token_&&pair.token1()==usdt_)||(pair.token0()==usdt_&&pair.token1()==token_),"assets");
     }
-    // Disabled until a manipulation-resistant LP mechanism is implemented and fork-tested.
-    // Do not use pool spot reserves as a trusted minting price.
-    function attempt() external pure { revert("LP_DISABLED_PENDING_SECURITY_REVIEW"); }
+    // Each Star purchase supplies a one-time mint budget. Unused budget expires.
+    // WARNING: pool spot reserves can be manipulated; requires fork testing and
+    // an independent price sanity check before mainnet use.
+    function attempt(uint256 maxMint) external nonReentrant {
+        require(msg.sender==address(game),"game only");
+        require(maxMint>0&&maxMint<=6*14_300_000 ether,"batch budget");
+        uint256 available=usdt.balanceOf(address(reserve));
+        require(available>0,"no USDT");
+        uint256 tokens;
+        uint256 funds;
+        if(!initialized){
+            (uint112 a,uint112 b,)=pair.getReserves();
+            require(a==0&&b==0&&pair.totalSupply()==0,"nonempty initial pair");
+            tokens=maxMint;
+            funds=available;
+            initialized=true;
+        }else{
+            (uint112 a,uint112 b,)=pair.getReserves();
+            uint256 rt=pair.token0()==address(token)?uint256(a):uint256(b);
+            uint256 ru=pair.token0()==address(token)?uint256(b):uint256(a);
+            require(rt>0&&ru>0,"empty pair");
+            // Prioritize reserve USDT, but never mint more than this sale unlocked.
+            tokens=available*rt/ru;
+            if(tokens>maxMint)tokens=maxMint;
+            require(tokens>0,"dust");
+            funds=tokens*ru/rt;
+            require(funds>0&&funds<=available,"USDT dust");
+        }
+        reserve.provide(funds);
+        token.mintLP(address(this),tokens);
+        IERC20(address(token)).forceApprove(address(router),tokens);
+        usdt.forceApprove(address(router),funds);
+        (uint256 usedT,uint256 usedU,uint256 lp)=router.addLiquidity(
+            address(token),address(usdt),tokens,funds,
+            tokens,funds,BURN,block.timestamp
+        );
+        require(usedT==tokens&&usedU==funds&&lp>0,"ratio changed");
+        emit Added(usedT,usedU,lp);
+    }
 }
