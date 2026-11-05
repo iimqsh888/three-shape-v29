@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol"
+    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
