@@ -68,11 +68,11 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
     other.push(wallet);
     await (await game.connect(wallet).claimFree()).wait();
   }
-  assert.equal(await nft.kind(17),1n);
-  await (await nft.connect(other[4]).transferFrom(await other[4].getAddress(),addr,17)).wait();
-  assert.equal(await game.canBurn(addr,[2,3,17]),false);
-  assert.equal(await game.canBurn(addr,[2,1,17]),true);
-  await (await game.burnForTier([2,1,17])).wait();
+  assert.equal(await nft.kind(18),1n);
+  await (await nft.connect(other[4]).transferFrom(await other[4].getAddress(),addr,18)).wait();
+  assert.equal(await game.canBurn(addr,[2,1,18]),false);
+  assert.equal(await game.canBurn(addr,[2,3,18]),true);
+  await (await game.burnForTier([2,3,18])).wait();
   assert.equal(await game.totalClaims(),0n,'burn does not consume shares');
   assert.equal(await game.state(addr),1n,'player may choose reward or continue');
   await (await game.claimReward(1_000_000n*10n**18n)).wait();
