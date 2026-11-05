@@ -22,8 +22,10 @@ test('deployment predicts five CREATE contract addresses',()=>{
   assert.match(factory,/new ThreeShapeLiquidityV29/);
   assert.match(factory,/address mismatch/);
 });
-test('LP execution is blocked pending security review',()=>{
-  assert.match(contracts,/LP_DISABLED_PENDING_SECURITY_REVIEW/);
+test('LP budget expires at sale even if pool add fails',()=>{
+  assert.match(contracts,/lpBudgetExpired\+=batchBudget/);
+  assert.match(contracts,/catch \{emit LPAttemptFailed\(\);\}/);
+  assert.match(contracts,/require\(msg.sender==address\(game\)/);
 });
 test('star sales are independent from game shares',()=>{
   const buy=contracts.split('function buyStars(')[1];
