@@ -183,3 +183,70 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         try ILPManagerV29(liquidity).attempt() {} catch {emit LPAttemptFailed();}
     }
 }
+
+interface IPairV29 {
+    function token0() external view returns(address);
+    function token1() external view returns(address);
+    function getReserves() external view returns(uint112,uint112,uint32);
+    function totalSupply() external view returns(uint256);
+}
+interface IFactoryV29 {function getPair(address,address) external view returns(address);}
+interface IRouterV29 {
+    function factory() external view returns(address);
+    function addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)
+        external returns(uint256,uint256,uint256);
+}
+interface IGameLPV29 {function lpAllowance() external view returns(uint256);}
+contract ThreeShapeLiquidityV29 is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+    address public constant BURN=0x000000000000000000000000000000000000dEaD;
+    ThreeShapeTokenV29 public immutable token;
+    IERC20 public immutable usdt;
+    IGameLPV29 public immutable game;
+    ThreeShapeReserveV29 public immutable reserve;
+    IRouterV29 public immutable router;
+    IPairV29 public immutable pair;
+    bool public initialized;
+    event Added(uint256 tokens,uint256 usdtAmount,uint256 lp);
+    constructor(address token_,address usdt_,address game_,address reserve_,address router_,address pair_) {
+        require(token_!=address(0)&&usdt_!=address(0)&&game_!=address(0)&&reserve_!=address(0)&&router_!=address(0)&&pair_!=address(0),"zero");
+        token=ThreeShapeTokenV29(token_);usdt=IERC20(usdt_);game=IGameLPV29(game_);
+        reserve=ThreeShapeReserveV29(reserve_);router=IRouterV29(router_);pair=IPairV29(pair_);
+        require(IFactoryV29(router.factory()).getPair(token_,usdt_)==pair_,"invalid pair");
+        require((pair.token0()==token_&&pair.token1()==usdt_)||(pair.token0()==usdt_&&pair.token1()==token_),"assets");
+    }
+    // DEVELOPMENT ONLY: post-initialization reserve ratio is manipulable.
+    // This method must not be deployed before an anti-manipulation design is implemented.
+    function attempt() external nonReentrant {
+        uint256 released=game.lpAllowance();
+        uint256 minted=token.lpMinted();
+        require(released>minted,"no LP allowance");
+        uint256 available=usdt.balanceOf(address(reserve));
+        require(available>0,"no reserve");
+        uint256 tokenAmount=released-minted;
+        uint256 usdtAmount=available;
+        if(!initialized){
+            (uint112 a,uint112 b,)=pair.getReserves();
+            require(a==0&&b==0&&pair.totalSupply()==0,"nonempty initial pair");
+            initialized=true;
+        }else{
+            (uint112 a,uint112 b,)=pair.getReserves();
+            uint256 rt=pair.token0()==address(token)?a:b;
+            uint256 ru=pair.token0()==address(token)?b:a;
+            require(rt>0&&ru>0,"empty pair");
+            usdtAmount=tokenAmount*ru/rt;
+            if(usdtAmount>available){usdtAmount=available;tokenAmount=usdtAmount*rt/ru;}
+        }
+        require(tokenAmount>0&&usdtAmount>0,"dust");
+        reserve.provide(usdtAmount);
+        token.mintLP(address(this),tokenAmount);
+        IERC20(address(token)).forceApprove(address(router),tokenAmount);
+        usdt.forceApprove(address(router),usdtAmount);
+        (uint256 usedT,uint256 usedU,uint256 lp)=router.addLiquidity(
+            address(token),address(usdt),tokenAmount,usdtAmount,
+            tokenAmount,usdtAmount,BURN,block.timestamp
+        );
+        require(usedT==tokenAmount&&usedU==usdtAmount&&lp>0,"unexpected ratio");
+        emit Added(usedT,usedU,lp);
+    }
+}
