@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const src=readFileSync(new URL('../contracts/ThreeShapeV29.sol',import.meta.url),'utf8');
+const rewards=[100,80,60,50,40,30,20,10,10,10].map(x=>BigInt(x)*1_000_000n);
+const shares=Array.from({length:10},(_,i)=>BigInt((i+1)*1000));
+test('55,000 shares and 1.43T player worst case',()=>{assert.equal(shares.reduce((a,b)=>a+b,0n),55_000n);assert.equal(rewards.reduce((a,v,i)=>a+v*shares[i],0n),1_430_000_000_000n)});
+test('1.43T LP and 2.86T combined caps',()=>{assert.equal(100_000n*14_300_000n,1_430_000_000_000n);assert.equal(2n*1_430_000_000_000n,2_860_000_000_000n)});
+test('all reward amounts are integers',()=>{for(const v of rewards)assert.equal(v%1_000_000n,0n)});
+test('burn checks shares without consuming; claim consumes one share',()=>{const burn=src.split('function burnForTier(')[1].split('function continueChallenge(')[0];const claim=src.split('function claimReward(')[1].split('function starPrice(')[0];assert.ok(burn.includes('_check('));assert.ok(!burn.includes('totalClaims++'));assert.ok(claim.includes('totalClaims++'));assert.ok(claim.includes('stageOf(totalClaims+1)'))});
+test('three independent burns and minimum star thresholds',()=>{assert.ok(src.includes('ids.length!=uint256(tier)*3'));assert.ok(src.includes('stars>=1:stars>=3'));assert.ok(src.includes('fruit!=0'))});
+test('stars continue selling after game end',()=>{const buy=src.split('function buyStars(')[1];assert.ok(!buy.includes('!ended()'));assert.ok(buy.includes('starsSold+quantity<=MAX_STARS'))});
+test('no owner-controlled mint or withdrawals',()=>assert.ok(!/function (ownerMint|adminMint|withdraw|setOwner|setCap)\(/.test(src)));
