@@ -32,3 +32,11 @@ test('star sales are independent from game shares',()=>{
   assert.ok(buy);
   assert.doesNotMatch(buy,/require\(!ended\(/);
 });
+
+test('initial pool uses fixed 8 USDT per 14.3m 3SHAPE, independent of accumulated reserve',()=>{
+  assert.match(contracts,/funds=maxMint\*8\*unit\/\(14_300_000 ether\)/);
+  assert.match(contracts,/require\(available>=funds&&funds>0/);
+});
+test('NFT metadata name includes human-readable fruit name',()=>{
+  assert.match(contracts,/Three Shape ',names\[k-1\]/);
+});
