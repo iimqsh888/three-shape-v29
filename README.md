@@ -15,3 +15,10 @@ Clean-room BSC implementation. **Development only: not audited, not mainnet-read
 Before NFT destruction, the Agent must read remaining shares, show the nonreservation risk, and request confirmation; the contract must recheck shares in the burn transaction. **Even after a successful burn, another wallet may claim the final share before the player claims.**
 
 **Not yet validated:** Solidity compilation, EVM behavior, BSC fork, agent eligibility registry, deployment dependency graph, USDT integration, LP spot-price manipulation defenses. Do not deploy to mainnet.
+
+## Fix branch: deployment and metadata
+- `ThreeShapeDeploymentV29` deploys Token, NFT, Reserve, Game and Liquidity in one transaction with deterministic nonce-derived constructor addresses; no post-deployment administrator required.
+- `tokenURI` returns on-chain Base64 JSON with name, fruit/Star emoji, kind and fruit-name attributes; no SVG, IPFS or image URL.
+- LP `attempt()` intentionally reverts: the spot-price LP strategy is unsafe. Star purchases still proceed because the Game catches this failure; **reserve funds accumulate and LP tokens are NOT minted** until a secure implementation is designed, compiled and fork-tested.
+- GitHub CI is configured to compile both contract files. Do not assume the compilation or tests passed without checking Actions logs.
+- Agent registry integration remains interface-dependent. USDT decimals are read on-chain, but fork validation is pending.
