@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol"
+    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol",
+    "test:evm": "node --test test/evm.integration.test.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
-    "solc": "0.8.24"
+    "solc": "0.8.24",
+    "ethers": "6.13.5",
+    "ganache": "7.9.2"
   }
 }
