@@ -2,6 +2,9 @@
 pragma solidity ^0.8.24;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -40,6 +43,14 @@ contract ThreeShapeNFTV29 is ERC721 {
         require(msg.sender==game && kind_>=1 && kind_<=9,"mint denied");
         id=nextId++;kind[id]=kind_;_safeMint(to,id);
     }
+    function tokenURI(uint256 id) public view override returns (string memory) {
+        ownerOf(id);
+        uint8 k=kind[id];
+        string[9] memory symbols=["🍏","🍋","🍇","🍒","🍓","🍐","🥭","🍉","🌟"];
+        string memory symbol=symbols[k-1];
+        bytes memory json=abi.encodePacked('{"name":"Three Shape #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"}]}');
+        return string.concat("data:application/json;base64,",Base64.encode(json));
+    }
     function burnMatch(address from,uint256 id) external {
         require(msg.sender==game && ownerOf(id)==from,"burn denied");
         _burn(id);delete kind[id];
@@ -71,6 +82,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     address public immutable treasury;
     address public immutable liquidity;
     uint256 public totalClaims;
+    uint256 public immutable usdtUnit;
     uint256 public starsSold;
     uint256 public nextFreeIndex;
     mapping(address=>bool) public freeClaimed;
@@ -84,6 +96,9 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     constructor(address token_,address nft_,address usdt_,address registry_,address reserve_,address treasury_,address liquidity_) {
         require(token_!=address(0)&&nft_!=address(0)&&usdt_!=address(0)&&registry_!=address(0)&&reserve_!=address(0)&&treasury_!=address(0)&&liquidity_!=address(0),"zero");
         token=ThreeShapeTokenV29(token_);nft=ThreeShapeNFTV29(nft_);usdt=IERC20(usdt_);
+        uint8 decimals=IERC20Metadata(usdt_).decimals();
+        require(decimals>=6&&decimals<=18,"unsupported USDT decimals");
+        usdtUnit=10**uint256(decimals);
         registry=IAgentRegistryV29(registry_);reserve=reserve_;treasury=treasury_;liquidity=liquidity_;
     }
     function ended() public view returns(bool){return totalClaims==MAX_CLAIMS;}
@@ -161,9 +176,9 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         token.mintPlayer(msg.sender,amount);
         emit Claimed(msg.sender,tier,stage,amount);
     }
-    function starPrice(uint256 sold) public pure returns(uint256){
+    function starPrice(uint256 sold) public view returns(uint256){
         require(sold<MAX_STARS,"sold out");
-        return (10+2*(sold/10_000))*1e18;
+        return (10+2*(sold/10_000))*usdtUnit;
     }
     function quoteStars(uint256 quantity) public view returns(uint256 payment){
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"quantity");
@@ -215,38 +230,7 @@ contract ThreeShapeLiquidityV29 is ReentrancyGuard {
         require(IFactoryV29(router.factory()).getPair(token_,usdt_)==pair_,"invalid pair");
         require((pair.token0()==token_&&pair.token1()==usdt_)||(pair.token0()==usdt_&&pair.token1()==token_),"assets");
     }
-    // DEVELOPMENT ONLY: post-initialization reserve ratio is manipulable.
-    // This method must not be deployed before an anti-manipulation design is implemented.
-    function attempt() external nonReentrant {
-        uint256 released=game.lpAllowance();
-        uint256 minted=token.lpMinted();
-        require(released>minted,"no LP allowance");
-        uint256 available=usdt.balanceOf(address(reserve));
-        require(available>0,"no reserve");
-        uint256 tokenAmount=released-minted;
-        uint256 usdtAmount=available;
-        if(!initialized){
-            (uint112 a,uint112 b,)=pair.getReserves();
-            require(a==0&&b==0&&pair.totalSupply()==0,"nonempty initial pair");
-            initialized=true;
-        }else{
-            (uint112 a,uint112 b,)=pair.getReserves();
-            uint256 rt=pair.token0()==address(token)?a:b;
-            uint256 ru=pair.token0()==address(token)?b:a;
-            require(rt>0&&ru>0,"empty pair");
-            usdtAmount=tokenAmount*ru/rt;
-            if(usdtAmount>available){usdtAmount=available;tokenAmount=usdtAmount*rt/ru;}
-        }
-        require(tokenAmount>0&&usdtAmount>0,"dust");
-        reserve.provide(usdtAmount);
-        token.mintLP(address(this),tokenAmount);
-        IERC20(address(token)).forceApprove(address(router),tokenAmount);
-        usdt.forceApprove(address(router),usdtAmount);
-        (uint256 usedT,uint256 usedU,uint256 lp)=router.addLiquidity(
-            address(token),address(usdt),tokenAmount,usdtAmount,
-            tokenAmount,usdtAmount,BURN,block.timestamp
-        );
-        require(usedT==tokenAmount&&usedU==usdtAmount&&lp>0,"unexpected ratio");
-        emit Added(usedT,usedU,lp);
-    }
+    // Disabled until a manipulation-resistant LP mechanism is implemented and fork-tested.
+    // Do not use pool spot reserves as a trusted minting price.
+    function attempt() external pure { revert("LP_DISABLED_PENDING_SECURITY_REVIEW"); }
 }
