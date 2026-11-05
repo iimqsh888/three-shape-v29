@@ -19,7 +19,7 @@ assert.deepEqual(errors.map(x=>x.formattedMessage),[],'Solidity compilation fail
 function artifact(file,name){return output.contracts[file][name];}
 
 test('deploy five contracts and execute real EVM Star sale + LP + metadata + free claim',async()=>{
-  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8}}));
+  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8},miner:{blockGasLimit:60000000}}));
   const signer=await provider.getSigner(0);
   const addr=await signer.getAddress();
   async function deploy(file,name,args=[]){
@@ -35,7 +35,7 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
   const pair=await deploy(mock,'MockPair',[tokenAddress,await usdt.getAddress()]);
   const ammFactory=await deploy(mock,'MockFactory',[await pair.getAddress()]);
   const router=await deploy(mock,'MockRouter',[await ammFactory.getAddress(),await pair.getAddress()]);
-  await (await factory.deploy(await usdt.getAddress(),await registry.getAddress(),addr,await router.getAddress(),await pair.getAddress())).wait();
+  await (await factory.deploy(await usdt.getAddress(),await registry.getAddress(),addr,await router.getAddress(),await pair.getAddress(),{gasLimit:45000000})).wait();
   const token=new ethers.Contract(tokenAddress,artifact('contracts/ThreeShapeV29.sol','ThreeShapeTokenV29').abi,signer);
   const nft=new ethers.Contract(await factory.predicted(2),artifact('contracts/ThreeShapeV29.sol','ThreeShapeNFTV29').abi,signer);
   const reserve=new ethers.Contract(await factory.predicted(3),artifact('contracts/ThreeShapeV29.sol','ThreeShapeReserveV29').abi,signer);
