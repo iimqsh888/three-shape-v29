@@ -40,3 +40,9 @@ test('initial pool uses fixed 8 USDT per 14.3m 3SHAPE, independent of accumulate
 test('NFT metadata name includes human-readable fruit name',()=>{
   assert.match(contracts,/Three Shape ',names\[k-1\]/);
 });
+
+test('Solidity UTF-8 emoji literals use unicode prefix',()=>{
+  assert.match(contracts,/unicode"🍏"/);
+  assert.match(contracts,/unicode"🌟"/);
+  assert.doesNotMatch(contracts,/symbols=\["🍏"/);
+});
