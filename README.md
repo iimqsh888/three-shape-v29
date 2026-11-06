@@ -12,21 +12,18 @@ Clean-room BSC implementation. **Development only: not audited, not mainnet-read
 - Stars remain on sale until all 100,000 sell out, independent of claim stages.
 
 ## Security status
-Before NFT destruction, the Agent must read remaining shares, show the nonreservation risk, and request confirmation; the contract must recheck shares in the burn transaction. **Even after a successful burn, another wallet may claim the final share before the player claims.**
+Before NFT destruction, the Agent must read remaining shares, warn that shares are not reserved, and request confirmation. The contract rechecks shares when burning. A successful burn does not reserve a reward share.
 
-**Not yet validated:** Solidity compilation, EVM behavior, BSC fork, agent eligibility registry, deployment dependency graph, USDT integration, LP spot-price manipulation defenses. Do not deploy to mainnet.
+**Verification pending:** Solidity compilation, executable EVM integration tests, BSC fork, Agent eligibility registry, deployment dependency graph, and USDT integration. The project has not been audited and must not be represented as mainnet-ready.
 
-## Fix branch: deployment and metadata
-- `ThreeShapeDeploymentV29` deploys Token, NFT, Reserve, Game and Liquidity in one transaction with deterministic nonce-derived constructor addresses; no post-deployment administrator required.
-- `tokenURI` returns on-chain Base64 JSON with name, fruit/Star emoji, kind and fruit-name attributes; no SVG, IPFS or image URL.
-- LP `attempt()` intentionally reverts: the spot-price LP strategy is unsafe. Star purchases still proceed because the Game catches this failure; **reserve funds accumulate and LP tokens are NOT minted** until a secure implementation is designed, compiled and fork-tested.
-- GitHub CI is configured to compile both contract files. Do not assume the compilation or tests passed without checking Actions logs.
-- Agent registry integration remains interface-dependent. USDT decimals are read on-chain, but fork validation is pending.
+## Deployment and metadata
+- `ThreeShapeDeploymentV29` deploys Token, NFT, Reserve, Game and Liquidity with nonce-derived constructor addresses, without a post-deployment administrator.
+- `tokenURI` returns Base64 JSON with a readable fruit/Star name, Unicode emoji, and kind/fruit attributes. It does not include an external image.
+- GitHub CI installs dependencies, runs Node tests, compiles Solidity, and is configured to run Ganache EVM integration tests. Consult the actual Actions logs for pass/fail.
 
-## Updated LP rule (reserve-first, non-carrying mint entitlement)
-- Every Star sold unlocks a **one-time ceiling** of 14,300,000 3SHAPE for that purchase's liquidity attempt.
-- Liquidity Manager reads USDT in Reserve, matches it against pool reserves, and mints only the 3SHAPE needed, never above that transaction's ceiling.
-- Any unminted 3SHAPE entitlement **expires immediately**; it is not available for subsequent purchases. Unused USDT stays in Reserve and may be matched on a later purchase.
-- On failed add-liquidity, the transaction's mint entitlement also expires, while the Star purchase can succeed. A failure event is emitted.
-- LP receipts are sent directly to the burn address. Initial liquidity uses the available reserve USDT with the first transaction's 3SHAPE ceiling.
-- **Security blocker:** current reserve ratio is a manipulable spot quote, and initial pricing is implicitly set by the first contribution. Add a bounded, independent price guard and verify EVM/fork behavior before mainnet.
+## Liquidity rules
+- Each Star purchase unlocks a one-time ceiling of 14,300,000 3SHAPE per Star for that purchase only. Unused mint entitlement expires immediately.
+- Initial pool liquidity uses exactly 8 USDT per 14,300,000 3SHAPE for the first batch, provided the Reserve has sufficient USDT.
+- Subsequent liquidity contributions follow the current AMM reserve ratio, using Reserve USDT first, capped by that purchase's newly unlocked 3SHAPE.
+- Unused USDT stays in Reserve. A failed LP attempt emits `LPAttemptFailed` and does not revert the Star purchase. LP receipts are directed to the burn address.
+- **Accepted tradeoff:** current AMM reserves can be manipulated. This spot-ratio behavior is intentional and no oracle or TWAP guard is planned. The outstanding release blockers are actual compilation, EVM/fork execution, and independent contract review—not an unrequested price guard.
