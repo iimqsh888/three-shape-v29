@@ -116,7 +116,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         require(tier>=1&&tier<=3&&stage>=1&&stage<=10,"tier/stage");
         if(tier==1)return 1_000_000 ether;
         uint256[10] memory top=[uint256(100_000_000),80_000_000,60_000_000,50_000_000,40_000_000,30_000_000,20_000_000,10_000_000,10_000_000,10_000_000];
-        return top[stage-1]*ether/(tier==2?10:1);
+        return top[stage-1]*(1 ether)/(tier==2?10:1);
     }
     function currentReward(uint8 tier) external view returns(uint256){
         require(!ended(),"ended");return reward(tier,currentStage());
