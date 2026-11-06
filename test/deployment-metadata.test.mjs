@@ -46,3 +46,8 @@ test('Solidity UTF-8 emoji literals use unicode prefix',()=>{
   assert.match(contracts,/unicode"🌟"/);
   assert.doesNotMatch(contracts,/symbols=\["🍏"/);
 });
+
+test('reward calculation uses valid Solidity ether denomination',()=>{
+  assert.match(contracts,/top\[stage-1\]\*\(1 ether\)/);
+  assert.doesNotMatch(contracts,/\*ether\b/);
+});
