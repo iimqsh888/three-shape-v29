@@ -56,7 +56,10 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
   assert.match(metadata.name,/Star/);
   assert.equal(metadata.symbol,'🌟');
   assert.equal(metadata.attributes[1].value,'Star');
+  await assert.rejects(game.claimFree(),/no \\.ai Agent ID|revert/i);
+  await (await registry.setBalance(addr,1)).wait();
   await (await game.claimFree()).wait();
+  await assert.rejects(game.claimFree(),/ineligible|revert/i);
   assert.equal(await nft.kind(2),1n);
   assert.equal(await nft.kind(3),1n);
   assert.equal(await nft.kind(4),2n);
@@ -66,6 +69,7 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
   for(let i=1;i<=5;i++){
     const wallet=await provider.getSigner(i);
     other.push(wallet);
+    await (await registry.setBalance(await wallet.getAddress(),1)).wait();
     await (await game.connect(wallet).claimFree()).wait();
   }
   assert.equal(await nft.kind(18),1n);
