@@ -15,11 +15,11 @@ test('on-chain JSON metadata carries emoji, name and typed traits',()=>{
 });
 test('deployment predicts five CREATE contract addresses',()=>{
   assert.match(factory,/bytes1\(0xd6\),bytes1\(0x94\),address\(this\),bytes1\(nonce\)/);
-  assert.match(factory,/new ThreeShapeTokenV29/);
-  assert.match(factory,/new ThreeShapeNFTV29/);
-  assert.match(factory,/new ThreeShapeReserveV29/);
-  assert.match(factory,/new ThreeShapeGameV29/);
-  assert.match(factory,/new ThreeShapeLiquidityV29/);
+  assert.match(factory,/type\(ThreeShapeTokenV29\)\.creationCode/);
+  assert.match(factory,/type\(ThreeShapeNFTV29\)\.creationCode/);
+  assert.match(factory,/type\(ThreeShapeReserveV29\)\.creationCode/);
+  assert.match(factory,/type\(ThreeShapeGameV29\)\.creationCode/);
+  assert.match(factory,/type\(ThreeShapeLiquidityV29\)\.creationCode/);
   assert.match(factory,/address mismatch/);
 });
 test('LP budget expires at sale even if pool add fails',()=>{

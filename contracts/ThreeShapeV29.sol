@@ -49,7 +49,7 @@ contract ThreeShapeNFTV29 is ERC721 {
         string[9] memory symbols=[unicode"🍏",unicode"🍋",unicode"🍇",unicode"🍒",unicode"🍓",unicode"🍐",unicode"🥭",unicode"🍉",unicode"🌟"];
         string[9] memory names=["Green Apple","Lemon","Grapes","Cherries","Strawberry","Pear","Mango","Watermelon","Star"];
         string memory symbol=symbols[k-1];
-        bytes memory json=abi.encodePacked('{"name":"Three Shape #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
+        bytes memory json=abi.encodePacked('{"name":"Three Shape ',names[k-1],' #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
         return string.concat("data:application/json;base64,",Base64.encode(json));
     }
     function burnMatch(address from,uint256 id) external {
@@ -74,6 +74,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     using SafeERC20 for IERC20;
     uint256 public constant MAX_CLAIMS=55_000;
     uint256 public constant MAX_STARS=100_000;
+    uint256 public constant STARS_PER_PRICE_STEP=1_000;
     uint256 public constant LP_PER_STAR=14_300_000 ether;
     ThreeShapeTokenV29 public immutable token;
     ThreeShapeNFTV29 public immutable nft;
@@ -103,6 +104,10 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         usdtUnit=10**uint256(decimals);
         registry=IAgentRegistryV29(registry_);reserve=reserve_;treasury=treasury_;liquidity=liquidity_;
     }
+    modifier onlyAgent() {
+        require(registry.balanceOf(msg.sender)>0,"no .ai Agent ID");
+        _;
+    }
     function ended() public view returns(bool){return totalClaims==MAX_CLAIMS;}
     function remainingShares() external view returns(uint256){return MAX_CLAIMS-totalClaims;}
     function stageOf(uint256 index) public pure returns(uint8) {
@@ -121,9 +126,8 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     function currentReward(uint8 tier) external view returns(uint256){
         require(!ended(),"ended");return reward(tier,currentStage());
     }
-    function claimFree() external nonReentrant {
+    function claimFree() external nonReentrant onlyAgent {
         require(!ended()&&!freeClaimed[msg.sender],"ineligible/ended");
-        require(registry.balanceOf(msg.sender)>0,"no .ai Agent ID");
         freeClaimed[msg.sender]=true;
         for(uint256 i=0;i<3;i++){
             uint8 fruit=uint8((nextFreeIndex%16)/2+1);
@@ -150,22 +154,22 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         return fruit!=0&&(tier==1?stars==0:(tier==2?stars>=1:stars>=3));
     }
     function canBurn(address player,uint256[] calldata ids) external view returns(bool){
-        return _check(player,ids,_tier(state[player]));
+        return registry.balanceOf(player)>0&&_check(player,ids,_tier(state[player]));
     }
-    function burnForTier(uint256[] calldata ids) external nonReentrant {
+    function burnForTier(uint256[] calldata ids) external nonReentrant onlyAgent {
         uint8 tier=_tier(state[msg.sender]);
         require(_check(msg.sender,ids,tier),"invalid burn/shares exhausted");
         state[msg.sender]=tier==1?State.Choice1:(tier==2?State.Choice2:State.Choice3);
         for(uint256 i=0;i<ids.length;i++)nft.burnMatch(msg.sender,ids[i]);
         emit Matched(msg.sender,tier);
     }
-    function continueChallenge() external {
+    function continueChallenge() external nonReentrant onlyAgent {
         require(!ended(),"ended");
         State s=state[msg.sender];
         require(s==State.Choice1||s==State.Choice2,"cannot continue");
         state[msg.sender]=s==State.Choice1?State.Ready2:State.Ready3;
     }
-    function claimReward(uint256 minAmount) external nonReentrant {
+    function claimReward(uint256 minAmount) external nonReentrant onlyAgent {
         require(!ended(),"shares exhausted");
         State s=state[msg.sender];
         require(s==State.Choice1||s==State.Choice2||s==State.Choice3,"no claim");
@@ -180,14 +184,14 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     }
     function starPrice(uint256 sold) public view returns(uint256){
         require(sold<MAX_STARS,"sold out");
-        return (10+2*(sold/10_000))*usdtUnit;
+        return (10+2*(sold/STARS_PER_PRICE_STEP))*usdtUnit;
     }
     function quoteStars(uint256 quantity) public view returns(uint256 payment){
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"quantity");
         for(uint256 i=0;i<quantity;i++)payment+=starPrice(starsSold+i);
     }
     function lpMintedActual() external view returns(uint256){return token.lpMinted();}
-    function buyStars(uint256 quantity,uint256 maxPayment) external nonReentrant {
+    function buyStars(uint256 quantity,uint256 maxPayment) external nonReentrant onlyAgent {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"sold out/quantity");
         require(uint256(starsBought[msg.sender])+quantity<=6,"wallet limit");
         uint256 payment=quoteStars(quantity);

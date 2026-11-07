@@ -32,3 +32,13 @@ Before NFT destruction, the Agent must read remaining shares, warn that shares a
 - The Game constructor accepts the BSC .ai Agent ID NFT registry contract address as `registry_`; no separate adapter is required if the deployed registry exposes `balanceOf(address) returns (uint256)`.
 - `claimFree()` requires `registry.balanceOf(msg.sender) > 0` and allows one free claim per wallet. A wallet without an Agent ID cannot claim.
 - The intended BSC mainnet registry address must be independently confirmed against verified contract code and ABI before deployment. No address is hardcoded into the Game.
+
+## Confirmed rule update — 2026-11-07
+- Star prices start at 10 USDT and rise by 2 USDT per **1,000** sold, up to 208 USDT in the final interval. The 100,000 sales cap and six-per-wallet purchase limit remain.
+- All five player write operations check the caller's current `.ai Agent ID` NFT balance: free claim, burn, continue, reward claim and Star purchase. This is a current-holdings check, not identity-token binding or complete Sybil resistance.
+- NFT JSON names include the English type, for example `Three Shape Green Apple #1`; Unicode Emoji and existing attributes remain.
+- User-facing information and gameplay introductions omit the internal issuance order. They must not describe issuance as a random lottery. All other spending, reward, share and LP rules remain disclosed.
+- `agent/copy.mjs` supplies the user-facing copy; it is not a React chat card or wallet adapter.
+- `docs/RULES_AND_ECONOMICS.zh-CN.md` records the current rules, including the 10.9m USDT full-sales arithmetic (8.72m Reserve inflow / 2.18m Treasury inflow).
+- The deployment factory now uses immutable creation-code stores to resolve stack/runtime-size blockers. Only the factory creator may initialize it once; no post-deployment game administrator is added.
+- Build: `npm run compile` (solc 0.8.24, optimizer 200, Shanghai, normal code-size checks). Test: `npm test` then `npm run test:evm`.
