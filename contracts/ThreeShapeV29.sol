@@ -9,7 +9,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-interface IAgentRegistryV29 { function handleOf(address account) external view returns (string memory); }
+interface IAgentRegistryV29 { function balanceOf(address account) external view returns (uint256); }
 interface ILPManagerV29 { function attempt(uint256 maxMint) external; }
 
 contract ThreeShapeTokenV29 is ERC20 {
@@ -123,7 +123,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     }
     function claimFree() external nonReentrant {
         require(!ended()&&!freeClaimed[msg.sender],"ineligible/ended");
-        require(bytes(registry.handleOf(msg.sender)).length>0,"not agent");
+        require(registry.balanceOf(msg.sender)>0,"no .ai Agent ID");
         freeClaimed[msg.sender]=true;
         for(uint256 i=0;i<3;i++){
             uint8 fruit=uint8((nextFreeIndex%16)/2+1);
