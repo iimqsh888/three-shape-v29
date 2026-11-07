@@ -8,7 +8,8 @@ contract MockUSDT is ERC20 {
     function faucet(address to,uint256 amount) external {_mint(to,amount);}
 }
 contract MockRegistry {
-    function handleOf(address) external pure returns(string memory){return "test-agent";}
+    mapping(address=>uint256) public balanceOf;
+    function setBalance(address holder,uint256 amount) external {balanceOf[holder]=amount;}
 }
 contract MockPair {
     address public token0;
