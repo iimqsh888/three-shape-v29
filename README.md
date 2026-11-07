@@ -14,7 +14,7 @@ Clean-room BSC implementation. **Development only: not audited, not mainnet-read
 ## Security status
 Before NFT destruction, the Agent must read remaining shares, warn that shares are not reserved, and request confirmation. The contract rechecks shares when burning. A successful burn does not reserve a reward share.
 
-**Verification pending:** Solidity compilation, executable EVM integration tests, BSC fork, Agent eligibility registry, deployment dependency graph, and USDT integration. The project has not been audited and must not be represented as mainnet-ready.
+**Verification pending:** Solidity compilation, executable EVM integration tests, BSC fork, live .ai Agent ID registry ABI and address, deployment dependency graph, and USDT integration. The project has not been audited and must not be represented as mainnet-ready.
 
 ## Deployment and metadata
 - `ThreeShapeDeploymentV29` deploys Token, NFT, Reserve, Game and Liquidity with nonce-derived constructor addresses, without a post-deployment administrator.
@@ -27,3 +27,8 @@ Before NFT destruction, the Agent must read remaining shares, warn that shares a
 - Subsequent liquidity contributions follow the current AMM reserve ratio, using Reserve USDT first, capped by that purchase's newly unlocked 3SHAPE.
 - Unused USDT stays in Reserve. A failed LP attempt emits `LPAttemptFailed` and does not revert the Star purchase. LP receipts are directed to the burn address.
 - **Accepted tradeoff:** current AMM reserves can be manipulated. This spot-ratio behavior is intentional and no oracle or TWAP guard is planned. The outstanding release blockers are actual compilation, EVM/fork execution, and independent contract review—not an unrequested price guard.
+
+## .ai Agent ID free-claim eligibility
+- The Game constructor accepts the BSC .ai Agent ID NFT registry contract address as `registry_`; no separate adapter is required if the deployed registry exposes `balanceOf(address) returns (uint256)`.
+- `claimFree()` requires `registry.balanceOf(msg.sender) > 0` and allows one free claim per wallet. A wallet without an Agent ID cannot claim.
+- The intended BSC mainnet registry address must be independently confirmed against verified contract code and ABI before deployment. No address is hardcoded into the Game.
