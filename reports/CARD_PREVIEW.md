@@ -30,3 +30,10 @@
 - 通过：Solidity 编译、基础 23/23、Ganache 5/5、React/Adapter 28/28、TypeScript 与 Vite 构建。
 - 失败：最终检查无失败。Ganache 的原生 µWS 模块不匹配当前 Node，自动使用 Node 实现，测试仍通过。
 - 未验证：BSC Fork、主网钱包、官方 .ai 名称解析、移动真机和逐步浏览器操作；本次没有主网部署。
+
+
+## 转赠精简与接入边界修订
+
+收藏改为 Emoji、数量、状态；隐藏元数据和 NFT ID。输入 .ai 自动解析，隐藏卡片内地址，转赠前独立二次确认且核对解析未变。Demo 移除 Agent 输入与固定回复，明确非官方卡片测试容器。Binance Agentic Wallet 与宿主消息渲染的区别见 docs/AGENTIC_WALLET_INTEGRATION.zh-CN.md。
+
+通过：前端 33/33、TypeScript 与 Vite 构建。包括取消、解析失败、零地址、编辑名称、过期异步结果和解析变化。未修改 Solidity，未重复合约测试。真实钱包、官方宿主卡片、浏览器和真机交互仍未验证。

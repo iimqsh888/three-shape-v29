@@ -1,8 +1,27 @@
 import {useEffect,useRef,useState} from 'react';
 import type {NFTItem,ThreeShapeAdapter,TransactionResult} from '../contracts/types';
-export function CollectionTransfer({item,adapter,busy,execute}:{item:NFTItem;adapter:ThreeShapeAdapter;busy:boolean;execute:(task:()=>Promise<TransactionResult>)=>void}){
- const [name,setName]=useState(''),[recipient,setRecipient]=useState(''),[id,setId]=useState(item.tokenIds[0]),[error,setError]=useState(''),[resolving,setResolving]=useState(false);const epoch=useRef(0);
- useEffect(()=>()=>{++epoch.current;},[]);
- const resolve=async()=>{const ticket=++epoch.current;setResolving(true);setError('');setRecipient('');try{if(!name.trim().toLowerCase().endsWith('.ai'))throw new Error('请输入 .ai 名称');if(!adapter.resolveRecipient)throw new Error('尚未配置官方 .ai 解析接口');const address=await adapter.resolveRecipient(name);if(ticket===epoch.current)setRecipient(address);}catch(e){if(ticket===epoch.current)setError(String(e instanceof Error?e.message:e));}finally{if(ticket===epoch.current)setResolving(false);}};
- return <div className="ts-transfer"><h3>发送水果到 .ai</h3><p>先解析地址并核对，再确认转赠。发送成功后不可撤回。</p><label>NFT ID <select aria-label="发送 NFT ID" value={id} onChange={e=>setId(e.target.value)}>{item.tokenIds.map(id=><option key={id}>{id}</option>)}</select></label><label>接收方 .ai 名称 <input aria-label="接收方 .ai 名称" value={name} placeholder="bob.ai" disabled={busy} onChange={e=>{++epoch.current;setName(e.target.value);setRecipient('');setResolving(false);}}/></label><button disabled={busy||resolving||!name.trim()} onClick={()=>void resolve()}>解析接收地址</button>{recipient&&<><p className="ts-address">接收地址：{recipient}</p><button className="ts-primary" disabled={busy||!adapter.transferNFT} onClick={()=>execute(()=>adapter.transferNFT!(id,recipient))}>确认发送 NFT #{id}</button></>}{error&&<p role="alert">{error}</p>}</div>;
+const validAddress=(address:string)=>/^0x[0-9a-fA-F]{40}$/.test(address)&&!/^0x0{40}$/i.test(address);
+export function CollectionTransfer({item,adapter,busy,execute}:{item:NFTItem;adapter:ThreeShapeAdapter;busy:boolean;execute:(task:()=>Promise<TransactionResult>)=>Promise<void>}){
+ const [name,setName]=useState(''),[recipient,setRecipient]=useState(''),[error,setError]=useState(''),[resolving,setResolving]=useState(false),[confirming,setConfirming]=useState(false),[checking,setChecking]=useState(false);
+ const epoch=useRef(0),submitting=useRef(false);
+ useEffect(()=>{
+  const ticket=++epoch.current,normalized=name.trim().toLowerCase();setRecipient('');setConfirming(false);setError('');
+  if(!normalized){setResolving(false);return;}
+  if(!normalized.endsWith('.ai')||/\s/.test(normalized)){setResolving(false);setError('请输入有效的 .ai 名称');return;}
+  setResolving(true);
+  const timer=setTimeout(()=>{void(async()=>{try{if(!adapter.resolveRecipient)throw new Error('尚未配置官方 .ai 解析接口');const address=await adapter.resolveRecipient(normalized);if(!validAddress(address))throw new Error('接收方尚未绑定有效钱包');if(ticket===epoch.current)setRecipient(address);}catch(e){if(ticket===epoch.current)setError(e instanceof Error?e.message:String(e));}finally{if(ticket===epoch.current)setResolving(false);}})();},350);
+  return()=>{clearTimeout(timer);++epoch.current;};
+ },[name,adapter]);
+ // Keep the resolved address internal. Recheck the exact confirmed name before handing
+ // the transaction to the host wallet; never retarget silently if resolution changed.
+ const send=async()=>{
+  if(submitting.current||busy||!confirming||!recipient||!adapter.resolveRecipient||!adapter.transferNFT)return;
+  submitting.current=true;setChecking(true);setError('');const ticket=epoch.current,id=item.tokenIds[0];
+  try{const latest=await adapter.resolveRecipient(name.trim().toLowerCase());if(ticket!==epoch.current)return;if(!validAddress(latest)||latest.toLowerCase()!==recipient.toLowerCase()){setRecipient('');setConfirming(false);throw new Error('接收方信息已变化，请重新输入 .ai 名称后确认');}await execute(()=>adapter.transferNFT!(id,latest));}
+  catch(e){if(ticket===epoch.current)setError(e instanceof Error?e.message:String(e));}
+  finally{submitting.current=false;if(ticket===epoch.current)setChecking(false);}
+ };
+ return <div className="ts-transfer"><h3>转赠 {item.emoji}</h3><label>接收方 .ai 名称<input aria-label="接收方 .ai 名称" value={name} placeholder="输入 .ai" autoComplete="off" disabled={busy||checking} onChange={e=>{++epoch.current;setName(e.target.value);setRecipient('');setConfirming(false);}}/></label><p role="status">{resolving?'正在识别接收方…':recipient?'接收方已就绪':''}</p>
+ {!confirming&&<button className="ts-primary" disabled={busy||checking||resolving||!recipient||!adapter.transferNFT} onClick={()=>setConfirming(true)}>转赠</button>}
+ {confirming&&<div role="group" aria-label="转赠二次确认"><p>将 1 枚 {item.emoji} 转赠给 <strong>{name.trim()}</strong></p><p><strong>此操作不可撤回</strong></p><div className="ts-actions"><button disabled={busy||checking} onClick={()=>setConfirming(false)}>取消</button><button className="ts-primary" disabled={busy||checking||!recipient} onClick={()=>void send()}>{busy||checking?'正在处理…':'确认转赠'}</button></div></div>}{error&&<p role="alert">{error}</p>}</div>;
 }
