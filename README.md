@@ -45,6 +45,8 @@ Before NFT destruction, the Agent must read remaining shares, warn that shares a
 
 ## Agent 交互卡片与 Mock 预览
 
+在线模拟：[Three Shape Agent 卡片预览](https://three-shape-agent-preview-v29.helpfulshore2.chatgpt.site)（所有者登录后可见）。
+
 React + TypeScript 组件和聊天 Demo 位于 [`web/`](web/README.md)。
 
 ```sh
