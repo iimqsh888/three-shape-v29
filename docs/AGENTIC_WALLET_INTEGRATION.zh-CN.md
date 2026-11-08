@@ -1,6 +1,6 @@
 # Binance Agentic Wallet 与聊天卡片的接入边界
 
-核对日期：2026-11-08。目标是在用户现有的币安 Agent 环境中操作 Three Shape，不建设一个新的 Agent 产品。
+核对日期：2026-11-08。目标是在 Binance AI Pro 的现有模型与 Agentic Wallet 环境中操作 Three Shape，不建设一个新的 Agent 产品。由现有 Agent 理解规则、分析合约并响应用户，在回复中呈现游戏卡片；现有独立页面仅用于预览组件，不是最终入口。
 
 ## 三个独立部分
 
@@ -32,3 +32,8 @@
 - [官方 Skill 与命令](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/SKILL.md)
 - [域名解析与确认](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/references/domain-resolve.md)
 - [自定义合约预览与执行](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/references/external-sign.md)
+
+
+## Star 购买入口的展示规则
+
+仅调整聊天卡片，不修改合约：当前钱包累计购星达到 6 枚，或第三档奖励已经成功领取，隐藏「购买 Star」及「用 Star 补齐」入口并关闭已展开的报价面板。领取前、交易待确认或交易失败时不能提前认定完成。购买数量取累计购买记录，不是当前持仓；转出或销毁 Star 不恢复入口。切换钱包后按新钱包的权威状态重新判断；刷新后仍按恢复的状态判断。第一、二档提前领奖不属于第三档领奖完成。
