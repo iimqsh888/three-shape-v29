@@ -17,3 +17,13 @@ jobs:
 
       - name: Ganache EVM contract integration
         run: npm run test:evm
+  card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm --prefix web ci --ignore-scripts
+      - run: npm run build:card
+      - run: npm run test:card

@@ -1,0 +1,2 @@
+import {useState} from 'react';
+export function MysteryPortal(){const [open,setOpen]=useState(false);return <div><button className="ts-mystery" onClick={()=>setOpen(!open)}><span>✧</span><span>Mystery Portal<small>神秘入口 · 敬请期待</small></span><span>↗</span></button>{open&&<p className="ts-note">未来扩展占位，当前无可执行操作。</p>}</div>;}

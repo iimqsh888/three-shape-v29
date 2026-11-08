@@ -42,3 +42,14 @@ Before NFT destruction, the Agent must read remaining shares, warn that shares a
 - `docs/RULES_AND_ECONOMICS.zh-CN.md` records the current rules, including the 10.9m USDT full-sales arithmetic (8.72m Reserve inflow / 2.18m Treasury inflow).
 - The deployment factory now uses immutable creation-code stores to resolve stack/runtime-size blockers. Only the factory creator may initialize it once; no post-deployment game administrator is added.
 - Build: `npm run compile` (solc 0.8.24, optimizer 200, Shanghai, normal code-size checks). Test: `npm test` then `npm run test:evm`.
+
+## Agent 交互卡片与 Mock 预览
+
+React + TypeScript 组件和聊天 Demo 位于 [`web/`](web/README.md)。
+
+```sh
+npm --prefix web ci
+npm run dev:card
+```
+
+可以模拟连接钱包、领取水果、补齐测试 NFT、三档挑战、领取/继续、九种收藏、购星、拒签、交易失败、资格与钱包切换。所有模拟结果均明确标记，无真实资产或钱包授权。真实 Live 钱包/ABI 绑定仍需接入，详见 web README。

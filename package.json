@@ -6,7 +6,10 @@
   "scripts": {
     "test": "node --test --test-isolation=none test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs test/public-copy.test.mjs",
     "compile": "node scripts/compile.mjs",
-    "test:evm": "npm run compile && node --test --test-isolation=none test/evm.integration.test.mjs"
+    "test:evm": "npm run compile && node --test --test-isolation=none test/evm.integration.test.mjs",
+    "dev:card": "npm --prefix web run dev",
+    "build:card": "npm --prefix web run build",
+    "test:card": "npm --prefix web test"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
