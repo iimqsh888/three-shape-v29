@@ -19,7 +19,7 @@ export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|
  useEffect(()=>adapter.subscribe?.(s=>change(s.address)),[adapter,change]);
  const connect=async()=>{if(locked.current)return;locked.current=true;setBusy(true);const ticket=epoch.current;try{const a=await adapter.connectWallet();if(ticket===epoch.current)change(a);}catch(e){if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}finally{if(ticket===epoch.current){locked.current=false;setBusy(false);}}};
  const refresh=async()=>{if(locked.current||!current.current)return;locked.current=true;setBusy(true);setError('');const ticket=epoch.current;try{await reload(current.current,ticket);}catch(e){if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}finally{if(ticket===epoch.current){locked.current=false;setBusy(false);}}};
- const execute=async(name:Action|'buyStars',task:()=>Promise<TransactionResult>)=>{
+ const execute=async(name:Action|'buyStars'|'transferNFT',task:()=>Promise<TransactionResult>)=>{
   const a=current.current;if(locked.current||!a||!snapshot)return;
   if(!snapshot.game.eligible){setError('此钱包未持有 .ai ID');return;}
   if(live&&localStorage.getItem(key(a))){setError('请先恢复待核实交易');return;}

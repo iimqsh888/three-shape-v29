@@ -122,3 +122,18 @@ test('three tiers and revoked identity: reward/continue branches remain independ
   assert.equal(await token.balanceOf(address),100_000_000n*UNIT);assert.equal(await game.totalClaims(),1n);assert.equal(await game.state(address),6n);
  }finally{await f.engine.disconnect();}
 });
+
+test('first tier Star substitutions require at least one ordinary fruit; mixed fruits and all Stars fail',async()=>{
+ const f=await fixture();const {game,registry,address,nft,usdt}=f;
+ try{
+  await(await registry.setBalance(address,1)).wait();await(await game.claimFree()).wait();
+  const cost=await game.quoteStars(3);await(await usdt.faucet(address,cost)).wait();await(await usdt.approve(await game.getAddress(),cost)).wait();await(await game.buyStars(3,cost,{gasLimit:6000000})).wait();
+  assert.equal(await game.canBurn(address,[1,4,5]),true);
+  assert.equal(await game.canBurn(address,[4,5,6]),false);
+  const fruits=[];for(let id=1;id<=3;id++)fruits.push({id,kind:await nft.kind(id)});
+  const same=fruits.find((x,i)=>fruits.some((y,j)=>i!==j&&x.kind===y.kind));
+  if(same){const other=fruits.find(x=>x.id!==same.id&&x.kind===same.kind);assert.equal(await game.canBurn(address,[same.id,other.id,4]),true);}
+  const mixed=fruits.find(x=>x.kind!==fruits[0].kind);if(mixed)assert.equal(await game.canBurn(address,[fruits[0].id,mixed.id,4]),false);
+  await(await game.burnForTier([1,4,5])).wait();assert.equal(await game.state(address),1n);assert.equal(await game.totalClaims(),0n);
+ }finally{await f.engine.disconnect();}
+});

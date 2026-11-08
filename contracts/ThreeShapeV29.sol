@@ -151,7 +151,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
             else if(k>=1&&k<=8){if(fruit==0)fruit=k;else if(fruit!=k)return false;}
             else return false;
         }
-        return fruit!=0&&(tier==1?stars==0:(tier==2?stars>=1:stars>=3));
+        return fruit!=0&&(tier==1?true:(tier==2?stars>=1:stars>=3));
     }
     function canBurn(address player,uint256[] calldata ids) external view returns(bool){
         return registry.balanceOf(player)>0&&_check(player,ids,_tier(state[player]));
