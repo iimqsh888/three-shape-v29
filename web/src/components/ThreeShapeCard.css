@@ -5,3 +5,4 @@
 .ts-card .ts-close,.ts-card .ts-close:hover:not(:disabled){float:right;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:var(--ink);font-size:24px;font-weight:600;line-height:1}
 /* Keep the same compact card when embedded in a wide desktop container. */
 .ts-card{max-width:384px;margin-inline:auto}.ts-card .ts-play h1{font-size:32px}.ts-card .ts-reels>div{font-size:44px}
+.ts-card .ts-receipt{margin:0 23px 14px;color:#847393;font-size:11px;line-height:1.7;overflow-wrap:anywhere}

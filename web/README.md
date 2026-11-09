@@ -42,3 +42,8 @@ three-shape-logo-v2.jpg 为用户提供的最新原图，同时用于项目、�
 - MysteryPortal：占位，无新链上逻辑。
 
 生产合约、奖励、定价、LP 和 Treasury 未因本次 UI 调整而修改。构建／DOM 与 Adapter 测试不等同于浏览器视觉、真机、BSC Fork 或独立安全审计。
+
+
+## 接口匹配补充
+
+local-interface-map.json 仅记录本地源码 ABI 对应关系，不是最终网络 ABI。decodeGameState 要求 Settled 使用确认 Claimed 事件提供最终档位。claimReward(minAmount?) 从用户已看到的快照传递最低金额；TransactionReceipt.liquidity 区分购星与加池结果。全局售罄和钱包剩余额度影响购买入口／数量。真实绑定仍未完成，详见 ../reports/INTERFACE_COMPATIBILITY.zh-CN.md。

@@ -1,4 +1,4 @@
-// Local JSON fixtures for MOCK only. Live bindings must read chain JSON metadata.
+// Placeholder vocabulary only; live ownership and metadata must come from chain JSON.
 export const metadata=[
  {name:'Green Apple',symbol:'🍏',kind:1},{name:'Lemon',symbol:'🍋',kind:2},
  {name:'Grapes',symbol:'🍇',kind:3},{name:'Cherries',symbol:'🍒',kind:4},

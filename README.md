@@ -72,4 +72,9 @@ npm run dev:card
 
 ## 合约安全核对（2026-11-09）
 
-新增 `npm run test:security`，包含重入、权限、原子回滚、NFT 校验、付款／份额边界和 LP 初始化阻断复现。发现首次加池可受小额捐赠／公开同步阻断的问题，尚未改生产合约。详见 [安全核对报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。测试通过不代表该问题已修复，不建议在处理前进行真实资金上线。
+新增 `npm run test:security`，包含重入、权限、原子回滚、NFT 校验、付款／份额边界和 LP 初始化阻断复现。发现首次加池可受小额捐赠／公开同步阻断的问题，尚未改生产合约。详见 [安全核对报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。用户已要求保留该 LP 逻辑；复现记录保留，不将接受风险表述为已修复。真实 ABI 与钱包接入仍待验收。
+
+
+## 前端／合约接口匹配核对
+
+见 [匹配报告](reports/INTERFACE_COMPATIBILITY.zh-CN.md)。新增 `npm run test:compatibility`，以本地实际编译 ABI 校验业务映射与事件，并实读奖励／额度／特殊状态路径。当前只能确认设计可适配，ContractAdapter 的真实合约、钱包、收藏索引和事件恢复绑定尚未完成。

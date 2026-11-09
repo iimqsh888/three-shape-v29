@@ -17,7 +17,7 @@ export class ContractAdapter implements ThreeShapeAdapter {
  getCollection=(a:string)=>this.api.getCollection(a);
  getRewardState=(a:string)=>this.api.getRewardState(a);
  play=()=>this.api.play();
- claimReward=()=>this.api.claimReward();
+ claimReward=(minAmount?:bigint)=>this.api.claimReward(minAmount);
  continueChallenge=()=>this.api.continueChallenge();
  getTokenBalance=(a:string)=>this.api.getTokenBalance(a);
  subscribe=(fn:(s:WalletSession)=>void)=>this.bindings?.subscribe?.(fn)??(()=>{});

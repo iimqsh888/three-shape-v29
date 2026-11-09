@@ -27,7 +27,7 @@
     {
       "id": "H-01",
       "severity": "high",
-      "status": "reproduced locally, unresolved",
+      "status": "reproduced locally; accepted by user; existing LP logic retained",
       "title": "Nonempty pair can block LP bootstrap while Star sales continue"
     },
     {
@@ -41,5 +41,6 @@
       "status": "read query reverts on nonexistent token IDs"
     }
   ],
-  "releaseRecommendation": "Do not deploy real funds until H-01 is addressed and real dependencies are verified."
+  "releaseRecommendation": "User requested retaining the LP behavior. Real ABI, deployment and wallet acceptance remain pending.",
+  "userDecision": "Keep the existing first-Star-purchase LP flow; do not change it for this finding."
 }

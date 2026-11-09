@@ -5,7 +5,8 @@ export interface NFTItem {type:number;name:string;emoji:string;quantity:bigint;t
 export type NFTCollection=NFTItem[];
 export interface GameState {tier:1|2|3;phase:'ready'|'choice'|'settled';freeClaimed:boolean;eligible:boolean;canPlay:boolean;canMatch?:boolean;scenarioActive?:boolean;canContinue:boolean;result:string[]|null;globalStage:number;remainingShares:number;starsSold:number;starsBought:number;rewardTiers:bigint[];message:string}
 export interface RewardState {eligible:boolean;claimed:boolean;amount:bigint}
-export interface TransactionResult {hash?:string;wait(confirmations:number):Promise<{success:boolean;message?:string}>}
+export interface TransactionReceipt {success:boolean;message?:string;liquidity?:'added'|'failed'|'unknown'}
+export interface TransactionResult {hash?:string;wait(confirmations:number):Promise<TransactionReceipt>}
 export interface PlayPreview {kind:'free'|'burn';tokenIds:string[];warning:string;address:string}
 export interface WalletSession {address:string|null;chainId:string}
 export interface StarQuote {quantity:number;payment:bigint;address:string}
@@ -18,7 +19,7 @@ export interface ThreeShapeAdapter {
  getCollection(address:string):Promise<NFTCollection>;
  getRewardState(address:string):Promise<RewardState>;
  play():Promise<TransactionResult>;
- claimReward():Promise<TransactionResult>;
+ claimReward(minAmount?:bigint):Promise<TransactionResult>;
  continueChallenge():Promise<TransactionResult>;
  getTokenBalance(address:string):Promise<bigint>;
  preparePlay?(address:string):Promise<PlayPreview>;

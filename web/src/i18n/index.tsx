@@ -4,6 +4,8 @@ export const LanguageContext=createContext<Language>('zh');
 const english:Record<string,string>={
  '此钱包未持有 .ai ID':'This wallet does not hold an .ai ID','待处理交易结果尚未确认，请核实后重试；不会自动重发':'The pending transaction is unresolved. Verify it before retrying; it will not be resent automatically.','请先恢复待核实交易':'Recover the pending transaction first',
  '本钱包已完成领奖，不能重复领取。':'This wallet has already claimed its reward.','奖励份额已耗尽。':'All reward shares have been claimed.','免费领取 3 枚水果，收集后开启挑战。':'Claim 3 free fruit NFTs, then build your challenge collection.','已满足当前档条件，点击开始挑战查看销毁清单；确认后才执行。':'You meet this tier’s requirements. Start a challenge to review and confirm the burn list.','尚未凑齐：普通水果需同种，至少 1 枚；可用 Star 补齐，或生成交换／收购帖。':'Not enough matching NFTs. Keep at least one ordinary fruit; add Stars or create a trade/buy post.','销毁不可撤销；当前查询和销毁都不预留奖励份额。领奖前份额可能被其他钱包用完。':'Burning is irreversible and does not reserve reward shares. Other wallets may claim the remaining shares first.',
+ '购星已确认；本次 LP 已完成':'Star purchase confirmed; liquidity added','购星已确认；本次 LP 未完成':'Star purchase confirmed; liquidity was not added','购星已确认；LP 状态待核实':'Star purchase confirmed; liquidity status unresolved',
+ '枚 Star · 最高':' Stars · maximum ',
  '第':'Tier ', '档 · 当前可领取':' · Available now','将 1 枚':'Send 1','转赠给':'to','Token 余额：':'Token balance: ',
  'Three Shape 游戏卡片':'Three Shape game card','卡片导航':'Game navigation','开始游戏':'Play','查看收藏':'Collection','查看奖励':'Rewards',
  '等待合约接入':'Awaiting contract','等待真实 ABI 与钱包接入':'Contract and wallet connection coming soon','待接入':'Coming soon','链上':'On-chain',

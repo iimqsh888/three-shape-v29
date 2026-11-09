@@ -40,7 +40,7 @@ Show only actions permitted by current state. These are text choices, not fictit
 
 Use preparePlay for read-only free-claim/burn preparation. If holdings are insufficient, explain missing matching fruit/Stars and offer a draft trade/buy post. Never buy, burn or mint autonomously.
 
-Use quoteStars before buyStars; obtain approval for this purchase. For claimReward or continueChallenge, read eligibility/amount and explain the mutually exclusive choice. Follow official wallet preview, permissions and confirmation procedures; never enable Developer Mode automatically or request unnecessary permissions.
+Use quoteStars before buyStars; obtain approval for this purchase. For claimReward or continueChallenge, read eligibility/amount and explain the mutually exclusive choice. Pass the user-approved raw integer reward as minAmount instead of defaulting to zero. Preserve the Star purchase receipt and the independent LP added/failed/unknown outcome. Follow official wallet preview, permissions and confirmation procedures; never enable Developer Mode automatically or request unnecessary permissions.
 
 For transfers, ask for the fruit and .ai recipient. Resolve automatically but preserve all address, warning and confirmation requirements of the official wallet Skill. Resolution failure blocks sending; changed recipients require renewed confirmation. State that the action cannot be undone. NFT calls must use their actual ABI; do not assume ordinary token-send commands transfer NFTs.
 

@@ -8,3 +8,4 @@ export type {GameView,GameSnapshot} from './game/presentation';
 export {createMcpAppsBridge} from './integrations/mcp-apps';
 export {LanguageContext,useI18n,translate} from './i18n';
 export type {Language} from './i18n';
+export {decodeGameState} from './contracts/adapter/stateMapping';
