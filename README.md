@@ -64,5 +64,5 @@ npm run dev:card
 - [Three Shape 文字技能](skills/three-shape/SKILL.md)：用户可提供给支持技能导入的 AI Pro／可信 Agent 阅读，不能据此声称官方已安装／批准。
 - [轻量服务](server/README.md)：`npm run build:card` 后 `npm run serve`，提供网站、公开规则、能力、Skill 和可注入的只读链上状态；无钱包签名／广播／公共授权接口。
 - [未来 MCP Apps 适配边界](integrations/mcp-apps/README.md)：独立保留，不依赖 Binance 当前开放 UI 扩展。
-- 网站提供官方 AI Pro 跳转入口；本站真实登录、Live ABI／签名器和主网部署尚未接通。当前在线版本是可操作的 Mock。
+- 网站仅保留游戏卡片和 Agent 指令／Skill 下载；官方钱包登录由用户在 AI Pro 或可信 Agent 中完成。本站 Live ABI／签名器和主网部署尚未接通，当前在线版本为 Mock。
 - 当前验证：Node 基础／服务 27 项、React／Adapter／文字 46 项、生产构建通过。合约未在本次修改，旧编译／Ganache结果见历史报告；本次未重新执行 EVM、BSC Fork或主网交易。

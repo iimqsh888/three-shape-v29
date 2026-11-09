@@ -27,5 +27,6 @@ export interface ThreeShapeAdapter {
  transferNFT?(tokenId:string,recipient:string):Promise<TransactionResult>;
  subscribe?(fn:(session:WalletSession)=>void):()=>void;
  disconnect?():Promise<void>;
+ /** Null means unresolved, never proof that an earlier submission can be discarded. */
  recoverPending?(address:string,hash?:string):Promise<TransactionResult|null>;
 }

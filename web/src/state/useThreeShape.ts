@@ -6,7 +6,7 @@ export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|
  const epoch=useRef(0),locked=useRef(false),current=useRef<string|null>(addressProp??null);
  const key=(a:string)=>'three-shape-preview-pending:'+a.toLowerCase();
  const reload=useCallback(async(a:string,ticket:number)=>{
-  if(live){const pending=localStorage.getItem(key(a));if(pending){if(!adapter.recoverPending)throw new Error('存在待核实交易，需要接入恢复接口后才能继续');const tx=await adapter.recoverPending(a,JSON.parse(pending).hash);if(tx){const receipt=await tx.wait(2);localStorage.removeItem(key(a));if(!receipt.success)throw new Error(receipt.message??'待处理交易失败');}else localStorage.removeItem(key(a));}}
+  if(live){const pending=localStorage.getItem(key(a));if(pending){if(!adapter.recoverPending)throw new Error('存在待核实交易，需要接入恢复接口后才能继续');const tx=await adapter.recoverPending(a,JSON.parse(pending).hash);if(tx){const receipt=await tx.wait(2);localStorage.removeItem(key(a));if(!receipt.success)throw new Error(receipt.message??'待处理交易失败');}else throw new Error('待处理交易结果尚未确认，请核实后重试；不会自动重发');}}
   const [game,collection,reward,balance]=await Promise.all([adapter.getGameState(a),adapter.getCollection(a),adapter.getRewardState(a),adapter.getTokenBalance(a)]);
   if(ticket!==epoch.current)return;
   setSnapshot({game,collection,reward,balance});setStatus(reward.claimed?'claimed':reward.eligible?'reward_available':game.freeClaimed?'result':'ready');
