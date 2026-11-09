@@ -17,6 +17,8 @@ jobs:
 
       - name: Ganache EVM contract integration
         run: npm run test:evm
+      - name: Contract security regressions
+        run: node --test --test-isolation=none test/security.integration.test.mjs
   card:
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,25 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ SEC-01: one-unit USDT donation and permissionless sync block LP bootstrap repeatedly (4017.170917ms)
+✔ SEC-02: all five write functions reject reentry from NFT mint callbacks (3624.025104ms)
+✔ SEC-03: rejecting NFT receivers roll back free eligibility, sales, payments and minting (4290.763567ms)
+✔ SEC-04: minting, burning, reserve spending, LP attempts and repeat deployment are restricted (3539.921717ms)
+✔ SEC-05: duplicate, foreign, malformed and nonexistent NFT submissions cannot burn (4854.793651ms)
+✔ SEC-06: underquoted prices, insufficient allowance and exhausted wallet quota revert atomically (3310.924603ms)
+✔ SEC-07: high minimum reward and exhausted shares cannot mint or advance matched state (4183.249996ms)
+✔ SEC-08: a transferable Agent ID can qualify multiple wallets sequentially (conditional identity limitation) (4358.488545ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32537.427824

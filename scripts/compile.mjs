@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import solc from 'solc';
-const sources={};for(const file of ['contracts/ThreeShapeV29.sol','contracts/ThreeShapeDeploymentV29.sol','contracts/test/MocksV29.sol'])sources[file]={content:fs.readFileSync(file,'utf8')};
+const sources={};for(const file of ['contracts/ThreeShapeV29.sol','contracts/ThreeShapeDeploymentV29.sol','contracts/test/MocksV29.sol','contracts/test/SecurityV29.sol'])sources[file]={content:fs.readFileSync(file,'utf8')};
 const settings={optimizer:{enabled:true,runs:200},evmVersion:'shanghai',outputSelection:{'*':{'*':['abi','evm.bytecode.object','evm.deployedBytecode.object','storageLayout']}}};
 const output=JSON.parse(solc.compile(JSON.stringify({language:'Solidity',sources,settings}),{import:name=>{try{return{contents:fs.readFileSync('node_modules/'+name,'utf8')}}catch{return{error:'Missing '+name}}}}));
 const errors=(output.errors??[]).filter(e=>e.severity==='error');if(errors.length)throw new Error(errors.map(e=>e.formattedMessage).join('\n'));

@@ -68,3 +68,8 @@ npm run dev:card
 - [未来 MCP Apps 适配边界](integrations/mcp-apps/README.md)：独立保留，不依赖 Binance 当前开放 UI 扩展。
 - 网站仅保留游戏卡片和 Agent 指令／Skill 下载；官方钱包登录由用户在 AI Pro 或可信 Agent 中完成。本站 Live ABI／签名器和主网部署尚未接通，当前在线版本为 Mock。
 - 当前验证：Node 基础／服务 27 项、React／Adapter／文字 46 项、生产构建通过。合约未在本次修改，旧编译／Ganache结果见历史报告；本次未重新执行 EVM、BSC Fork或主网交易。
+
+
+## 合约安全核对（2026-11-09）
+
+新增 `npm run test:security`，包含重入、权限、原子回滚、NFT 校验、付款／份额边界和 LP 初始化阻断复现。发现首次加池可受小额捐赠／公开同步阻断的问题，尚未改生产合约。详见 [安全核对报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。测试通过不代表该问题已修复，不建议在处理前进行真实资金上线。

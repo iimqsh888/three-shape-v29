@@ -19,6 +19,11 @@ contract MockPair {
     uint256 public totalSupply;
     constructor(address a,address b){token0=a;token1=b;}
     function getReserves() external view returns(uint112,uint112,uint32){return(r0,r1,0);}
+    // Test-only reproduction of a permissionless V2 pair balance synchronization.
+    function sync() external {
+        r0=uint112(IERC20(token0).balanceOf(address(this)));
+        r1=uint112(IERC20(token1).balanceOf(address(this)));
+    }
     function add(address a,address b,uint256 x,uint256 y) external {
         require(a==token0&&b==token1,"order");
         r0+=uint112(x);r1+=uint112(y);totalSupply+=1;
