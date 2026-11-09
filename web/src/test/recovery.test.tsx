@@ -1,6 +1,6 @@
 import {it,expect,vi} from 'vitest';
 import {renderHook,waitFor,act} from '@testing-library/react';
-import {MockAdapter} from '../contracts/adapter/MockAdapter';
+import {MockAdapter} from './fixtures/MockAdapter';
 import {useThreeShape} from '../state/useThreeShape';
 const key=(address:string)=>'three-shape-preview-pending:'+address.toLowerCase();
 it('unresolved recovery preserves pending submission and blocks automatic or manual resend',async()=>{const adapter=new MockAdapter(0),recoverPending=vi.fn(async()=>null),play=vi.spyOn(adapter,'play');Object.assign(adapter,{recoverPending});const marker=JSON.stringify({action:'play',hash:'0xknown'});localStorage.setItem(key(adapter.address),marker);const {result}=renderHook(()=>useThreeShape(adapter,adapter.address,true));await waitFor(()=>expect(result.current.error).toContain('尚未确认'));expect(localStorage.getItem(key(adapter.address))).toBe(marker);await act(async()=>{await result.current.act('play');await result.current.refresh();});expect(localStorage.getItem(key(adapter.address))).toBe(marker);expect(play).not.toHaveBeenCalled();expect(recoverPending).toHaveBeenCalledTimes(2);});

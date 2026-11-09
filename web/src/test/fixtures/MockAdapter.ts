@@ -1,5 +1,5 @@
-import {metadata,unit} from '../config/metadata';
-import type {GameState,PlayPreview,StarQuote,ThreeShapeAdapter,TransactionResult,WalletSession} from '../types';
+import {metadata,unit} from '../../contracts/config/metadata';
+import type {GameState,PlayPreview,StarQuote,ThreeShapeAdapter,TransactionResult,WalletSession} from '../../contracts/types';
 interface Account {eligible:boolean;free:boolean;tier:1|2|3;phase:'ready'|'choice'|'settled';nfts:{id:string;kind:number}[];balance:string;usdt:string;starsBought:number;result:string[]|null}
 interface World {accounts:Record<string,Account>;claims:number;sold:number;next:number}
 const initial=():World=>({accounts:{},claims:0,sold:0,next:1});

@@ -14,7 +14,7 @@ npm run serve
 - `GET /`：完整网站，默认卡片式游戏。
 - `GET /healthz`：服务健康状态。
 - `GET /api/rules`、`/api/rules.json`：结构化公开规则。
-- `GET /api/capabilities`、`/api/capabilities.json`：实际接入能力；默认仅 Mock，真实交易不可用。
+- `GET /api/capabilities`、`/api/capabilities.json`：实际接入能力；默认无可执行模式，等待真实 ABI／钱包接入。
 - `GET /skills/three-shape/SKILL.md`：文字技能。
 - `GET /api/game?address=0x...`：可选真实只读快照；默认返回 503 LIVE_NOT_CONFIGURED。构建 handler 时可注入经验证的 liveReader(address)，响应必须是对应地址、mode=live、schemaVersion=three-shape.game.v1。应在该 reader 中统一对接最终 ABI 和 RPC，而不是由 UI 猜测函数。
 - 所有写入请求返回 405；没有 auth、mint、claim、broadcast 等公共写接口。

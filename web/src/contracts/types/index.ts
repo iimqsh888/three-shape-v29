@@ -10,6 +10,7 @@ export interface PlayPreview {kind:'free'|'burn';tokenIds:string[];warning:strin
 export interface WalletSession {address:string|null;chainId:string}
 export interface StarQuote {quantity:number;payment:bigint;address:string}
 export interface ThreeShapeAdapter {
+ readonly readiness?:'ready'|'unconfigured';
  readonly tokenDecimals?:number;
  readonly usdtDecimals?:number;
  connectWallet():Promise<string>;

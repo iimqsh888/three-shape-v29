@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
-import {MockAdapter} from '../contracts/adapter/MockAdapter';
+import {MockAdapter} from './fixtures/MockAdapter';
 import {ThreeShapeCard} from '../components/ThreeShapeCard';
 async function play(a:MockAdapter){await a.preparePlay(a.address);await(await a.play()).wait(1);}
 async function tierChoice(a:MockAdapter,target:number){await play(a);for(let tier=1;tier<=target;tier++){a.supplyNextTier();await play(a);if(tier<target)await(await a.continueChallenge()).wait(1);}}

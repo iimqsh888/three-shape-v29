@@ -1,7 +1,7 @@
 import {describe,it,expect,vi} from 'vitest';
 import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
 import {ThreeShapeCard} from '../components/ThreeShapeCard';
-import {MockAdapter} from '../contracts/adapter/MockAdapter';
+import {MockAdapter} from './fixtures/MockAdapter';
 import {ContractAdapter} from '../contracts/adapter/ContractAdapter';
 import {unit} from '../contracts/config/metadata';
 const tx=async(a:MockAdapter,name:'play'|'claimReward'|'continueChallenge')=>{if(name==='play')await a.preparePlay(a.address);await(await a[name]()).wait(1);};
@@ -28,6 +28,6 @@ describe('embedded card',()=>{
  it('pending buttons stay disabled and failure offers state refresh',async()=>{const a=await mounted();a.failure='receipt';click('免费领取水果 →');await screen.findByRole('heading',{name:'确认模拟领取'});click('确认并继续');expect(screen.getByRole('button',{name:'正在处理…'})).toBeDisabled();expect(await screen.findByRole('alert')).toHaveTextContent('交易执行失败');click('重试 / 刷新状态');await waitFor(()=>expect(screen.getByRole('button',{name:'免费领取水果 →'})).toBeEnabled());});
  it('wallet switch isolates collections and claimed progress',async()=>{const a=await mounted();await free();act(()=>a.switchWallet());await waitFor(()=>expect(screen.getByRole('button',{name:'免费领取水果 →'})).toBeEnabled());click('查看收藏');expect(screen.getAllByText(/未收藏/)).toHaveLength(9);});
  it('purchases Star through explicit local quote and confirmation',async()=>{await mounted();click('🌟 购买 Star');click('查看报价');await screen.findByRole('button',{name:'确认模拟购买'});click('确认模拟购买');await waitFor(()=>expect(screen.getByRole('button',{name:'免费领取水果 →'})).toBeEnabled());click('查看收藏');await screen.findByRole('button',{name:/Star.*已收藏.*×1/});});
- it('live missing bindings report an error and never invent a result',async()=>{render(<ThreeShapeCard mode="live"/>);click('连接钱包开始 →');expect(await screen.findByRole('alert')).toHaveTextContent('Live 尚未接入');});
- it('public gameplay text omits internal issuance sequence and random promises',()=>{render(<ThreeShapeCard mode="mock"/>);expect(screen.getByRole('article')).not.toHaveTextContent(/固定顺序|nextFreeIndex|随机抽奖/);expect(screen.getByText('ⓘ 本地模拟 · 无真实资产 · 未经链上验证')).toBeVisible();});
+ it('live missing bindings block actions without inventing a result',()=>{render(<ThreeShapeCard mode="live"/>);expect(screen.getByRole('button',{name:'等待合约接入'})).toBeDisabled();expect(screen.queryByRole('button',{name:'免费领取水果 →'})).toBeNull();});
+ it('public gameplay text omits internal issuance sequence and random promises',()=>{render(<ThreeShapeCard mode="mock" adapter={new MockAdapter(0)}/>);expect(screen.getByRole('article')).not.toHaveTextContent(/固定顺序|nextFreeIndex|随机抽奖/);expect(screen.getByText('ⓘ 本地模拟 · 无真实资产 · 未经链上验证')).toBeVisible();});
 });

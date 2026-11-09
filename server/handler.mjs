@@ -15,11 +15,12 @@ export function createHandler({staticDirectory=new URL('../web/dist',import.meta
    const url=new URL(req.url,'http://localhost'),path=decodeURIComponent(url.pathname);
    if(path==='/healthz')return send(200,{ok:true,service:'three-shape-read-only'});
    if(['/api/rules','/api/rules.json'].includes(path))return send(200,rules);
-   if(['/api/capabilities','/api/capabilities.json'].includes(path))return send(200,{...capabilities,modes:liveReader?['mock','live']:['mock'],liveConfigured:!!liveReader});
+   if(['/api/capabilities','/api/capabilities.json'].includes(path))return send(200,{...capabilities,modes:liveReader?['live']:[],liveConfigured:!!liveReader});
+   if(path==='/skills/three-shape/SKILL.en.md')return send(200,await readFile(new URL('../skills/three-shape/SKILL.en.md',import.meta.url)),'text/markdown; charset=utf-8');
    if(path==='/skills/three-shape/SKILL.md')return send(200,await readFile(skillFile),'text/markdown; charset=utf-8');
    if(path==='/api/game'){
     const address=url.searchParams.get('address')??'';if(!/^0x[0-9a-fA-F]{40}$/.test(address))return send(400,{error:'INVALID_ADDRESS'});
-    if(!liveReader)return send(503,{error:'LIVE_NOT_CONFIGURED',message:'真实合约和钱包绑定尚未接入；请使用明确标记的本地模拟'});
+    if(!liveReader)return send(503,{error:'LIVE_NOT_CONFIGURED',message:'真实合约和钱包绑定尚未接入；操作暂不可用'});
     const view=await liveReader(address);if(view?.mode!=='live'||view?.schemaVersion!=='three-shape.game.v1'||view?.address?.toLowerCase()!==address.toLowerCase())return send(502,{error:'INVALID_LIVE_RESULT'});
     return send(200,view);
    }

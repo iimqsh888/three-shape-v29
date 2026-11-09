@@ -1,7 +1,7 @@
 import {it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor} from '@testing-library/react';
 import {CollectionTransfer} from '../components/CollectionTransfer';
-import {MockAdapter} from '../contracts/adapter/MockAdapter';
+import {MockAdapter} from './fixtures/MockAdapter';
 const address='0x0000000000000000000000000000000000000002';
 async function setup(){const adapter=new MockAdapter(0);await adapter.preparePlay(adapter.address);await(await adapter.play()).wait(1);const item=(await adapter.getCollection(adapter.address))[0];const execute=vi.fn(async(task:()=>Promise<unknown>)=>{await task();});const resolve=vi.spyOn(adapter,'resolveRecipient');render(<CollectionTransfer item={item} adapter={adapter} busy={false} execute={execute}/>);return{adapter,resolve,execute};}
 const input=(value:string)=>fireEvent.change(screen.getByLabelText('接收方 .ai 名称'),{target:{value}});

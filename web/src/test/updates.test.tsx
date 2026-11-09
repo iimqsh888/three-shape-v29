@@ -1,6 +1,6 @@
 import {it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor} from '@testing-library/react';
-import {MockAdapter} from '../contracts/adapter/MockAdapter';
+import {MockAdapter} from './fixtures/MockAdapter';
 import {ThreeShapeCard} from '../components/ThreeShapeCard';
 import {PostComposer} from '../components/PostComposer';
 const play=async(a:MockAdapter)=>{await a.preparePlay(a.address);await(await a.play()).wait(1);};

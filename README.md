@@ -1,5 +1,7 @@
 # Three Shape V2.9
 
+当前网站：中英文切换、固定 384px 卡片（窄屏适配）、新版项目／代币 Logo。仅使用真实 ContractAdapter，ABI／钱包未配置时显示待接入并禁用操作；不提供模拟余额、NFT、场景工具或虚构结果。MockAdapter 仅保留在 web/src/test/fixtures/，不导出到正式业务模块，也不进入发布资源。
+
 Clean-room BSC implementation. **Development only: not audited, not mainnet-ready.**
 
 ## Economics
