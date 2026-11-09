@@ -8,14 +8,16 @@ import {MysteryPortal} from './MysteryPortal';
 import './ThreeShapeCard.css';
 import {CollectionTransfer} from './CollectionTransfer';
 import {PostComposer} from './PostComposer';
-export interface ThreeShapeCardProps {mode:Mode;walletAddress?:string|null;adapter?:ThreeShapeAdapter;onAction?:(action:string)=>void}
+import {canPurchaseStars} from '../game/presentation';
+export interface ThreeShapeCardProps {mode:Mode;walletAddress?:string|null;adapter?:ThreeShapeAdapter;onAction?:(action:string)=>void;onWalletChange?:(address:string|null)=>void}
 const states={disconnected:'READY',ready:'READY',playing:'PENDING',confirming:'CONFIRMING',result:'RESULT',reward_available:'RESULT',claiming:'PENDING',claimed:'RESULT',error:'ERROR'};
-export function ThreeShapeCard({mode,walletAddress,adapter:provided,onAction}:ThreeShapeCardProps){
+export function ThreeShapeCard({mode,walletAddress,adapter:provided,onAction,onWalletChange}:ThreeShapeCardProps){
  const adapter=useMemo<ThreeShapeAdapter>(()=>provided??(mode==='mock'?new MockAdapter():new ContractAdapter()),[provided,mode]);
  const state=useThreeShape(adapter,walletAddress,mode==='live'),s=state.snapshot;
  const [tab,setTab]=useState<'game'|'collection'|'rewards'>('game'),[selected,setSelected]=useState<NFTItem|null>(null),[plan,setPlan]=useState<PlayPreview|null>(null),[preparing,setPreparing]=useState(false),[readError,setReadError]=useState(''),[quantity,setQuantity]=useState(1),[quote,setQuote]=useState<StarQuote|null>(null),[starsOpen,setStarsOpen]=useState(false);
+ useEffect(()=>{onWalletChange?.(state.address);},[state.address,onWalletChange]);
  const generation=useRef(0);
- const canBuyStars=Boolean(state.address&&s&&adapter.quoteStars&&adapter.buyStars&&s.game.starsBought<6&&!(s.game.tier===3&&(s.game.phase==='settled'||s.reward.claimed)));
+ const canBuyStars=Boolean(state.address&&s&&adapter.quoteStars&&adapter.buyStars&&canPurchaseStars(s.game,s.reward));
  useEffect(()=>{if(!canBuyStars){setStarsOpen(false);setQuote(null);}},[canBuyStars]);
  useEffect(()=>{setStarsOpen(false);},[state.address,adapter]);
  useLayoutEffect(()=>{++generation.current;setPlan(null);setQuote(null);setSelected(null);setPreparing(false);setReadError('');},[state.address,s,adapter]);

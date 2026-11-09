@@ -37,3 +37,13 @@
 ## Star 购买入口的展示规则
 
 仅调整聊天卡片，不修改合约：当前钱包累计购星达到 6 枚，或第三档奖励已经成功领取，隐藏「购买 Star」及「用 Star 补齐」入口并关闭已展开的报价面板。领取前、交易待确认或交易失败时不能提前认定完成。购买数量取累计购买记录，不是当前持仓；转出或销毁 Star 不恢复入口。切换钱包后按新钱包的权威状态重新判断；刷新后仍按恢复的状态判断。第一、二档提前领奖不属于第三档领奖完成。
+
+## 当前网站与 Skill 路线
+
+采用用户确认的能力边界：Binance AI Pro 当前按文字 Skills 导入／执行，不把 MCP Apps、ui://、iframe 或 React 消息渲染作为现有接入能力。网站默认提供原有卡片式完整 Mock 游戏，文字 + Emoji 作为辅助入口；两者共用 Adapter、钱包状态和结构化结果。
+
+网站提供币安 AI Pro 官方站点跳转，不在本站运行 Agentic Wallet 配对。官方认证文件说明的 urlForWeb 是配对流程返回值，不是可自行拼接的 OAuth URL；官方 FAQ 也要求在 AI Pro 或可信 Agent 中登录。不会把导航／跳转误标为本站钱包授权成功。
+
+Grok、Codex 等 Agent 能调用钱包，和其宿主能否渲染内嵌卡片是两项能力。支持富 UI 的宿主可未来接入独立 MCP Apps 边界；不支持时使用纯文字 Skill 或网站卡片。当前没有声称已在这些宿主内验证卡片。
+
+参考：[官方认证流程](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/references/authentication.md)、[官方 FAQ](https://www.binance.com/en/support/faq/detail/3ff00e2d488a41c4aaa4aabb6fc36763)。

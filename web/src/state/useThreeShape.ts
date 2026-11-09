@@ -1,6 +1,6 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
-import type {Action,GameState,NFTCollection,RewardState,Status,ThreeShapeAdapter,TransactionResult} from '../contracts/types';
-interface Snapshot {game:GameState;collection:NFTCollection;reward:RewardState;balance:bigint}
+import type {Action,Status,ThreeShapeAdapter,TransactionResult} from '../contracts/types';
+import type {GameSnapshot as Snapshot} from '../game/presentation';
 export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean){
  const [address,setAddress]=useState<string|null>(addressProp??null),[status,setStatus]=useState<Status>('disconnected'),[snapshot,setSnapshot]=useState<Snapshot|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[hash,setHash]=useState<string>();
  const epoch=useRef(0),locked=useRef(false),current=useRef<string|null>(addressProp??null);

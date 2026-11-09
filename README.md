@@ -8,7 +8,7 @@ Clean-room BSC implementation. **Development only: not audited, not mainnet-read
 - Total hard cap: 2,860,000,000,000 3SHAPE. Unminted player quota becomes unavailable once all 55,000 shares are claimed.
 - Ten claim stages: 1,000 through 10,000 shares; tier-three reward in millions: 100/80/60/50/40/30/20/10/10/10. Tier two is one tenth, tier one is always one million.
 - Each successful claim consumes one share **at claim time**, not when NFTs are burned. A preflight cannot reserve a share.
-- NFT burns: tier one 3 matching fruits; tier two 6 NFTs including at least 1 Star and matching fruits; tier three 9 NFTs including at least 3 Stars and matching fruits. Burns are independent; rewards do not stack.
+- NFT burns: tier one 3 NFTs with at least one ordinary fruit, matching ordinary fruits and optional Star substitutes; tier two 6 NFTs including at least 1 Star and matching fruits; tier three 9 NFTs including at least 3 Stars and matching fruits. Burns are independent; rewards do not stack.
 - Stars remain on sale until all 100,000 sell out, independent of claim stages.
 
 ## Security status
@@ -55,3 +55,14 @@ npm run dev:card
 ```
 
 可以模拟连接钱包、领取水果、补齐测试 NFT、三档挑战、领取/继续、九种收藏、购星、拒签、交易失败、资格与钱包切换。所有模拟结果均明确标记，无真实资产或钱包授权。真实 Live 钱包/ABI 绑定仍需接入，详见 web README。
+
+
+## 网站、文字 Skill 和轻量服务
+
+网站以原有卡片作为默认玩法，文字 + Emoji 为辅助模式；不建设新的语言模型 Agent。
+
+- [Three Shape 文字技能](skills/three-shape/SKILL.md)：用户可提供给支持技能导入的 AI Pro／可信 Agent 阅读，不能据此声称官方已安装／批准。
+- [轻量服务](server/README.md)：`npm run build:card` 后 `npm run serve`，提供网站、公开规则、能力、Skill 和可注入的只读链上状态；无钱包签名／广播／公共授权接口。
+- [未来 MCP Apps 适配边界](integrations/mcp-apps/README.md)：独立保留，不依赖 Binance 当前开放 UI 扩展。
+- 网站提供官方 AI Pro 跳转入口；本站真实登录、Live ABI／签名器和主网部署尚未接通。当前在线版本是可操作的 Mock。
+- 当前验证：Node 基础／服务 27 项、React／Adapter／文字 46 项、生产构建通过。合约未在本次修改，旧编译／Ganache结果见历史报告；本次未重新执行 EVM、BSC Fork或主网交易。

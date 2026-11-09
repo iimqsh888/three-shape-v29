@@ -4,3 +4,6 @@ export {MysteryPortal} from './components/MysteryPortal';
 export {MockAdapter} from './contracts/adapter/MockAdapter';
 export {ContractAdapter} from './contracts/adapter/ContractAdapter';
 export * from './contracts/types';
+export {gameView,textGame,canPurchaseStars} from './game/presentation';
+export type {GameView,GameSnapshot} from './game/presentation';
+export {createMcpAppsBridge} from './integrations/mcp-apps';

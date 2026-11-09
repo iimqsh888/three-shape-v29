@@ -2,3 +2,7 @@ node_modules/
 artifacts/
 coverage/
 .env
+
+web/public/api/
+web/public/skills/
+web/src/generated/
