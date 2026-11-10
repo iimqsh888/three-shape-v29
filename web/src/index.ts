@@ -9,3 +9,6 @@ export {createMcpAppsBridge} from './integrations/mcp-apps';
 export {LanguageContext,useI18n,translate} from './i18n';
 export type {Language} from './i18n';
 export {decodeGameState} from './contracts/adapter/stateMapping';
+
+export {EthersThreeShapeAdapter,type NativeDeployment} from './contracts/adapter/EthersThreeShapeAdapter';
+export {InjectedWalletAdapter} from './contracts/adapter/InjectedWalletAdapter';

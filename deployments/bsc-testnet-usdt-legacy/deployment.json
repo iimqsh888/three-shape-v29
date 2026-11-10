@@ -1,0 +1,66 @@
+{
+  "chainId": 97,
+  "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
+  "network": "BSC Testnet",
+  "status": "deployed",
+  "dependencyNotice": "USDT and identity registry are isolated test fixtures, NOT real USDT or official Binance .ai Agent ID. DEX router/factory are the documented PancakeSwap V2 testnet deployments.",
+  "router": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
+  "dexFactory": "0x6725F303b657a9451d8BA641348b6761A6CC7a17",
+  "treasury": "0x19a00449a5af7a51279b401dfe3bf92cb90a2751",
+  "contracts": {
+    "testUSDT": "0x34e2201D7b9A47404976A589ddFC67279E0E921D",
+    "testIdentityRegistry": "0x6e905D75177653756f488Db81b8022885CFe8ca7",
+    "deploymentFactory": "0x397E5b7559345BA0d94E937179b3cf3A0095AB38",
+    "pair": "0x7cD278D288bF72dE501109203e2e31a93637FAc3",
+    "token": "0x4FafD5973f8041C4774844f0D104878f3D520EBF",
+    "nft": "0x055B40923B22d58Be19a86B9e11C47C0bB00C0Cc",
+    "reserve": "0xE5BE0a3434D1f30Eab5f33E3CBbbc4cfe6Cb60B0",
+    "game": "0xAA09D63B4E0D70Ac2239Dd93fA198aD8960896c5",
+    "liquidity": "0x66390f32cB806B3813410fc59c93fd3b941CC929"
+  },
+  "transactions": [
+    {
+      "label": "deploy testUSDT",
+      "hash": "0x705a18f8b970cc1751834efff9bb30cfc559392b438b5f044b97782dde850e4c",
+      "status": "confirmed",
+      "blockNumber": 141651703,
+      "gasUsed": "512538"
+    },
+    {
+      "label": "deploy testIdentityRegistry",
+      "hash": "0x86d015651d15462929eeeacc2bd3a8a302fc257c974fa1fb054c24073523f771",
+      "status": "confirmed",
+      "blockNumber": 141651711,
+      "gasUsed": "114871"
+    },
+    {
+      "label": "deploy deploymentFactory",
+      "hash": "0x8018dfec9b6b727caee4a92975aee243e233afdad761935f2fa3f7caa6f41044",
+      "status": "confirmed",
+      "blockNumber": 141651720,
+      "gasUsed": "7105445"
+    },
+    {
+      "label": "create real PancakeSwap V2 testnet pair",
+      "hash": "0x20d71874d5f5010a9b020027196bdaedc1e82b1fb4f3149e7a0da550e93fb99a",
+      "status": "confirmed",
+      "blockNumber": 141651728,
+      "gasUsed": "1980249"
+    },
+    {
+      "label": "deploy five immutable production contracts",
+      "hash": "0x49e38f88fd7404bdc98e5e49b25352c701d3547c278c847e1538257d5e589a14",
+      "status": "confirmed",
+      "blockNumber": 141651736,
+      "gasUsed": "5122855"
+    }
+  ],
+  "sources": {
+    "contracts/ThreeShapeV29.sol": "911cf6c9336de6e12159e91fea6e915d6f11d25f826bf93dcb60df073b1edb5e",
+    "contracts/ThreeShapeDeploymentV29.sol": "71ae62c31f3b2d9bcc82b4a7d75604696edd239577204f5ef6ae8a3dfcd44101",
+    "contracts/test/MocksV29.sol": "8af25308fe8fce5ee72c9d9f4f7e2f91d616c060ec07cfc39d239ebb00d0cb32"
+  },
+  "deployer": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "deploymentBlock": 141651736,
+  "verifiedAt": "2026-11-09T03:16:06.357Z"
+}

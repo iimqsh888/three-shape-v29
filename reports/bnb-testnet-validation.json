@@ -1,0 +1,63 @@
+{
+  "network": "BSC Testnet",
+  "chainId": 97,
+  "game": "0x3A0Bc1D0a7982F0680e4C4F2dEAc00b945bdF17C",
+  "payment": "native BNB",
+  "compilerWarnings": 1,
+  "results": {
+    "localContractIntegrationAndSecurity": {
+      "passed": 15,
+      "failed": 0
+    },
+    "basicUnitAndHTTP": {
+      "passed": 27,
+      "failed": 0
+    },
+    "ABICompatibility": {
+      "passed": 3,
+      "failed": 0
+    },
+    "frontendAndWalletSession": {
+      "passed": 68,
+      "failed": 0
+    },
+    "publicTestnetContractGroups": {
+      "passed": 13,
+      "failed": 0
+    },
+    "publicTestnetAdapterGroups": {
+      "passed": 8,
+      "failed": 0
+    },
+    "liveAgentReadOnlyAPI": {
+      "passed": 1,
+      "failed": 0
+    },
+    "typescriptAndViteBuild": "passed",
+    "runtimeBytecodeMatch": "passed"
+  },
+  "fixed": [
+    "Native adapter LP-inclusive gas: default estimate allowed caught LP failure; corrected 2,000,000 gas request confirmed added on chain",
+    "Event scan pagination and state snapshot timing",
+    "Wallet disconnect, wrong-network rejection and active-session binding",
+    "Cross-network/deployment pending transaction namespace",
+    "BNB prices, native value, UI copy, Skills and ABI mapping"
+  ],
+  "knownAcceptedLimitation": "LP bootstrap reserve contamination retained per explicit user decision; not fixed",
+  "unverified": [
+    "Official Binance .ai ID on chain97 (test fixture used)",
+    "Official .ai address resolver and end-to-end .ai transfer UI",
+    "AI Pro/Agentic Wallet real execution on chain97 (not listed by official docs)",
+    "Actual inline React rendering inside Binance AI Pro",
+    "BSC mainnet fork",
+    "Browser/mobile visual QA (Sites managed browser helper unavailable)",
+    "Source verification on BscScan (runtime bytecode matched locally instead)"
+  ],
+  "latestRecordedState": {
+    "totalClaims": "4",
+    "remainingShares": "54996",
+    "starsSold": "9"
+  },
+  "mainnetDeployed": false,
+  "unknownBugsCannotBeRuledOut": true
+}

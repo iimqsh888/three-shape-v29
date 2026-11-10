@@ -46,16 +46,16 @@ contract ThreeShapeDeploymentV29 {
         assembly { created:=create(0,add(initCode,32),mload(initCode)) }
         require(created==expected,"address mismatch");
     }
-    function deploy(address usdt,address registry,address treasury,address router,address pair) external {
+    function deploy(address registry,address treasury,address router,address pair) external {
         require(msg.sender==deployer,"deployer only");
         require(!deployed,"already deployed");
-        require(usdt!=address(0)&&registry!=address(0)&&treasury!=address(0)&&router!=address(0)&&pair!=address(0),"zero");
+        require(registry!=address(0)&&treasury!=address(0)&&router!=address(0)&&pair!=address(0),"zero");
         deployed=true;
         _create(codebook.token(),abi.encode(predicted(4),predicted(5)),predicted(1));
         _create(codebook.nft(),abi.encode(predicted(4)),predicted(2));
-        _create(codebook.reserve(),abi.encode(usdt,predicted(5)),predicted(3));
-        _create(codebook.game(),abi.encode(predicted(1),predicted(2),usdt,registry,predicted(3),treasury,predicted(5)),predicted(4));
-        _create(codebook.liquidity(),abi.encode(predicted(1),usdt,predicted(4),predicted(3),router,pair),predicted(5));
+        _create(codebook.reserve(),abi.encode(predicted(5)),predicted(3));
+        _create(codebook.game(),abi.encode(predicted(1),predicted(2),registry,predicted(3),treasury,predicted(5)),predicted(4));
+        _create(codebook.liquidity(),abi.encode(predicted(1),predicted(4),predicted(3),router,pair),predicted(5));
         emit Deployed(predicted(1),predicted(2),predicted(3),predicted(4),predicted(5));
     }
 }

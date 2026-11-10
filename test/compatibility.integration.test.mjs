@@ -20,9 +20,9 @@ test('MATCH-01: every documented adapter read/write/event exists in the compiled
 
 test('MATCH-02: frontend/public rules match real contract reward stages, supply limits and Star prices',async()=>{
  const f=await fixture();try{
-  assert.equal(await f.token.decimals(),18n);assert.equal(await f.usdt.decimals(),6n);assert.equal(await f.game.usdtUnit(),1_000_000n);
+  assert.equal(await f.token.decimals(),18n);
   assert.equal(await f.game.MAX_CLAIMS(),BigInt(rules.rewards.shares));assert.equal(await f.game.MAX_STARS(),BigInt(rules.stars.maxSales));assert.equal(await f.game.STARS_PER_PRICE_STEP(),BigInt(rules.stars.stepSales));
-  assert.equal(await f.game.starPrice(0),BigInt(rules.stars.initialUSDT)*1_000_000n);assert.equal(await f.game.starPrice(1000),12_000_000n);
+  assert.equal(await f.game.starPrice(0),BigInt(rules.stars.initialWei));assert.equal(await f.game.starPrice(1000),15n*10n**15n);
   let cumulative=0;for(let stage=1;stage<=10;stage++){cumulative+=rules.rewards.stageShares[stage-1];assert.equal(await f.game.stageOf(cumulative),BigInt(stage));for(let tier=1;tier<=3;tier++){const expected=tier===1?BigInt(rules.rewards.firstTier):BigInt(rules.rewards.thirdTier[stage-1])/BigInt(tier===2?10:1);assert.equal(await f.game.reward(tier,stage),expected*UNIT);}}
  }finally{await f.engine.disconnect();}
 });

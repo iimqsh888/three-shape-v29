@@ -4,7 +4,7 @@ import type {GameSnapshot as Snapshot} from '../game/presentation';
 export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean){
  const [address,setAddress]=useState<string|null>(addressProp??null),[status,setStatus]=useState<Status>('disconnected'),[snapshot,setSnapshot]=useState<Snapshot|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[hash,setHash]=useState<string>(),[receipt,setReceipt]=useState<TransactionReceipt|null>(null);
  const epoch=useRef(0),locked=useRef(false),current=useRef<string|null>(addressProp??null);
- const key=(a:string)=>'three-shape-preview-pending:'+a.toLowerCase();
+ const key=(a:string)=>'three-shape-preview-pending:'+(adapter.pendingScope?adapter.pendingScope+':':'')+a.toLowerCase();
  const reload=useCallback(async(a:string,ticket:number)=>{
   if(live){const pending=localStorage.getItem(key(a));if(pending){if(!adapter.recoverPending)throw new Error('存在待核实交易，需要接入恢复接口后才能继续');const tx=await adapter.recoverPending(a,JSON.parse(pending).hash);if(tx){const receipt=await tx.wait(2);if(ticket===epoch.current){setReceipt(receipt);setHash(tx.hash??JSON.parse(pending).hash);}localStorage.removeItem(key(a));if(!receipt.success)throw new Error(receipt.message??'待处理交易失败');}else throw new Error('待处理交易结果尚未确认，请核实后重试；不会自动重发');}}
   const [game,collection,reward,balance]=await Promise.all([adapter.getGameState(a),adapter.getCollection(a),adapter.getRewardState(a),adapter.getTokenBalance(a)]);
@@ -32,7 +32,7 @@ export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|
    if(!receipt.success)throw new Error(receipt.message??'交易执行失败');
    confirmedChange=true;
    if(ticket===epoch.current)await reload(a,ticket);
-  }catch(e){if(confirmedChange&&ticket===epoch.current)setSnapshot(null);if(live&&!known&&e&&typeof e==='object'&&'code'in e&&e.code===4001)localStorage.removeItem(key(a));if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}
+  }catch(e){if(confirmedChange&&ticket===epoch.current)setSnapshot(null);if(live&&!known&&e&&typeof e==='object'&&(('code'in e&&(e.code===4001||e.code==='ACTION_REJECTED'))||('broadcast'in e&&e.broadcast===false)))localStorage.removeItem(key(a));if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}
   finally{if(ticket===epoch.current){locked.current=false;setBusy(false);}}
  };
  const act=async(action:Action)=>{if(!snapshot)return;const allowed=action==='play'?snapshot.game.canPlay:action==='claimReward'?snapshot.reward.eligible:snapshot.game.canContinue;if(allowed)await execute(action,()=>action==='claimReward'?adapter.claimReward(snapshot.reward.amount):adapter[action]());};

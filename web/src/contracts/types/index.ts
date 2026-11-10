@@ -12,8 +12,9 @@ export interface WalletSession {address:string|null;chainId:string}
 export interface StarQuote {quantity:number;payment:bigint;address:string}
 export interface ThreeShapeAdapter {
  readonly readiness?:'ready'|'unconfigured';
+ readonly pendingScope?:string;
  readonly tokenDecimals?:number;
- readonly usdtDecimals?:number;
+ readonly paymentDecimals?:number;
  connectWallet():Promise<string>;
  getGameState(address:string):Promise<GameState>;
  getCollection(address:string):Promise<NFTCollection>;

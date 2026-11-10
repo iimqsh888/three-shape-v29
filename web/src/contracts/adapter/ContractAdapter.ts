@@ -3,7 +3,8 @@ import type {ThreeShapeAdapter,WalletSession} from '../types';
 export class ContractAdapter implements ThreeShapeAdapter {
  get readiness(){return this.bindings?.readiness??(this.bindings?'ready':'unconfigured');}
  get tokenDecimals(){return this.bindings?.tokenDecimals??18;}
- get usdtDecimals(){return this.bindings?.usdtDecimals??18;}
+ get paymentDecimals(){return this.bindings?.paymentDecimals??18;}
+ get pendingScope(){return this.bindings?.pendingScope;}
  preparePlay?:ThreeShapeAdapter['preparePlay'];
  quoteStars?:ThreeShapeAdapter['quoteStars'];
  buyStars?:ThreeShapeAdapter['buyStars'];

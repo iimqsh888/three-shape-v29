@@ -1,14 +1,14 @@
 import {metadata,unit} from '../../contracts/config/metadata';
 import type {GameState,PlayPreview,StarQuote,ThreeShapeAdapter,TransactionResult,WalletSession} from '../../contracts/types';
-interface Account {eligible:boolean;free:boolean;tier:1|2|3;phase:'ready'|'choice'|'settled';nfts:{id:string;kind:number}[];balance:string;usdt:string;starsBought:number;result:string[]|null}
+interface Account {eligible:boolean;free:boolean;tier:1|2|3;phase:'ready'|'choice'|'settled';nfts:{id:string;kind:number}[];balance:string;bnb:string;starsBought:number;result:string[]|null}
 interface World {accounts:Record<string,Account>;claims:number;sold:number;next:number}
 const initial=():World=>({accounts:{},claims:0,sold:0,next:1});
-const account=():Account=>({eligible:true,free:false,tier:1,phase:'ready',nfts:[],balance:'0',usdt:String(1000n*unit),starsBought:0,result:null});
+const account=():Account=>({eligible:true,free:false,tier:1,phase:'ready',nfts:[],balance:'0',bnb:String(1000n*unit),starsBought:0,result:null});
 const choices=['0x0000000000000000000000000000000000000001','0x0000000000000000000000000000000000000002'];
 const tops=[100,80,60,50,40,30,20,10,10,10];
 export class MockAdapter implements ThreeShapeAdapter {
  readonly tokenDecimals=18;
- readonly usdtDecimals=18;
+ readonly paymentDecimals=18;
  address=choices[0];failure:'reject'|'receipt'|null=null;
  private claimOffset=0;private soldOffset=0;
  private listeners=new Set<(session:WalletSession)=>void>();private plan:PlayPreview|null=null;private pending=false;private connected=false;private serial=0;private memory=initial();
@@ -26,7 +26,7 @@ export class MockAdapter implements ThreeShapeAdapter {
  reset(){if(this.pending)throw new Error('请等待模拟交易结束');this.claimOffset=0;this.soldOffset=0;this.save(initial());this.emit();}
  setStage(stage:number){if(stage<1||stage>10)return;if(this.pending)throw new Error("请等待模拟交易结束");this.claimOffset=(stage-1)*stage*500-this.read().claims;this.emit();}
  setSold(sold:number){if(this.pending)throw new Error("请等待模拟交易结束");this.soldOffset=Math.max(0,Math.min(100000,Math.floor(sold)))-this.read().sold;this.emit();}
- topUp(){this.write((_,a)=>{a.usdt=String(BigInt(a.usdt)+1000n*unit);});}
+ topUp(){this.write((_,a)=>{a.bnb=String(BigInt(a.bnb)+1000n*unit);});}
  /** Explicit test fixture: supplies inventory. It is not a game reward or random result. */
  supplyNextTier(){this.write((w,a)=>{if(a.phase!=='ready'||!a.free)throw new Error('请先领取水果，再补齐测试 NFT');const fruitCount=[0,3,5,6][a.tier],starCount=[0,0,1,3][a.tier];while(a.nfts.filter(n=>n.kind===1).length<fruitCount)a.nfts.push({id:String(w.next++),kind:1});while(a.nfts.filter(n=>n.kind===9).length<starCount)a.nfts.push({id:String(w.next++),kind:9});});}
  private stage(claims:number){let max=0;for(let i=1;i<=10;i++){max+=i*1000;if(claims<max)return i;}return 10;}
@@ -36,7 +36,7 @@ export class MockAdapter implements ThreeShapeAdapter {
  getCollection=async(address:string)=>{const w=this.read(),a=this.player(w,address);return metadata.map(m=>{const ids=a.nfts.filter(n=>n.kind===m.kind).map(n=>n.id);return {type:m.kind,name:m.name,emoji:m.symbol,quantity:BigInt(ids.length),tokenIds:ids,metadata:{name:m.name,symbol:m.symbol,attributes:[{trait_type:'kind',value:m.kind}]}};});};
  getRewardState=async(address:string)=>{const w=this.read(),a=this.player(w,address);return {eligible:a.eligible&&w.claims+this.claimOffset<55000&&a.phase==='choice',claimed:a.phase==='settled',amount:a.phase==='choice'?this.amounts(w)[a.tier-1]:0n};};
  getTokenBalance=async(address:string)=>{const w=this.read();return BigInt(this.player(w,address).balance);};
- getUSDTBalance=async(address:string)=>{const w=this.read();return BigInt(this.player(w,address).usdt);};
+ getBNBBalance=async(address:string)=>{const w=this.read();return BigInt(this.player(w,address).bnb);};
  preparePlay=async(address:string):Promise<PlayPreview>=>{if(address.toLowerCase()!==this.address.toLowerCase())throw new Error('模拟钱包已切换');const w=this.read(),a=this.player(w,address);if(!a.eligible)throw new Error('需要持有 .ai ID');if(w.claims+this.claimOffset>=55000)throw new Error('奖励份额已耗尽');const ids=a.free?this.ids(a):[];if(a.free&&!ids.length)throw new Error('尚未凑齐：至少 1 枚同种普通水果，其余可用 Star 补齐；也可生成交换帖或收购帖。');const plan:PlayPreview={kind:a.free?'burn':'free',tokenIds:ids,address,warning:a.free?'销毁不可撤销；当前查询和销毁都不预留奖励份额。领奖前份额可能被其他钱包用完。':'仅为模拟免费领取，无真实资产或钱包签名。'};this.plan=plan;return plan;};
  resolveRecipient=async(name:string)=>{const aliases:Record<string,string>={'alice.ai':choices[0],'bob.ai':choices[1]};const result=aliases[name.trim().toLowerCase()];if(!result)throw new Error('模拟解析仅支持 alice.ai / bob.ai，不代表真实 .ai 地址解析');return result;};
  transferNFT=async(tokenId:string,recipient:string)=>{if(!choices.includes(recipient))throw new Error('模拟接收地址无效');const sender=this.address;return this.tx((w,a)=>{if(sender===recipient)throw new Error('不能发送给自己');const item=a.nfts.find(n=>n.id===tokenId);if(!item)throw new Error('此钱包已不持有该 NFT');a.nfts=a.nfts.filter(n=>n.id!==tokenId);this.player(w,recipient).nfts.push(item);});};
@@ -50,6 +50,6 @@ export class MockAdapter implements ThreeShapeAdapter {
  play=async()=>{const plan=this.plan;this.plan=null;if(!plan||plan.address!==this.address)throw new Error('请先确认本次操作');return this.tx((w,a)=>{if(w.claims+this.claimOffset>=55000)throw new Error('奖励份额已耗尽');if(plan.kind==='free'){if(a.free)throw new Error('已领取过免费水果');a.free=true;const fixture=[1,1,2];fixture.forEach(kind=>a.nfts.push({id:String(w.next++),kind}));a.result=fixture.map(k=>metadata[k-1].symbol);return;}const actual=this.ids(a);if(a.phase!=='ready'||!plan.tokenIds.length||actual.join(',')!==plan.tokenIds.join(','))throw new Error('NFT 条件已变化');a.result=plan.tokenIds.slice(0,3).map(id=>metadata[a.nfts.find(n=>n.id===id)!.kind-1].symbol);a.nfts=a.nfts.filter(n=>!plan.tokenIds.includes(n.id));a.phase='choice';});};
  claimReward=async(minAmount=0n)=>this.tx((w,a)=>{if(a.phase!=='choice'||w.claims+this.claimOffset>=55000)throw new Error('当前无法领取');if(this.amounts(w)[a.tier-1]<minAmount)throw new Error('奖励报价已变化');a.balance=String(BigInt(a.balance)+this.amounts(w)[a.tier-1]);w.claims++;a.phase='settled';});
  continueChallenge=async()=>this.tx((w,a)=>{if(a.phase!=='choice'||a.tier>=3||w.claims+this.claimOffset>=55000)throw new Error('当前不能继续');a.tier=(a.tier+1)as 2|3;a.phase='ready';a.result=null;});
- quoteStars=async(address:string,quantity:number)=>{const w=this.read(),a=this.player(w,address);if(!a.eligible)throw new Error('需要持有 .ai ID');if(!Number.isInteger(quantity)||quantity<1||a.starsBought+quantity>6||w.sold+this.soldOffset+quantity>100000)throw new Error('超出每钱包累计 6 枚或总销售上限');let payment=0n;for(let i=0;i<quantity;i++)payment+=BigInt(10+2*Math.floor((w.sold+this.soldOffset+i)/1000))*unit;return {quantity,payment,address};};
- buyStars=async(quote:StarQuote)=>{if(quote.address!==this.address)throw new Error('钱包已切换');return this.tx((w,a)=>{if(a.starsBought+quote.quantity>6||w.sold+this.soldOffset+quote.quantity>100000)throw new Error('超出销售数量限制');let cost=0n;for(let i=0;i<quote.quantity;i++)cost+=BigInt(10+2*Math.floor((w.sold+this.soldOffset+i)/1000))*unit;if(cost>quote.payment)throw new Error('报价已变化');if(BigInt(a.usdt)<cost)throw new Error('模拟 USDT 不足，可在工具中补充');a.usdt=String(BigInt(a.usdt)-cost);a.starsBought+=quote.quantity;w.sold+=quote.quantity;for(let i=0;i<quote.quantity;i++)a.nfts.push({id:String(w.next++),kind:9});});};
+ quoteStars=async(address:string,quantity:number)=>{const w=this.read(),a=this.player(w,address);if(!a.eligible)throw new Error('需要持有 .ai ID');if(!Number.isInteger(quantity)||quantity<1||a.starsBought+quantity>6||w.sold+this.soldOffset+quantity>100000)throw new Error('超出每钱包累计 6 枚或总销售上限');let payment=0n;for(let i=0;i<quantity;i++)payment+=BigInt(10+5*Math.floor((w.sold+this.soldOffset+i)/1000))*(unit/1000n);return {quantity,payment,address};};
+ buyStars=async(quote:StarQuote)=>{if(quote.address!==this.address)throw new Error('钱包已切换');return this.tx((w,a)=>{if(a.starsBought+quote.quantity>6||w.sold+this.soldOffset+quote.quantity>100000)throw new Error('超出销售数量限制');let cost=0n;for(let i=0;i<quote.quantity;i++)cost+=BigInt(10+5*Math.floor((w.sold+this.soldOffset+i)/1000))*(unit/1000n);if(cost>quote.payment)throw new Error('报价已变化');if(BigInt(a.bnb)<cost)throw new Error('模拟 BNB 不足，可在工具中补充');a.bnb=String(BigInt(a.bnb)-cost);a.starsBought+=quote.quantity;w.sold+=quote.quantity;for(let i=0;i<quote.quantity;i++)a.nfts.push({id:String(w.next++),kind:9});});};
 }

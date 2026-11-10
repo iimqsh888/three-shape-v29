@@ -2,10 +2,11 @@
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-contract MockUSDT is ERC20 {
-    constructor() ERC20("Mock USDT","USDT") {}
-    function decimals() public pure override returns(uint8){return 6;}
-    function faucet(address to,uint256 amount) external {_mint(to,amount);}
+contract MockWBNB is ERC20 {
+    constructor() ERC20("Test Wrapped BNB","WBNB") {}
+    receive() external payable {deposit();}
+    function deposit() public payable {_mint(msg.sender,msg.value);}
+    function withdraw(uint256 amount) external {_burn(msg.sender,amount);(bool ok,)=payable(msg.sender).call{value:amount}("");require(ok,"withdraw failed");}
 }
 contract MockRegistry {
     mapping(address=>uint256) public balanceOf;
@@ -36,15 +37,21 @@ contract MockFactory {
 }
 contract MockRouter {
     address public immutable factory;
+    address public immutable WETH;
     MockPair public immutable pair;
-    constructor(address f,address p){factory=f;pair=MockPair(p);}
-    function addLiquidity(address a,address b,uint256 x,uint256 y,uint256,uint256,address to,uint256)
-      external returns(uint256,uint256,uint256){
+    constructor(address f,address p,address w){factory=f;pair=MockPair(p);WETH=w;}
+    function addLiquidityETH(address a,uint256 x,uint256 minX,uint256 minY,address to,uint256)
+      external payable returns(uint256,uint256,uint256){
         require(to==0x000000000000000000000000000000000000dEaD,"not burned");
+        require(x>=minX&&msg.value>=minY,"minimum");
         IERC20(a).transferFrom(msg.sender,address(pair),x);
-        IERC20(b).transferFrom(msg.sender,address(pair),y);
-        if(pair.token0()==a)pair.add(a,b,x,y);
-        else pair.add(b,a,y,x);
-        return(x,y,1);
+        MockWBNB(payable(WETH)).deposit{value:msg.value}();
+        IERC20(WETH).transfer(address(pair),msg.value);
+        if(pair.token0()==a)pair.add(a,WETH,x,msg.value);
+        else pair.add(WETH,a,msg.value,x);
+        return(x,msg.value,1);
     }
+}
+contract RejectBNB {
+    receive() external payable {revert("BNB refused");}
 }

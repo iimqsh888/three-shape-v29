@@ -1,0 +1,20 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ MATCH-01: every documented adapter read/write/event exists in the compiled local ABI (12.179742ms)
+✔ MATCH-02: frontend/public rules match real contract reward stages, supply limits and Star prices (4301.50086ms)
+✔ MATCH-03: chain permits challenge/claim with transferred fruit before free claim; Settled tier needs Claimed (8322.574256ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13083.737097

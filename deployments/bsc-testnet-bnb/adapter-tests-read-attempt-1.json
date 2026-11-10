@@ -1,0 +1,8 @@
+{
+  "chainId": 97,
+  "status": "running",
+  "signer": "isolated test wallet supplied through Signer interface; NOT official Agentic Wallet",
+  "player": "0xb8b5187c15ABc0f3C30AC0032580CA2227eA4349",
+  "checks": [],
+  "transactions": []
+}

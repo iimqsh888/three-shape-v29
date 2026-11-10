@@ -1,0 +1,44 @@
+
+> three-shape-v29@0.1.0 test:card
+> npm --prefix web test
+
+
+> three-shape-agent-card@2.9.0 pretest
+> node ../scripts/export-public.mjs
+
+
+> three-shape-agent-card@2.9.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspace/project/web
+
+ ✓ src/test/transfer.test.tsx (5 tests) 3025ms
+   ✓ automatically resolves, hides IDs and addresses, cancellation submits nothing  451ms
+   ✓ unknown or invalid resolved recipients cannot be sent  725ms
+   ✓ changed resolution blocks execution and invalidates previous confirmation  381ms
+   ✓ editing a confirmed name clears the confirmation and resolves the new name  734ms
+   ✓ a late resolution for an old name cannot enable transfer for the current name  729ms
+ ✓ src/test/card.test.tsx (19 tests) 2696ms
+   ✓ embedded card > connects/disconnects and scenario updates do not silently reconnect  518ms
+   ✓ embedded card > advances all three tiers inside one card and claims only final reward  795ms
+ ✓ src/test/text-game.test.tsx (9 tests) 1555ms
+   ✓ text free mint requires explicit confirmation and a receipt; collections are nine Emoji rows  405ms
+   ✓ three text challenges, continue choices and final claim remain separate confirmed operations  684ms
+ ✓ src/test/updates.test.tsx (9 tests) 1138ms
+   ✓ after buying Star shows ready-to-challenge guidance without automatic burn  351ms
+   ✓ collection resolves recipient without transferring until explicit confirmation  601ms
+ ✓ src/test/star-entry.test.tsx (5 tests) 1103ms
+   ✓ hides both purchase entries and an open quote only after six purchases confirm; refresh and transfer do not reopen them  520ms
+   ✓ third-tier match still allows buying; failed claim leaves entry and confirmed final claim closes it  304ms
+ ✓ src/test/contract-matching.test.tsx (8 tests) 1121ms
+ ✓ src/test/language.test.tsx (3 tests) 741ms
+   ✓ English covers connected collection and reward controls with a test-only injected adapter  413ms
+ ✓ src/test/recovery.test.tsx (5 tests) 380ms
+ ✓ src/test/injected-wallet.test.ts (5 tests) 189ms
+
+ Test Files  9 passed (9)
+      Tests  68 passed (68)
+   Start at  02:24:22
+   Duration  24.34s (transform 688ms, setup 1.77s, collect 1.43s, tests 11.95s, environment 5.53s, prepare 1.33s)
+

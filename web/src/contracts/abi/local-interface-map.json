@@ -15,8 +15,7 @@
         "starsSold()",
         "starsBought(address)",
         "quoteStars(uint256)",
-        "canBurn(address,uint256[])",
-        "usdtUnit()"
+        "canBurn(address,uint256[])"
       ],
       "writes": [
         "claimFree()",
@@ -70,19 +69,6 @@
       "writes": [],
       "events": []
     },
-    "USDT": {
-      "source": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
-      "name": "IERC20Metadata",
-      "reads": [
-        "decimals()",
-        "allowance(address,address)",
-        "balanceOf(address)"
-      ],
-      "writes": [
-        "approve(address,uint256)"
-      ],
-      "events": []
-    },
     "Liquidity": {
       "source": "contracts/ThreeShapeV29.sol",
       "name": "ThreeShapeLiquidityV29",
@@ -108,7 +94,7 @@
     "continueChallenge": "continueChallenge()",
     "getTokenBalance": "Token.balanceOf(address)",
     "quoteStars": "Game.quoteStars(uint256 quantity), read-only",
-    "buyStars": "USDT allowance/approval if required, then Game.buyStars(quantity,maxPayment); parse LP outcome separately",
+    "buyStars": "Game.buyStars(quantity,maxPayment) payable with exact quoted native BNB value; no ERC20 approval. Parse LP outcome separately.",
     "transferNFT": "NFT.safeTransferFrom(from,to,tokenId); .ai resolution uses the official wallet resolver"
   },
   "states": {

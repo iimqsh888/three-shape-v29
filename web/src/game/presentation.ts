@@ -1,5 +1,5 @@
 import type {GameState,NFTCollection,RewardState,Mode} from '../contracts/types';
-import {formatAmount} from '../contracts/config/metadata';
+import {formatAmount} from '../contracts/config/metadata.ts';
 export interface GameSnapshot {game:GameState;collection:NFTCollection;reward:RewardState;balance:bigint}
 export type GameCommand='status'|'collection'|'claimFree'|'challenge'|'claimReward'|'continueChallenge'|'buyStars';
 export const canPurchaseStars=(game:GameState,reward:RewardState)=>game.starsSold<100000&&game.starsBought<6&&!(game.tier===3&&(game.phase==='settled'||reward.claimed));

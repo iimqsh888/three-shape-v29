@@ -11,6 +11,8 @@ An independent third-party game Skill. Use text and Emoji; do not claim approval
 
 Read `/api/capabilities.json` and `/api/rules.json` from the project URL supplied by the user. The optional `/api/game?address=0x...` endpoint is read-only. A 503 LIVE_NOT_CONFIGURED response, missing deployed addresses/ABI, or liveConfigured=false means STOP and explain that contract/wallet integration is pending. Do not create simulated progress, balances, NFTs, rewards or transactions.
 
+Check chainId, the BNB payment asset, and dependencyNotice first. Test identity fixtures are not official .ai IDs. Official Agentic Wallet does not currently list chain 97; use a testnet-capable user wallet there and never describe an ordinary EOA as Agentic Wallet.
+
 Authenticate only in Binance AI Pro or the user's trusted Agent, following the installed official Agentic Wallet Skill. Never collect private keys, recovery phrases, pairing codes or a shared server wallet session. A pasted address permits public reads, not signing.
 
 Read through ThreeShapeAdapter: getGameState, getCollection, getRewardState and getTokenBalance. These are business methods, not assumed Solidity signatures. Final ABI mapping and wallet approval belong in the Adapter. Preserve JSON schemaVersion, mode, verification, address, game, reward, collection, token and allowedActions; represent large amounts as integer decimal strings. No guessed events, signatures or parameters.
@@ -32,15 +34,15 @@ Show only actions permitted by current state. These are text choices, not fictit
 - Claim one reward tier per wallet; rewards do not stack. Continuing does not pay the previous tier. In the first global stage, tiers pay 1M / 10M / 100M 3SHAPE. Later tier-two/three amounts decrease; always display the current authoritative quote.
 - There are 55,000 reward shares across ten stages with 1,000 through 10,000 shares respectively. Tier-three amounts in millions: 100/80/60/50/40/30/20/10/10/10. Tier two is one tenth; tier one remains 1M.
 - Only successful claims consume a share. Burning is irreversible and does NOT reserve a reward share; shares can run out after a burn. Check remaining shares, explain this, and obtain explicit approval before burning.
-- Stars start at 10 USDT, increasing 2 USDT per 1,000 sold, up to 208 USDT. Sales cap: 100,000. Cumulative purchases per wallet: 6, regardless of transfers/burns. Quote using actual decimals and price-band crossings.
+- Stars start at 0.01 BNB, increasing 0.005 BNB per 1,000 sold, up to 0.505 BNB. Sales cap: 100,000. Cumulative purchases per wallet: 6, regardless of transfers/burns. Quote using 18-decimal integer wei and price-band crossings.
 - Stop presenting Star purchase actions after six cumulative purchases or a confirmed third-tier reward claim. This presentation rule does not change the contract.
-- Purchase split: 80% Reserve, 20% Treasury. Player and LP minting caps are each 1.43T tokens. Each Star unlocks up to 14.3M tokens for that purchase's LP minting. Unused allowance expires immediately; unused USDT remains. LP tokens go to the burn address. Verify Star purchase and LP outcomes separately.
+- Purchase split: 80% Reserve, 20% Treasury. Player and LP minting caps are each 1.43T tokens. Each Star unlocks up to 14.3M tokens for that purchase's LP minting. Unused allowance expires immediately; unused BNB remains. LP tokens go to the burn address. Verify Star purchase and LP outcomes separately.
 
 ## Actions
 
 Use preparePlay for read-only free-claim/burn preparation. If holdings are insufficient, explain missing matching fruit/Stars and offer a draft trade/buy post. Never buy, burn or mint autonomously.
 
-Use quoteStars before buyStars; obtain approval for this purchase. For claimReward or continueChallenge, read eligibility/amount and explain the mutually exclusive choice. Pass the user-approved raw integer reward as minAmount instead of defaulting to zero. Preserve the Star purchase receipt and the independent LP added/failed/unknown outcome. Follow official wallet preview, permissions and confirmation procedures; never enable Developer Mode automatically or request unnecessary permissions.
+Use quoteStars before buyStars; obtain approval for this purchase. Send native BNB with msg.value exactly equal to the approved quote; no ERC20 approval. Gas must cover the internal LP call; a minimum estimate that permits a caught LP failure is insufficient. For claimReward or continueChallenge, read eligibility/amount and explain the mutually exclusive choice. Pass the user-approved raw integer reward as minAmount instead of defaulting to zero. Preserve the Star purchase receipt and the independent LP added/failed/unknown outcome. Follow official wallet preview, permissions and confirmation procedures; never enable Developer Mode automatically or request unnecessary permissions.
 
 For transfers, ask for the fruit and .ai recipient. Resolve automatically but preserve all address, warning and confirmation requirements of the official wallet Skill. Resolution failure blocks sending; changed recipients require renewed confirmation. State that the action cannot be undone. NFT calls must use their actual ABI; do not assume ordinary token-send commands transfer NFTs.
 

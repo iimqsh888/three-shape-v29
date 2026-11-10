@@ -5,16 +5,15 @@ import {ethers} from 'ethers';
 import {artifact,source,UNIT,fixture} from './helpers/evm.mjs';
 
 test('all five write steps reject missing .ai ID; holder can buy Star, add LP and claim once',async()=>{
- const f=await fixture();const {game,registry,usdt,address,nft,token,reserve,liquidity,pair}=f;
+ const f=await fixture();const {game,registry,wbnb,address,nft,token,reserve,liquidity,pair}=f;
  try{
-  const denied=[()=>game.claimFree.staticCall(),()=>game.burnForTier.staticCall([]),()=>game.continueChallenge.staticCall(),()=>game.claimReward.staticCall(0),()=>game.buyStars.staticCall(1,10_000_000)];
+  const denied=[()=>game.claimFree.staticCall(),()=>game.burnForTier.staticCall([]),()=>game.continueChallenge.staticCall(),()=>game.claimReward.staticCall(0),()=>game.buyStars.staticCall(1,10n**16n,{value:10n**16n})];
   for(const run of denied)await assert.rejects(run,/no \.ai Agent ID/);
   assert.equal(await game.freeClaimed(address),false);assert.equal(await game.starsSold(),0n);
   await(await registry.setBalance(address,1)).wait();
-  await(await usdt.faucet(address,100_000_000)).wait();await(await usdt.approve(await game.getAddress(),100_000_000)).wait();
-  await(await game.buyStars(1,10_000_000,{gasLimit:6000000})).wait();
+  await(await game.buyStars(1,10n**16n,{value:10n**16n,gasLimit:6000000})).wait();
   assert.equal(await game.starsSold(),1n);assert.equal(await token.lpMinted(),14_300_000n*UNIT);
-  assert.equal(await usdt.balanceOf(await reserve.getAddress()),0n);assert.equal(await liquidity.initialized(),true);assert.equal(await pair.totalSupply(),1n);
+  assert.equal(await f.provider.getBalance(await reserve.getAddress()),0n);assert.equal(await liquidity.initialized(),true);assert.equal(await pair.totalSupply(),1n);
   await(await game.claimFree()).wait();await assert.rejects(game.claimFree.staticCall(),/ineligible/);
   const others=[];
   for(let i=1;i<=5;i++){const wallet=await f.provider.getSigner(i);others.push(wallet);await(await registry.setBalance(await wallet.getAddress(),1)).wait();await(await game.connect(wallet).claimFree()).wait();}
@@ -52,22 +51,22 @@ test('nine NFT names and Emoji compile to valid on-chain JSON',async()=>{
 test('Star price rises every 1,000; boundaries, crossing quote and total revenue',async()=>{
  const f=await fixture();try{
   const {game}=f;assert.equal(await game.STARS_PER_PRICE_STEP(),1000n);
-  for(const [sold,price]of [[0,10],[999,10],[1000,12],[9999,28],[10000,30],[99000,208],[99999,208]])assert.equal(await game.starPrice(sold),BigInt(price)*1_000_000n);
+  for(const [sold,price]of [[0,10],[999,10],[1000,15],[9999,55],[10000,60],[99000,505],[99999,505]])assert.equal(await game.starPrice(sold),BigInt(price)*10n**15n);
   await assert.rejects(game.starPrice(100000));
   let total=0n;for(let i=0;i<100;i++)total+=BigInt(await game.starPrice(i*1000))*1000n;
-  assert.equal(total,10_900_000n*1_000_000n);
+  assert.equal(total,25_750n*UNIT);
   // Pricing-only boundary fixture: derive the slot from compiler storage layout.
   const layout=artifact(source,'ThreeShapeGameV29').storageLayout.storage;
   const slot=BigInt(layout.find(x=>x.label==='starsSold').slot);
   await f.provider.send('evm_setAccountStorageAt',[await game.getAddress(),ethers.toBeHex(slot,32),ethers.toBeHex(999,32)]);
-  assert.equal(await game.quoteStars(2),22_000_000n);
+  assert.equal(await game.quoteStars(2),25n*10n**15n);
   await f.provider.send('evm_setAccountStorageAt',[await game.getAddress(),ethers.toBeHex(slot,32),ethers.toBeHex(99999,32)]);
   await assert.rejects(game.quoteStars(2));
  }finally{await f.engine.disconnect();}
 });
 
 test('three tiers and revoked identity: reward/continue branches remain independent',async()=>{
- const f=await fixture();const {provider,game,registry,nft,usdt,address,token}=f;
+ const f=await fixture();const {provider,game,registry,nft,wbnb,address,token}=f;
  try{
   const signers=[],apples=[];
   for(let i=0;i<12;i++){
@@ -80,8 +79,7 @@ test('three tiers and revoked identity: reward/continue branches remain independ
   const stars=[];
   for(const [i,q]of [[0,6],[1,6],[2,1]]){
    const s=signers[i],who=await s.getAddress(),cost=await game.quoteStars(q),first=await nft.nextId();
-   await(await usdt.faucet(who,cost)).wait();await(await usdt.connect(s).approve(await game.getAddress(),cost)).wait();
-   await(await game.connect(s).buyStars(q,cost,{gasLimit:6000000})).wait();
+   await(await game.connect(s).buyStars(q,cost,{value:cost,gasLimit:6000000})).wait();
    for(let j=0n;j<BigInt(q);j++){const id=first+j;if(i!==0)await(await nft.connect(s).transferFrom(who,address,id)).wait();stars.push(id);}
   }
   const batches=[fruits.slice(0,3).map(x=>x.id),[fruits[3].id,...stars.slice(0,5)],[fruits[4].id,...stars.slice(5,13)]];
@@ -104,10 +102,10 @@ test('three tiers and revoked identity: reward/continue branches remain independ
 });
 
 test('first tier Star substitutions require at least one ordinary fruit; mixed fruits and all Stars fail',async()=>{
- const f=await fixture();const {game,registry,address,nft,usdt}=f;
+ const f=await fixture();const {game,registry,address,nft,wbnb}=f;
  try{
   await(await registry.setBalance(address,1)).wait();await(await game.claimFree()).wait();
-  const cost=await game.quoteStars(3);await(await usdt.faucet(address,cost)).wait();await(await usdt.approve(await game.getAddress(),cost)).wait();await(await game.buyStars(3,cost,{gasLimit:6000000})).wait();
+  const cost=await game.quoteStars(3);await(await game.buyStars(3,cost,{value:cost,gasLimit:6000000})).wait();
   assert.equal(await game.canBurn(address,[1,4,5]),true);
   assert.equal(await game.canBurn(address,[4,5,6]),false);
   const fruits=[];for(let id=1;id<=3;id++)fruits.push({id,kind:await nft.kind(id)});
@@ -115,5 +113,23 @@ test('first tier Star substitutions require at least one ordinary fruit; mixed f
   if(same){const other=fruits.find(x=>x.id!==same.id&&x.kind===same.kind);assert.equal(await game.canBurn(address,[same.id,other.id,4]),true);}
   const mixed=fruits.find(x=>x.kind!==fruits[0].kind);if(mixed)assert.equal(await game.canBurn(address,[fruits[0].id,mixed.id,4]),false);
   await(await game.burnForTier([1,4,5])).wait();assert.equal(await game.state(address),1n);assert.equal(await game.totalClaims(),0n);
+ }finally{await f.engine.disconnect();}
+});
+
+test('native price-band crossing retains spare BNB without carrying unused mint budget',async()=>{
+ const f=await fixture();try{
+  const {game,registry,address,provider,token,reserve,liquidity}=f;
+  await(await registry.setBalance(address,1)).wait();
+  const slot=BigInt(artifact(source,'ThreeShapeGameV29').storageLayout.storage.find(x=>x.label==='starsSold').slot);
+  // Local boundary fixture only; no testnet storage is modified.
+  await provider.send('evm_setAccountStorageAt',[game.target,ethers.toBeHex(slot,32),ethers.toBeHex(999,32)]);
+  const cost=await game.quoteStars(2);assert.equal(cost,25n*10n**15n);
+  await(await game.buyStars(2,cost,{value:cost,gasLimit:6000000})).wait();
+  assert.equal(await provider.getBalance(reserve.target),4n*10n**15n);assert.equal(await token.lpMinted(),28_600_000n*UNIT);
+  const second=await game.quoteStars(1);assert.equal(second,15n*10n**15n);
+  await(await game.buyStars(1,second,{value:second,gasLimit:6000000})).wait();
+  assert.equal(await provider.getBalance(reserve.target),8n*10n**15n);assert.equal(await token.lpMinted(),42_900_000n*UNIT);assert.equal(await game.lpBudgetExpired(),42_900_000n*UNIT);
+  assert.equal(await provider.getBalance(liquidity.target),0n);
+  await assert.rejects(f.signer.sendTransaction({to:liquidity.target,value:1n}));
  }finally{await f.engine.disconnect();}
 });

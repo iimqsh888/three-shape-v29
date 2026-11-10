@@ -12,7 +12,12 @@
     "test:card": "npm --prefix web test",
     "serve": "node server/index.mjs",
     "test:security": "npm run compile && node --test --test-isolation=none test/security.integration.test.mjs",
-    "test:compatibility": "npm run compile && node --test --test-isolation=none test/compatibility.integration.test.mjs"
+    "test:compatibility": "npm run compile && node --test --test-isolation=none test/compatibility.integration.test.mjs",
+    "build:card:testnet": "VITE_THREE_SHAPE_NETWORK=bsc-testnet npm --prefix web run build",
+    "deploy:testnet": "npm run compile && node scripts/bsc-testnet-deploy.mjs",
+    "test:testnet": "node scripts/bsc-testnet-test.mjs",
+    "test:adapter:testnet": "node scripts/bsc-testnet-adapter-test.mjs",
+    "serve:testnet": "node server/testnet.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",

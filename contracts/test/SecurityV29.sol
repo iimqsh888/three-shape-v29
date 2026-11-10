@@ -13,24 +13,23 @@ contract TransferableRegistrySecurityV29 is ERC721 {
 
 interface IGameSecurityV29 {
     function claimFree() external;
-    function buyStars(uint256 quantity,uint256 maxPayment) external;
+    function buyStars(uint256 quantity,uint256 maxPayment) external payable;
 }
 
 /// @dev Never included in the production deployment factory or website assets.
 contract ReceiverSecurityV29 is IERC721Receiver {
     address public immutable game;
-    IERC20 public immutable usdt;
     bool public reject;
     uint256 public callbacks;
     uint256 public guarded;
     uint256 public bypassed;
 
-    constructor(address game_,address usdt_) { game=game_;usdt=IERC20(usdt_); }
+    constructor(address game_) {game=game_;}
+    receive() external payable {}
     function setReject(bool value) external { reject=value; }
     function free() external { IGameSecurityV29(game).claimFree(); }
-    function purchase(uint256 quantity,uint256 payment) external {
-        usdt.approve(game,payment);
-        IGameSecurityV29(game).buyStars(quantity,payment);
+    function purchase(uint256 quantity,uint256 payment) external payable {
+        IGameSecurityV29(game).buyStars{value:msg.value}(quantity,payment);
     }
     function onERC721Received(address,address,uint256,bytes calldata) external returns(bytes4) {
         require(!reject,"receiver rejected");

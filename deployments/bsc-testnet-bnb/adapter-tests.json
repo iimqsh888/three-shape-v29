@@ -1,0 +1,94 @@
+{
+  "chainId": 97,
+  "status": "passed",
+  "signer": "isolated test wallet supplied through Signer interface; NOT official Agentic Wallet",
+  "player": "0xb8b5187c15ABc0f3C30AC0032580CA2227eA4349",
+  "checks": [
+    {
+      "name": "settled tier and collection survive a fresh adapter instance",
+      "status": "passed"
+    },
+    {
+      "name": "adapter connects and prepares without submitting a transaction",
+      "status": "passed"
+    },
+    {
+      "name": "wallet changes invalidate a prepared action before broadcast",
+      "status": "passed"
+    },
+    {
+      "name": "confirmed free claim and metadata produce three actual Emoji",
+      "status": "passed"
+    },
+    {
+      "name": "native quote, wallet signing and separate LP receipt",
+      "status": "passed"
+    },
+    {
+      "name": "burn preview is not a transaction; confirmed burn opens the reward choice",
+      "status": "passed"
+    },
+    {
+      "name": "claim preserves the approved raw minimum; fresh adapter restores authoritative progress",
+      "status": "passed"
+    },
+    {
+      "name": "current global state remains authoritative after adapter transactions",
+      "status": "passed"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "fund isolated adapter test wallet",
+      "hash": "0x1bfdda292de558c9b8aa88fa2f8d30c899adb39136ef119ab94f38078919a314",
+      "status": "confirmed"
+    },
+    {
+      "name": "isolated test identity",
+      "hash": "0x4712861980e901dd5cd5b14d6341e790dd9a4aaef162c5be02e10cdefe0f65d7",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter free claim",
+      "hash": "0xb913dcb64af96666f84c58997d1301bd3ec6655ebd633c73b1eebcc573b658f4",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter buy one Star",
+      "hash": "0x5a7a4e6f2054291e6bc90e1535d0c9d9cd95ef7cbbd3d121058fdca0a4ad2016",
+      "status": "confirmed",
+      "liquidity": "failed"
+    },
+    {
+      "name": "gas-fix retest funding from isolated test wallets",
+      "hash": "0x846bd897e2e98a4a10762fb3ae8eb69b9b9615d4e8d4cc42592df795e23ecc8a",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter buy one Star",
+      "hash": "0x18fb19f4a46a2a90b8ebcddd1725ab5c89a2612711e779dbd871d4b95a40949f",
+      "status": "confirmed",
+      "liquidity": "added"
+    },
+    {
+      "name": "adapter tier one burn",
+      "hash": "0x508de99397109251def7aa636dbb10c6a609ab792094a4518b01c01a7510527e",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter tier one reward",
+      "hash": "0xa8dfb83ac2ccb8da7251e35061b4b468b5cf77d7a938abd2fdac5d5ba0c867f0",
+      "status": "confirmed"
+    }
+  ],
+  "completedAt": "2026-11-10T02:20:47.542Z",
+  "previousFailure": {
+    "error": "Expected values to be strictly equal:\n\n'failed' !== 'added'\n",
+    "completedAt": "2026-11-10T02:17:39.258Z"
+  },
+  "latestState": {
+    "totalClaims": "4",
+    "remainingShares": "54996",
+    "starsSold": "9"
+  }
+}
