@@ -11,7 +11,9 @@ export class ContractAdapter implements ThreeShapeAdapter {
  resolveRecipient?:ThreeShapeAdapter['resolveRecipient'];
  transferNFT?:ThreeShapeAdapter['transferNFT'];
  recoverPending?:ThreeShapeAdapter['recoverPending'];
- constructor(private bindings?:ThreeShapeAdapter){this.resolveRecipient=bindings?.resolveRecipient?.bind(bindings);this.transferNFT=bindings?.transferNFT?.bind(bindings);this.preparePlay=bindings?.preparePlay?.bind(bindings);this.quoteStars=bindings?.quoteStars?.bind(bindings);this.buyStars=bindings?.buyStars?.bind(bindings);this.recoverPending=bindings?.recoverPending?.bind(bindings);}
+ getReserveState?:ThreeShapeAdapter['getReserveState'];
+ settleReserve?:ThreeShapeAdapter['settleReserve'];
+ constructor(private bindings?:ThreeShapeAdapter){this.resolveRecipient=bindings?.resolveRecipient?.bind(bindings);this.transferNFT=bindings?.transferNFT?.bind(bindings);this.preparePlay=bindings?.preparePlay?.bind(bindings);this.quoteStars=bindings?.quoteStars?.bind(bindings);this.buyStars=bindings?.buyStars?.bind(bindings);this.recoverPending=bindings?.recoverPending?.bind(bindings);this.getReserveState=bindings?.getReserveState?.bind(bindings);this.settleReserve=bindings?.settleReserve?.bind(bindings);}
  private get api(){if(!this.bindings)throw new Error('Live 尚未接入真实 ABI、合约地址及钱包签名器。');return this.bindings;}
  connectWallet=()=>this.api.connectWallet();
  getGameState=(a:string)=>this.api.getGameState(a);

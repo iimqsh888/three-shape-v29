@@ -8,7 +8,7 @@ Star 起价 **0.01 BNB**，每售出 **1,000** 枚上涨 **0.005 BNB**，最后�
 
 销售期间 20% 直接进固定 T、80% 进 Reserve。最后一笔购星的 LP 尝试结束后，任何人可调用 Reserve.settleToTreasury()，将剩余原生 BNB 全部结算给固定 T；最后 LP 失败的留存余额也纳入结算。T 拒收会回滚本次结算，资金留存，可重试。无需管理员，不支持改收款地址或指定提款金额。详见 [结算规则与验证](docs/RESERVE_FINAL_SETTLEMENT.zh-CN.md)。
 
-**以下测试网地址和已发布卡片属于上一部署，不具备本次新增结算入口。** 新源码编译及本地边界测试通过后，仍需重新部署并验证，不能把旧部署测试报告当作新版链上验证。
+本版本已重新部署到 BSC 测试网，并验证公开接口与隔离 Fork 售罄结算。新部署记录见 deployments/bsc-testnet-settlement/；原 bsc-testnet-bnb 部署保留为历史，不支持新增结算。
 
 ## BSC 测试网
 
@@ -16,14 +16,14 @@ Chain ID **97**，仅使用测试 BNB；主网未部署。
 
 | 合约 | 地址 |
 | --- | --- |
-| Game | `0x3A0Bc1D0a7982F0680e4C4F2dEAc00b945bdF17C` |
-| Token | `0xB56fA7318a6A0b1b256a72F1336d0de1c6692680` |
-| NFT | `0x2975a4D564c1058c51B693Ec7D11dA3cB72eC2FF` |
-| Reserve | `0x4C051bb5d0b8408d2A16799d58115B45e7596ca4` |
-| Liquidity | `0xfc2cbc087d48eB628274991E00839FF19104cf7D` |
-| Pair | `0x5bAcd39c4aB30ef25B968F6dd021469a48D3C0B9` |
+| Game | `0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7` |
+| Token | `0x568c4dA7324F6Be81739F70458306b66Cf9B88b2` |
+| NFT | `0x525F3fA24156734b53aAeEA815A225340FB56f15` |
+| Reserve | `0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c` |
+| Liquidity | `0x99E6184b07525Fc6b5A7f4fDb261eD2EF2E2009a` |
+| Pair | `0xEFD6ebC03A0e039332BCE6c4D56470103ba55479` |
 
-使用真实 PancakeSwap V2 测试网 Router / Factory / WBNB。身份 Registry 为**隔离测试夹具**，不是官方 Binance .ai Agent ID。[部署记录](deployments/bsc-testnet-bnb/deployment.json)保留地址、源码哈希和回执。旧 USDT 部署仅作为历史记录。
+使用真实 PancakeSwap V2 测试网 Router / Factory / WBNB。身份 Registry 为**隔离测试夹具**，不是官方 Binance .ai Agent ID。[部署记录](deployments/bsc-testnet-settlement/deployment.json)保留地址、源码哈希和回执。旧 USDT 部署仅作为历史记录。
 
 ## 运行与验证
 
@@ -55,7 +55,7 @@ npm run serve:testnet
 <ThreeShapeCard mode="live" adapter={adapter} onAction={handleAction} />
 ```
 
-所有合约调用集中于 `web/src/contracts/adapter/`。EthersThreeShapeAdapter 接收部署配置、Provider 和用户 Signer 回调；InjectedWalletAdapter 管理标准钱包连接及账户／网络事件；ContractAdapter 可用于其他宿主。实际编译 ABI、地址、部署块和九种链上 JSON 元数据在 `web/src/contracts/config/bsc-testnet-bnb.json`。
+所有合约调用集中于 `web/src/contracts/adapter/`。EthersThreeShapeAdapter 接收部署配置、Provider 和用户 Signer 回调；InjectedWalletAdapter 管理标准钱包连接及账户／网络事件；ContractAdapter 可用于其他宿主。实际编译 ABI、地址、部署块和九种链上 JSON 元数据在 `web/src/contracts/config/bsc-testnet-settlement.json`。
 
 - 购星使用 payable buyStars(quantity,maxPayment)，msg.value 精确等于确认报价，没有 ERC20 授权。gas 上限覆盖内部 LP 调用；购星和 LP 回执分别核实。
 - 收藏索引 Transfer，复核 ownerOf、kind、tokenURI；已领取档位从 Claimed 恢复。历史索引先于一致区块快照，避免长期扫描使读取块过旧。
@@ -69,6 +69,8 @@ npm run serve:testnet
 
 官方 Agentic Wallet 当前文档未列出 chainId 97；普通测试钱包不等于官方 Agentic Wallet。官方 .ai 资格、.ai 解析和 AI Pro 内真实钱包执行仍待环境支持。未宣称币安已开放第三方 React 卡片渲染或 MCP 注册。
 
+新增维护接口 getReserveState / settleReserve 与只读 /api/reserve；结算需单独钱包签名，没有新增卡片管理员按钮。
+
 ## 验证边界
 
-见 [BNB 测试报告](reports/BNB_TESTNET_VALIDATION.zh-CN.md)。此前用户接受的首次加池储备污染限制保持原逻辑，不将接受风险说成修复；详见[历史安全报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。测试不是独立安全审计，不能保证不存在未知问题。
+本次见 [新版公开测试网报告](reports/SETTLEMENT_PUBLIC_TESTNET.zh-CN.md)；旧版报告仅作历史。此前用户接受的首次加池储备污染限制保持原逻辑，不将接受风险说成修复；详见[历史安全报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。测试不是独立安全审计，不能保证不存在未知问题。

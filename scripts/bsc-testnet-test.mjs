@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import {Wallet,Contract,keccak256,concat,toUtf8Bytes,formatEther} from 'ethers';
 import {testnetProvider,requireTestnet,READ_RPC} from './lib/bsc-testnet-rpc.mjs';
 
-const file='deployments/bsc-testnet-bnb/function-tests.json';
+const deploymentDirectory=process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-settlement';
+const file=`${deploymentDirectory}/function-tests.json`;
 const finalOnly=process.argv.includes('--verify-final');
 const resume=process.argv.includes('--resume')||finalOnly;
 if(fs.existsSync(file)&&!resume)throw new Error('On-chain scenario already started. Inspect its receipts; use explicit --resume only after correcting the harness.');
-const d=JSON.parse(fs.readFileSync('deployments/bsc-testnet-bnb/deployment.json'));
+const d=JSON.parse(fs.readFileSync(`${deploymentDirectory}/deployment.json`));
 const report=resume?JSON.parse(fs.readFileSync(file)):{chainId:97,startedAt:new Date().toISOString(),status:'running',dependencyNotice:d.dependencyNotice,checks:[],transactions:[],players:[]};
 if(resume){report.attempts??=[];report.attempts.push({previousStatus:report.status,error:report.error,resumedAt:new Date().toISOString()});delete report.error;report.status='running';}
 const save=()=>fs.writeFileSync(file,JSON.stringify(report,null,2)+'\n');
@@ -90,7 +91,7 @@ try{
  });
  await check('nine metadata names and Emoji originate from on-chain JSON',async()=>{
   const symbols=['🍏','🍋','🍇','🍒','🍓','🍐','🥭','🍉','🌟'],found=new Set();
-  for(let id=1n;id<await nft.nextId();id++){const k=Number(await nft.kind(id)),uri=await nft.tokenURI(id);assert(uri.startsWith('data:application/json;base64,'));const meta=JSON.parse(Buffer.from(uri.split(',')[1],'base64').toString());assert.equal(meta.symbol,symbols[k-1]);assert.equal(meta.image,undefined);assert(meta.name.startsWith('Three Shape '));found.add(k);}
+  for(let id=1n;id<await nft.nextId();id++){const k=Number(await nft.kind(id)),uri=await nft.tokenURI(id);assert(uri.startsWith('data:application/json;base64,'));const meta=JSON.parse(Buffer.from(uri.split(',')[1],'base64').toString());assert.equal(meta.symbol,symbols[k-1]);assert.equal(meta.image,undefined);assert(meta.name.startsWith('Three Shape '));found.add(k);report.metadataCatalog??=[];if(!report.metadataCatalog.some(x=>x.kind===k))report.metadataCatalog.push({kind:k,tokenId:String(id),metadata:meta,uri});}
   assert.equal(found.size,9);
  });
  await check('subsequent native buy adds liquidity on the real V2 ratio',async()=>{

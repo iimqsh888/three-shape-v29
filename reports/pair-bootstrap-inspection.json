@@ -1,0 +1,43 @@
+{
+  "chainId": 97,
+  "checkedAt": "2026-11-10T22:44:11.878Z",
+  "status": "passed",
+  "readOnly": true,
+  "transactionsSent": 0,
+  "pair": "0xEFD6ebC03A0e039332BCE6c4D56470103ba55479",
+  "conclusions": {
+    "deploymentScriptCreatesEmptyPair": true,
+    "pairCreationInsideBusinessDeploymentTransaction": false,
+    "deploymentAddsLiquidity": false,
+    "firstPurchaseTriggersLiquidityAttempt": true,
+    "firstPurchaseLiquidityConfirmed": true
+  },
+  "evidence": {
+    "pairCreation": {
+      "hash": "0x0d8fcc7c6e441a2295ba9d5c53f57b722d909e3c9b63aa9aeb119d3123fede35",
+      "block": 141892639,
+      "calledFactoryCreatePair": true,
+      "valueBNB": "0"
+    },
+    "businessDeployment": {
+      "hash": "0x743df3bc9e732b58928f43902a487428a88b7b21f1c107d86b7025179d8eae97",
+      "block": 141892647,
+      "valueBNB": "0",
+      "liquidityAddedEvents": 0
+    },
+    "beforeFirstPurchase": {
+      "pairEvents": 0,
+      "liquidityManagerEvents": 0
+    },
+    "firstPurchase": {
+      "hash": "0x94054c9ff276a28615017e0b94e5d779408edff3b2a957221307f8b170aaf700",
+      "block": 141893199,
+      "stars": "6",
+      "paymentBNB": "0.06",
+      "lpBNB": "0.048",
+      "lpTokenAmount": "85800000.0",
+      "lpSentToBurnAddress": true
+    }
+  },
+  "distinction": "The deployment script creates the pair in a separate transaction before deploying the five business contracts. The Solidity deployment factory expects an existing pair; it does not create or fund it. buyStars triggers a caught LP attempt, so purchase success alone is not proof that liquidity was added."
+}

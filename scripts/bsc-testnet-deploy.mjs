@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {Wallet,Contract,ContractFactory,formatEther} from 'ethers';
 import {testnetProvider,requireTestnet,RPC} from './lib/bsc-testnet-rpc.mjs';
 
-const directory=path.resolve(process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-bnb');fs.mkdirSync(directory,{recursive:true});
+const directory=path.resolve(process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-settlement');fs.mkdirSync(directory,{recursive:true});
 const manifestFile=path.join(directory,'deployment.json');
 const manifest=fs.existsSync(manifestFile)?JSON.parse(fs.readFileSync(manifestFile)): {
  chainId:97,rpc:RPC,network:'BSC Testnet',paymentAsset:'BNB',status:'deploying',

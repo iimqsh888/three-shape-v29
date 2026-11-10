@@ -1,0 +1,187 @@
+{
+  "chainId": 97,
+  "nft": "0x525F3fA24156734b53aAeEA815A225340FB56f15",
+  "entries": [
+    {
+      "kind": 1,
+      "tokenId": "1",
+      "metadata": {
+        "name": "Three Shape Green Apple #1",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍏",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "1"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Green Apple"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgR3JlZW4gQXBwbGUgIzEiLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn42PIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjEifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiR3JlZW4gQXBwbGUifV19"
+    },
+    {
+      "kind": 2,
+      "tokenId": "3",
+      "metadata": {
+        "name": "Three Shape Lemon #3",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍋",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "2"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Lemon"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgTGVtb24gIzMiLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn42LIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjIifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiTGVtb24ifV19"
+    },
+    {
+      "kind": 3,
+      "tokenId": "5",
+      "metadata": {
+        "name": "Three Shape Grapes #5",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍇",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "3"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Grapes"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgR3JhcGVzICM1IiwiZGVzY3JpcHRpb24iOiJPbi1jaGFpbiBmcnVpdCBvciBTdGFyIGNvbGxlY3RpYmxlIiwic3ltYm9sIjoi8J+NhyIsImF0dHJpYnV0ZXMiOlt7InRyYWl0X3R5cGUiOiJraW5kIiwidmFsdWUiOiIzIn0seyJ0cmFpdF90eXBlIjoiZnJ1aXQiLCJ2YWx1ZSI6IkdyYXBlcyJ9XX0="
+    },
+    {
+      "kind": 4,
+      "tokenId": "7",
+      "metadata": {
+        "name": "Three Shape Cherries #7",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍒",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "4"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Cherries"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgQ2hlcnJpZXMgIzciLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn42SIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjQifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiQ2hlcnJpZXMifV19"
+    },
+    {
+      "kind": 5,
+      "tokenId": "9",
+      "metadata": {
+        "name": "Three Shape Strawberry #9",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍓",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "5"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Strawberry"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgU3RyYXdiZXJyeSAjOSIsImRlc2NyaXB0aW9uIjoiT24tY2hhaW4gZnJ1aXQgb3IgU3RhciBjb2xsZWN0aWJsZSIsInN5bWJvbCI6IvCfjZMiLCJhdHRyaWJ1dGVzIjpbeyJ0cmFpdF90eXBlIjoia2luZCIsInZhbHVlIjoiNSJ9LHsidHJhaXRfdHlwZSI6ImZydWl0IiwidmFsdWUiOiJTdHJhd2JlcnJ5In1dfQ=="
+    },
+    {
+      "kind": 6,
+      "tokenId": "11",
+      "metadata": {
+        "name": "Three Shape Pear #11",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍐",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "6"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Pear"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgUGVhciAjMTEiLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn42QIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjYifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiUGVhciJ9XX0="
+    },
+    {
+      "kind": 7,
+      "tokenId": "13",
+      "metadata": {
+        "name": "Three Shape Mango #13",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🥭",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "7"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Mango"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgTWFuZ28gIzEzIiwiZGVzY3JpcHRpb24iOiJPbi1jaGFpbiBmcnVpdCBvciBTdGFyIGNvbGxlY3RpYmxlIiwic3ltYm9sIjoi8J+lrSIsImF0dHJpYnV0ZXMiOlt7InRyYWl0X3R5cGUiOiJraW5kIiwidmFsdWUiOiI3In0seyJ0cmFpdF90eXBlIjoiZnJ1aXQiLCJ2YWx1ZSI6Ik1hbmdvIn1dfQ=="
+    },
+    {
+      "kind": 8,
+      "tokenId": "15",
+      "metadata": {
+        "name": "Three Shape Watermelon #15",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🍉",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "8"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Watermelon"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgV2F0ZXJtZWxvbiAjMTUiLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn42JIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjgifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiV2F0ZXJtZWxvbiJ9XX0="
+    },
+    {
+      "kind": 9,
+      "tokenId": "49",
+      "metadata": {
+        "name": "Three Shape Star #49",
+        "description": "On-chain fruit or Star collectible",
+        "symbol": "🌟",
+        "attributes": [
+          {
+            "trait_type": "kind",
+            "value": "9"
+          },
+          {
+            "trait_type": "fruit",
+            "value": "Star"
+          }
+        ]
+      },
+      "uri": "data:application/json;base64,eyJuYW1lIjoiVGhyZWUgU2hhcGUgU3RhciAjNDkiLCJkZXNjcmlwdGlvbiI6Ik9uLWNoYWluIGZydWl0IG9yIFN0YXIgY29sbGVjdGlibGUiLCJzeW1ib2wiOiLwn4yfIiwiYXR0cmlidXRlcyI6W3sidHJhaXRfdHlwZSI6ImtpbmQiLCJ2YWx1ZSI6IjkifSx7InRyYWl0X3R5cGUiOiJmcnVpdCIsInZhbHVlIjoiU3RhciJ9XX0="
+    }
+  ],
+  "provenance": "actual on-chain tokenURI reads during public test before burns"
+}

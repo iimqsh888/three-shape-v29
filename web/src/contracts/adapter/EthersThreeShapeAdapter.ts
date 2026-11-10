@@ -4,8 +4,8 @@ import type {ThreeShapeAdapter,GameState,NFTCollection,RewardState,PlayPreview,S
 
 export interface NativeDeployment {
  chainId:number; deploymentBlock:number; rpc:string;
- contracts:{game:string;nft:string;token:string;liquidity:string;testIdentityRegistry?:string};
- abi:{game:InterfaceAbi;nft:InterfaceAbi;token:InterfaceAbi;liquidity:InterfaceAbi;registry:InterfaceAbi};
+ contracts:{game:string;nft:string;token:string;liquidity:string;reserve?:string;testIdentityRegistry?:string};
+ abi:{game:InterfaceAbi;nft:InterfaceAbi;token:InterfaceAbi;liquidity:InterfaceAbi;registry:InterfaceAbi;reserve?:InterfaceAbi};
  catalog:{kind:number;metadata:Record<string,unknown>}[];
 }
 type Snapshot={game:GameState;collection:NFTCollection;reward:RewardState;balance:bigint;blockNumber:number};
@@ -35,12 +35,28 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
  private results=new Map<string,string[]>();
  private activeAddress:string|null=null;
  resolveRecipient?:ThreeShapeAdapter['resolveRecipient'];
+ getReserveState?:ThreeShapeAdapter['getReserveState'];
+ settleReserve?:ThreeShapeAdapter['settleReserve'];
  constructor(config:NativeDeployment,provider:AbstractProvider,getSigner:()=>Promise<Signer>,resolver?:ThreeShapeAdapter['resolveRecipient']){
   if(!Number.isInteger(config.chainId)||config.deploymentBlock<1)throw new Error('Missing deployed network configuration');
   this.config=config;this.provider=provider;this.signer=getSigner;this.resolveRecipient=resolver;
   this.pendingScope=`${config.chainId}:${config.contracts.game.toLowerCase()}`;
   this.game=new Contract(config.contracts.game,config.abi.game,provider);this.nft=new Contract(config.contracts.nft,config.abi.nft,provider);this.token=new Contract(config.contracts.token,config.abi.token,provider);this.lp=new Interface(config.abi.liquidity);
   if(config.catalog.length!==9||new Set(config.catalog.map(x=>x.kind)).size!==9)throw new Error('Nine chain-metadata catalog types are required');
+  if(config.contracts.reserve&&config.abi.reserve){
+   const reserve=new Contract(config.contracts.reserve,config.abi.reserve,provider);
+   this.getReserveState=async()=>{
+    await this.chain();const blockNumber=await provider.getBlockNumber();
+    const [closed,balance,treasury]=await Promise.all([this.game.starSalesClosed({blockTag:blockNumber}),provider.getBalance(reserve.target as string,blockNumber),reserve.treasury({blockTag:blockNumber})]);
+    return {address:reserve.target as string,treasury,balance,starSalesClosed:Boolean(closed),canSettle:Boolean(closed)&&balance>0n,blockNumber};
+   };
+   this.settleReserve=async()=>{
+    const expected=this.activeAddress;let signer:Signer;
+    try{if(!expected)throw new Error('Connect the current wallet before submitting');signer=await this.wallet();if(!same(await signer.getAddress(),expected))throw new Error('Wallet changed; prepare again');await reserve.connect(signer).getFunction('settleToTreasury').staticCall();}
+    catch(e){throw Object.assign(new Error((e as Error).message),{broadcast:false});}
+    return this.wrap(await reserve.connect(signer).getFunction('settleToTreasury')());
+   };
+  }
  }
  private async chain(){if((await this.provider.getNetwork()).chainId!==BigInt(this.config.chainId))throw new Error('Wrong chain; connect to the configured network');}
  private async wallet(){await this.chain();const signer=await this.signer();if(!signer.provider||(await signer.provider.getNetwork()).chainId!==BigInt(this.config.chainId))throw new Error('Wallet network changed');return signer;}
@@ -178,6 +194,6 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
  };
  recoverPending=async(address:string,hash?:string):Promise<TransactionResult|null>=>{
   await this.chain();if(!hash)return null;const tx=await this.provider.getTransaction(hash);if(!tx)return null;
-  if(!same(tx.from,address)||![this.game.target as string,this.nft.target as string].some(to=>same(to,tx.to??'')))throw new Error('Pending transaction does not belong to this deployment and wallet');return this.wrap(tx);
+  if(!same(tx.from,address)||![this.game.target as string,this.nft.target as string,...(this.config.contracts.reserve&&this.config.abi.reserve?[this.config.contracts.reserve]:[])].some(to=>same(to,tx.to??'')))throw new Error('Pending transaction does not belong to this deployment and wallet');return this.wrap(tx);
  };
 }

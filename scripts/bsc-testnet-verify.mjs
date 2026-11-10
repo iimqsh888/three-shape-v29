@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {Contract,keccak256} from 'ethers';
 import {testnetProvider,requireTestnet} from './lib/bsc-testnet-rpc.mjs';
 
-const dir='deployments/bsc-testnet-bnb';
+const dir=process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-settlement';
 const d=JSON.parse(fs.readFileSync(`${dir}/deployment.json`));
 const provider=testnetProvider();await requireTestnet(provider);
 const report={chainId:97,checkedAt:new Date().toISOString(),checks:[]};
@@ -21,6 +21,11 @@ try{
  assert.equal((await game.registry()).toLowerCase(),d.contracts.testIdentityRegistry.toLowerCase());assert.equal((await game.treasury()).toLowerCase(),d.treasury.toLowerCase());
  const liquidity=new Contract(d.contracts.liquidity,JSON.parse(fs.readFileSync('artifacts/ThreeShapeLiquidityV29.json')).abi,provider);
  for(const [method,value]of [['token',d.contracts.token],['game',d.contracts.game],['reserve',d.contracts.reserve],['router',d.router],['pair',d.contracts.pair],['wbnb',d.wbnb]])assert.equal((await liquidity[method]()).toLowerCase(),value.toLowerCase());
+ const reserve=new Contract(d.contracts.reserve,JSON.parse(fs.readFileSync('artifacts/ThreeShapeReserveV29.json')).abi,provider);
+ for(const [method,value]of [['game',d.contracts.game],['liquidity',d.contracts.liquidity],['treasury',d.treasury]])assert.equal((await reserve[method]()).toLowerCase(),value.toLowerCase());
+ assert.equal(await game.starSalesClosed(),false);
+ await assert.rejects(reserve.settleToTreasury.staticCall(),/Star sales not closed/);
+ report.settlementBinding={immutableLinksVerified:true,closed:false,prematureSettlementRejected:true};
  report.status='passed';
 }catch(e){report.status='failed';report.error=e.message;process.exitCode=1;}
 finally{fs.writeFileSync(`${dir}/bytecode-verification.json`,JSON.stringify(report,null,2)+'\n');provider.destroy();console.log(JSON.stringify(report,null,2));}

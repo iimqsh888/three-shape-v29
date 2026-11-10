@@ -1,6 +1,6 @@
 # Reserve 售罄结算验证
 
-结论：源码已增加固定 T 的售罄结算，编译和本地 EVM 回归通过；新版尚未重新部署。现有公开测试网地址与已发布卡片仍是上一部署，不能调用新增结算入口。
+更新结论：新版已重新部署，公开测试网玩家／Adapter 接口与隔离 Fork 售罄结算均已通过。当前 Game 为 0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7，Reserve 为 0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c。详见 SETTLEMENT_PUBLIC_TESTNET.zh-CN.md。以下保留本次新增结算的本地回归记录。
 
 ## 行为
 

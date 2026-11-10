@@ -2,8 +2,10 @@
   "contractName": "ThreeShapeReserveV29",
   "sourceSha256": "2cf001210968b10baa7318643574a8b75ca948905196e9131382ef7d1fde9cb6",
   "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
-  "deploymentStatus": "not-deployed-settlement-source",
-  "addresses": {},
+  "deploymentStatus": "deployed-bsc-testnet-97",
+  "addresses": {
+    "97": "0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c"
+  },
   "abi": [
     {
       "inputs": [

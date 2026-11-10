@@ -1,0 +1,23 @@
+{
+  "chainId": 97,
+  "forkBlock": 141893331,
+  "mode": "isolated Ganache fork of public BSC testnet; terminal state and fault injection are LOCAL ONLY",
+  "publicTransactionsSent": 0,
+  "canonicalGame": "0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7",
+  "checks": [
+    {
+      "name": "actual deployed code: final real-router LP precedes permissionless Treasury settlement",
+      "status": "passed"
+    },
+    {
+      "name": "local Pair fault: final purchase survives LP failure and retained BNB settles",
+      "status": "passed"
+    },
+    {
+      "name": "local Treasury refusal preserves final sale and funds, then retry succeeds",
+      "status": "passed"
+    }
+  ],
+  "status": "failed",
+  "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '0x19a00449a5af7A51279b401dfE3BF92CB90a2751'\n- '0x19a00449a5af7a51279b401dfe3bf92cb90a2751'\n"
+}

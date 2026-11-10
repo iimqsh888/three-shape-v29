@@ -9,6 +9,7 @@ export interface TransactionReceipt {success:boolean;message?:string;liquidity?:
 export interface TransactionResult {hash?:string;wait(confirmations:number):Promise<TransactionReceipt>}
 export interface PlayPreview {kind:'free'|'burn';tokenIds:string[];warning:string;address:string}
 export interface WalletSession {address:string|null;chainId:string}
+export interface ReserveState {address:string;treasury:string;balance:bigint;starSalesClosed:boolean;canSettle:boolean;blockNumber:number}
 export interface StarQuote {quantity:number;payment:bigint;address:string}
 export interface ThreeShapeAdapter {
  readonly readiness?:'ready'|'unconfigured';
@@ -32,4 +33,7 @@ export interface ThreeShapeAdapter {
  disconnect?():Promise<void>;
  /** Null means unresolved, never proof that an earlier submission can be discarded. */
  recoverPending?(address:string,hash?:string):Promise<TransactionResult|null>;
+ /** Maintenance only, separate from player actions; user confirmation still required. */
+ getReserveState?():Promise<ReserveState>;
+ settleReserve?():Promise<TransactionResult>;
 }

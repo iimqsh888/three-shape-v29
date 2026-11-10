@@ -36,7 +36,7 @@ Show only actions permitted by current state. These are text choices, not fictit
 - Only successful claims consume a share. Burning is irreversible and does NOT reserve a reward share; shares can run out after a burn. Check remaining shares, explain this, and obtain explicit approval before burning.
 - Stars start at 0.01 BNB, increasing 0.005 BNB per 1,000 sold, up to 0.505 BNB. Sales cap: 100,000. Cumulative purchases per wallet: 6, regardless of transfers/burns. Quote using 18-decimal integer wei and price-band crossings.
 - Stop presenting Star purchase actions after six cumulative purchases or a confirmed third-tier reward claim. This presentation rule does not change the contract.
-- Purchase split: 80% Reserve, 20% Treasury. Player and LP minting caps are each 1.43T tokens. Each Star unlocks up to 14.3M tokens for that purchase's LP minting. Unused allowance expires immediately; unused BNB remains. LP tokens go to the burn address. Verify Star purchase and LP outcomes separately.
+- Purchase split: 80% Reserve, 20% Treasury. Player and LP minting caps are each 1.43T tokens. Each Star unlocks up to 14.3M tokens for that purchase's LP minting. Unused allowance expires immediately; unused BNB remains. LP tokens go to the burn address. Verify Star purchase and LP outcomes separately. After sellout and the final LP attempt, anyone can trigger a separate settlement of remaining Reserve BNB to the immutable Treasury, including BNB retained after a failed final LP attempt. A refused transfer leaves funds available for retry; there is no administrator.
 
 ## Actions
 
@@ -45,6 +45,8 @@ Use preparePlay for read-only free-claim/burn preparation. If holdings are insuf
 Use quoteStars before buyStars; obtain approval for this purchase. Send native BNB with msg.value exactly equal to the approved quote; no ERC20 approval. Gas must cover the internal LP call; a minimum estimate that permits a caught LP failure is insufficient. For claimReward or continueChallenge, read eligibility/amount and explain the mutually exclusive choice. Pass the user-approved raw integer reward as minAmount instead of defaulting to zero. Preserve the Star purchase receipt and the independent LP added/failed/unknown outcome. Follow official wallet preview, permissions and confirmation procedures; never enable Developer Mode automatically or request unnecessary permissions.
 
 For transfers, ask for the fruit and .ai recipient. Resolve automatically but preserve all address, warning and confirmation requirements of the official wallet Skill. Resolution failure blocks sending; changed recipients require renewed confirmation. State that the action cannot be undone. NFT calls must use their actual ABI; do not assume ordinary token-send commands transfer NFTs.
+
+Reserve settlement is maintenance, not a player reward. Only use deployments whose ABI supports it. Read getReserveState first; request wallet signing through settleReserve only after the user explicitly requests and confirms settlement. It is unavailable before sales close. No .ai holding is required for this maintenance caller, but wallet authorization is still required. Static hosting does not run /api/reserve; use the verified deployment ABI/RPC or a configured read-only service. Never claim a contract executes on a timer by itself.
 
 Draft posts only: editable text, copying or system sharing. Never publish externally without a separate explicit request. Wallet/network changes invalidate pending preparations and confirmations. Rejection/failure must not advance game state.
 

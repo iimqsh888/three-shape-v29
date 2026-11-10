@@ -1,0 +1,14 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+PASS actual deployed code: final real-router LP precedes permissionless Treasury settlement
+PASS local Pair fault: final purchase survives LP failure and retained BNB settles
+PASS local Treasury refusal preserves final sale and funds, then retry succeeds
+PASS maintenance Adapter reads, signs, confirms and recovers a Reserve settlement
+REPORT passed 4 checks

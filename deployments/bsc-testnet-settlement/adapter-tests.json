@@ -1,0 +1,83 @@
+{
+  "chainId": 97,
+  "status": "passed",
+  "signer": "isolated test wallet supplied through Signer interface; NOT official Agentic Wallet",
+  "player": "0xb8b5187c15ABc0f3C30AC0032580CA2227eA4349",
+  "checks": [
+    {
+      "name": "settled tier and collection survive a fresh adapter instance",
+      "status": "passed"
+    },
+    {
+      "name": "adapter connects and prepares without submitting a transaction",
+      "status": "passed"
+    },
+    {
+      "name": "Reserve maintenance interface reads immutable Treasury and rejects premature settlement without broadcast",
+      "status": "passed"
+    },
+    {
+      "name": "wallet changes invalidate a prepared action before broadcast",
+      "status": "passed"
+    },
+    {
+      "name": "confirmed free claim and metadata produce three actual Emoji",
+      "status": "passed"
+    },
+    {
+      "name": "native quote, wallet signing and separate LP receipt",
+      "status": "passed"
+    },
+    {
+      "name": "burn preview is not a transaction; confirmed burn opens the reward choice",
+      "status": "passed"
+    },
+    {
+      "name": "claim preserves the approved raw minimum; fresh adapter restores authoritative progress",
+      "status": "passed"
+    },
+    {
+      "name": "current global state remains authoritative after adapter transactions",
+      "status": "passed"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "fund isolated adapter test wallet",
+      "hash": "0xafca7fc32fe2cc6bd34d5443c7f298fab48145b2e907330c8f49893e1c264973",
+      "status": "confirmed"
+    },
+    {
+      "name": "isolated test identity",
+      "hash": "0x36c2a3a3a6994cc1e4c9bef99d690dd2fe0e0e245317104bd016f5196a521f5a",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter free claim",
+      "hash": "0xa6716263321c8337a62f9ee63ea67d3565ed5f4bcc52d52fc2814ef2b5603927",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter buy one Star",
+      "hash": "0x319d6d31425ad96e884b0785d1771faedfd7fa7401c48c876ab69970618420df",
+      "status": "confirmed",
+      "liquidity": "added"
+    },
+    {
+      "name": "adapter tier one burn",
+      "hash": "0x4c55344a98e6991dde1735548e20e804fd55cdd2913c70fb6533cbf18081e71e",
+      "status": "confirmed"
+    },
+    {
+      "name": "adapter tier one reward",
+      "hash": "0xfb5fa44a62dd1de5a93f5c2f681c05acd6d8d2cd524c64e5ae9a3bfd5e2a5e58",
+      "status": "confirmed"
+    }
+  ],
+  "latestState": {
+    "totalClaims": "4",
+    "remainingShares": "54996",
+    "starsSold": "8"
+  },
+  "completedAt": "2026-11-10T09:33:31.829Z"
+}

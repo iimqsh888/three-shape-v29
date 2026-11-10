@@ -32,7 +32,7 @@ Reserve 的资金提供和结算入口均有重入保护。关闭标记晚于支
 
 Reserve 构造参数更新为 `(game, liquidity, treasury)`，部署工厂同步绑定预测 Game / LP 地址和同一个固定 T。部署工厂对外 deploy 参数不变。
 
-已发布的 BNB 测试网合约不可升级，**不具备本新增入口**；现有网站和测试网地址仍对应上一部署。本版本需要新部署并验证后再切换真实网络 ABI／地址，不覆盖历史回执或伪装旧地址支持结算。
+旧 BNB 测试网合约不可升级，不具备新增入口。当前新版 Game 为 0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7，Reserve 为 0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c。已切换当前网络配置并保留旧地址及回执。
 
 ```sh
 npm run test:settlement
@@ -40,4 +40,4 @@ npm run test:settlement
 THREE_SHAPE_DEPLOYMENT_DIR=deployments/bsc-testnet-settlement npm run deploy:testnet
 ```
 
-当前仅新增本地 Ganache 边界场景，不声称在公开测试网真实卖出十万枚 Star。末笔边界使用 compiler storageLayout 定位的本地状态夹具；实际支付、LP、回调、结算与回滚均通过真实 EVM 执行。
+本地边界与已部署代码的隔离 BSC 测试网 Fork 均已验证；公开测试网另行验证未售罄的禁止结算及玩家交互，不声称在公开测试网真实卖出十万枚 Star。末笔边界使用 compiler storageLayout 定位的本地状态夹具；实际支付、LP、回调、结算与回滚均通过真实 EVM 执行。

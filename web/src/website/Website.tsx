@@ -2,7 +2,7 @@ import {useEffect,useMemo,useState} from 'react';
 import {ThreeShapeCard} from '../components/ThreeShapeCard';
 import {ContractAdapter} from '../contracts/adapter/ContractAdapter';
 import {InjectedWalletAdapter} from '../contracts/adapter/InjectedWalletAdapter';
-import testnet from '../contracts/config/bsc-testnet-bnb.json';
+import testnet from '../contracts/config/bsc-testnet-settlement.json';
 import {AgentStart} from './AgentStart';
 import {LanguageContext,type Language} from '../i18n';
 export function Website(){

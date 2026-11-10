@@ -18,7 +18,9 @@
     "test:testnet": "node scripts/bsc-testnet-test.mjs",
     "test:adapter:testnet": "node scripts/bsc-testnet-adapter-test.mjs",
     "serve:testnet": "node server/testnet.mjs",
-    "test:settlement": "npm run compile && node --test --test-isolation=none test/settlement.integration.test.mjs"
+    "test:settlement": "npm run compile && node --test --test-isolation=none test/settlement.integration.test.mjs",
+    "test:fork:testnet": "node scripts/test-settlement-testnet-fork.mjs",
+    "test:api:testnet": "THREE_SHAPE_CONFIG=web/src/contracts/config/bsc-testnet-settlement.json node --test test/testnet-api.integration.test.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",

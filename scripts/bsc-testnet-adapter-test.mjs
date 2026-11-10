@@ -4,10 +4,11 @@ import {Wallet,Contract,keccak256,concat,toUtf8Bytes} from 'ethers';
 import {testnetProvider,requireTestnet,READ_RPC} from './lib/bsc-testnet-rpc.mjs';
 import {EthersThreeShapeAdapter} from '../web/src/contracts/adapter/EthersThreeShapeAdapter.ts';
 
-const file='deployments/bsc-testnet-bnb/adapter-tests.json';
+const deploymentDirectory=process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-settlement';
+const file=`${deploymentDirectory}/adapter-tests.json`;
 const resume=process.argv.includes('--resume');
 if(fs.existsSync(file)&&!resume)throw new Error('Adapter scenario already started; inspect recorded transactions before continuing');
-const config=JSON.parse(fs.readFileSync('web/src/contracts/config/bsc-testnet-bnb.json'));
+const config=JSON.parse(fs.readFileSync(process.env.THREE_SHAPE_CONFIG??'web/src/contracts/config/bsc-testnet-settlement.json'));
 const provider=testnetProvider(READ_RPC);await requireTestnet(provider);
 const root=(await Wallet.fromEncryptedJson(fs.readFileSync('/workspace/.secrets/three-shape-bsc-testnet/wallet.keystore.json','utf8'),fs.readFileSync('/workspace/.secrets/three-shape-bsc-testnet/wallet.password','utf8').trim())).connect(provider);
 const player=new Wallet(keccak256(concat([root.privateKey,toUtf8Bytes('three-shape-testnet-scenario-16')]))).connect(provider);
@@ -15,6 +16,7 @@ let signer=player;
 const adapter=new EthersThreeShapeAdapter(config,provider,async()=>signer);
 const game=new Contract(config.contracts.game,config.abi.game,provider),registry=new Contract(config.contracts.testIdentityRegistry,config.abi.registry.concat(['function setBalance(address,uint256)']),root);
 const report=resume?JSON.parse(fs.readFileSync(file)):{chainId:97,status:'running',signer:'isolated test wallet supplied through Signer interface; NOT official Agentic Wallet',player:player.address,checks:[],transactions:[]};
+if(resume&&report.status==='passed')throw new Error('Completed adapter scenario cannot be replayed');
 if(resume){report.previousFailure={error:report.error,completedAt:report.completedAt};delete report.error;report.status='running';}
 const save=()=>fs.writeFileSync(file,JSON.stringify(report,null,2)+'\n');save();
 async function check(name,fn){if(report.checks.some(x=>x.name===name))return;await fn();report.checks.push({name,status:'passed'});save();console.log('PASS',name);}
@@ -29,6 +31,7 @@ try{
  const issue=await registry.setBalance(player.address,1);await issue.wait(2);report.transactions.push({name:'isolated test identity',hash:issue.hash,status:'confirmed'});save();
  }else{const donor=new Wallet(keccak256(concat([root.privateKey,toUtf8Bytes('three-shape-testnet-scenario-3')]))).connect(provider);const gift=await donor.sendTransaction({to:player.address,value:500_000_000_000_000n});await gift.wait(2);const topup=await root.sendTransaction({to:player.address,value:9_500_000_000_000_000n});await topup.wait(2);report.transactions.push({name:'gas-fix retest funding from isolated test wallets',hash:topup.hash,status:'confirmed'});save();}
  await check('adapter connects and prepares without submitting a transaction',async()=>{assert.equal(await adapter.connectWallet(),player.address);const nonce=await provider.getTransactionCount(player.address);assert.equal((await adapter.preparePlay(player.address)).kind,'free');assert.equal(await provider.getTransactionCount(player.address),nonce);});
+ if(config.abi.reserve)await check('Reserve maintenance interface reads immutable Treasury and rejects premature settlement without broadcast',async()=>{const state=await adapter.getReserveState();assert.equal(state.treasury.toLowerCase(),config.treasury.toLowerCase());assert.equal(state.starSalesClosed,false);assert.equal(state.canSettle,false);const before=await provider.getTransactionCount(player.address);await assert.rejects(adapter.settleReserve(),/Star sales not closed/);assert.equal(await provider.getTransactionCount(player.address),before);});
  await check('wallet changes invalidate a prepared action before broadcast',async()=>{signer=root;await assert.rejects(adapter.play(),/Wallet changed|no confirmed preparation/);signer=player;});
  await check('confirmed free claim and metadata produce three actual Emoji',async()=>{await adapter.preparePlay(player.address);await transact('adapter free claim',()=>adapter.play());const state=await adapter.getGameState(player.address);assert.equal(state.freeClaimed,true);assert.equal(state.result.length,3);});
  await check('native quote, wallet signing and separate LP receipt',async()=>{const quote=await adapter.quoteStars(player.address,1);assert.equal(quote.payment,10n**16n);const result=await transact('adapter buy one Star',()=>adapter.buyStars(quote));assert.equal(result.liquidity,'added');assert.equal((await adapter.getGameState(player.address)).starsBought,resume?2:1);});
