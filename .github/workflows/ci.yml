@@ -19,6 +19,8 @@ jobs:
         run: npm run test:evm
       - name: Contract security regressions
         run: node --test --test-isolation=none test/security.integration.test.mjs
+      - name: Reserve final settlement regressions
+        run: node --test --test-isolation=none test/settlement.integration.test.mjs
       - name: ABI and frontend rule compatibility
         run: node --test --test-isolation=none test/compatibility.integration.test.mjs
   card:

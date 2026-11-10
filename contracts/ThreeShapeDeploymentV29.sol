@@ -53,7 +53,7 @@ contract ThreeShapeDeploymentV29 {
         deployed=true;
         _create(codebook.token(),abi.encode(predicted(4),predicted(5)),predicted(1));
         _create(codebook.nft(),abi.encode(predicted(4)),predicted(2));
-        _create(codebook.reserve(),abi.encode(predicted(5)),predicted(3));
+        _create(codebook.reserve(),abi.encode(predicted(4),predicted(5),treasury),predicted(3));
         _create(codebook.game(),abi.encode(predicted(1),predicted(2),registry,predicted(3),treasury,predicted(5)),predicted(4));
         _create(codebook.liquidity(),abi.encode(predicted(1),predicted(4),predicted(3),router,pair),predicted(5));
         emit Deployed(predicted(1),predicted(2),predicted(3),predicted(4),predicted(5));

@@ -48,3 +48,36 @@ contract ReceiverSecurityV29 is IERC721Receiver {
         return IERC721Receiver.onERC721Received.selector;
     }
 }
+
+interface ISettlementReserveSecurityV29 {
+    function settleToTreasury() external;
+}
+/// @dev Local regression fixture only; never deployed by the production factory.
+contract SettlementTreasurySecurityV29 {
+    address public reserve;
+    address public game;
+    bool public reject;
+    bool public attemptDuringPayment;
+    bool public attemptDuringSettlement;
+    uint256 public paymentSettlementAttempts;
+    uint256 public earlySettlementSuccesses;
+    uint256 public reentrantSuccesses;
+    uint256 public received;
+    function configure(address reserve_,address game_) external {reserve=reserve_;game=game_;}
+    function setModes(bool reject_,bool payment_,bool settlement_) external {
+        reject=reject_;attemptDuringPayment=payment_;attemptDuringSettlement=settlement_;
+    }
+    receive() external payable {
+        require(!reject,"Treasury refused");received+=msg.value;
+        if(attemptDuringPayment && msg.sender==game){
+            paymentSettlementAttempts++;
+            (bool success,)=reserve.call(abi.encodeCall(ISettlementReserveSecurityV29.settleToTreasury,()));
+            if(success)earlySettlementSuccesses++;
+        }
+        if(attemptDuringSettlement && msg.sender==reserve){
+            (bool success,)=reserve.call(abi.encodeCall(ISettlementReserveSecurityV29.settleToTreasury,()));
+            if(success)reentrantSuccesses++;
+        }
+    }
+}
+

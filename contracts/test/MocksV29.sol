@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+interface IClosedSaleTestV29 {function starSalesClosed() external view returns(bool);}
 contract MockWBNB is ERC20 {
     constructor() ERC20("Test Wrapped BNB","WBNB") {}
     receive() external payable {deposit();}
@@ -39,10 +40,14 @@ contract MockRouter {
     address public immutable factory;
     address public immutable WETH;
     MockPair public immutable pair;
+    address public inspectedGame;
+    bool public closedDuringAdd;
+    function setGameToInspect(address value) external {inspectedGame=value;}
     constructor(address f,address p,address w){factory=f;pair=MockPair(p);WETH=w;}
     function addLiquidityETH(address a,uint256 x,uint256 minX,uint256 minY,address to,uint256)
       external payable returns(uint256,uint256,uint256){
         require(to==0x000000000000000000000000000000000000dEaD,"not burned");
+        if(inspectedGame!=address(0))closedDuringAdd=IClosedSaleTestV29(inspectedGame).starSalesClosed();
         require(x>=minX&&msg.value>=minY,"minimum");
         IERC20(a).transferFrom(msg.sender,address(pair),x);
         MockWBNB(payable(WETH)).deposit{value:msg.value}();

@@ -1,0 +1,40 @@
+{
+  "sourceSha256": "2cf001210968b10baa7318643574a8b75ca948905196e9131382ef7d1fde9cb6",
+  "deploymentStatus": "source-modified-not-redeployed",
+  "treasury": "0x19a00449a5af7a51279b401dfe3bf92cb90a2751",
+  "semantics": {
+    "duringSale": "20% Treasury, 80% Reserve for liquidity",
+    "settlement": "permissionless separate transaction after the final Star purchase LP attempt",
+    "finalLPFailure": "remaining BNB still settles to Treasury; no expired LP budget revival",
+    "transferFailure": "revert only settlement and preserve funds for retry",
+    "recipient": "immutable Treasury; caller cannot choose recipient or amount",
+    "adminRequired": false,
+    "oldLiveDeploymentSupportsSettlement": false
+  },
+  "checks": {
+    "compile": "passed",
+    "compilerWarnings": 1,
+    "settlementEVM": {
+      "passed": 7,
+      "failed": 0
+    },
+    "existingEVMAndSecurityAndCompatibility": {
+      "passed": 18,
+      "failed": 0
+    },
+    "basicUnitAndHTTP": {
+      "passed": 27,
+      "failed": 0
+    },
+    "newABIMap": {
+      "passed": 1,
+      "failed": 0
+    },
+    "typescript": "passed"
+  },
+  "limitations": [
+    "Final-sale boundary uses local Ganache storage fixtures, not 100,000 public testnet sales",
+    "New version not deployed to public testnet or mainnet",
+    "Published card and configured network ABI still target the previous deployment"
+  ]
+}

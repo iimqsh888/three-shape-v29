@@ -56,16 +56,34 @@ contract ThreeShapeNFTV29 is ERC721 {
         _burn(id);delete kind[id];
     }
 }
-contract ThreeShapeReserveV29 {
+interface IGameReserveV29 {
+    function starSalesClosed() external view returns(bool);
+}
+contract ThreeShapeReserveV29 is ReentrancyGuard {
+    address public immutable game;
     address public immutable liquidity;
-    constructor(address liquidity_) {
-        require(liquidity_!=address(0),"zero");liquidity=liquidity_;
+    address public immutable treasury;
+    event TreasurySettled(address indexed caller,address indexed treasury,uint256 amount);
+    constructor(address game_,address liquidity_,address treasury_) {
+        require(game_!=address(0)&&liquidity_!=address(0)&&treasury_!=address(0),"zero");
+        game=game_;liquidity=liquidity_;treasury=treasury_;
     }
     receive() external payable {}
-    function provide(uint256 amount) external {
+    function provide(uint256 amount) external nonReentrant {
         require(msg.sender==liquidity,"not liquidity");
         (bool ok,)=payable(liquidity).call{value:amount}("");
         require(ok,"BNB reserve transfer failed");
+    }
+    /// @notice Permissionless final settlement to the immutable Treasury only.
+    /// Sales close after the last purchase's LP attempt, even if that attempt fails.
+    /// A failed Treasury transfer reverts, preserving funds for a later retry.
+    function settleToTreasury() external nonReentrant {
+        require(IGameReserveV29(game).starSalesClosed(),"Star sales not closed");
+        uint256 amount=address(this).balance;
+        require(amount>0,"no BNB to settle");
+        (bool ok,)=payable(treasury).call{value:amount}("");
+        require(ok,"BNB Treasury settlement failed");
+        emit TreasurySettled(msg.sender,treasury,amount);
     }
 }
 contract ThreeShapeGameV29 is ReentrancyGuard {
@@ -81,6 +99,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     address public immutable liquidity;
     uint256 public totalClaims;
     uint256 public starsSold;
+    bool public starSalesClosed;
     uint256 public lpBudgetExpired;
     uint256 public nextFreeIndex;
     mapping(address=>bool) public freeClaimed;
@@ -91,6 +110,7 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     event Claimed(address indexed player,uint8 tier,uint8 stage,uint256 amount);
     event StarsPurchased(address indexed player,uint256 count,uint256 paid);
     event LPAttemptFailed();
+    event StarSalesClosed();
     constructor(address token_,address nft_,address registry_,address reserve_,address treasury_,address liquidity_) {
         require(token_!=address(0)&&nft_!=address(0)&&registry_!=address(0)&&reserve_!=address(0)&&treasury_!=address(0)&&liquidity_!=address(0),"zero");
         token=ThreeShapeTokenV29(token_);nft=ThreeShapeNFTV29(nft_);
@@ -200,6 +220,9 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
         // The full batch budget expires whether LP addition succeeds or fails.
         lpBudgetExpired+=batchBudget;
         try ILPManagerV29(liquidity).attempt(batchBudget) {} catch {emit LPAttemptFailed();}
+        // Do not expose settlement during the final payment/NFT/LP callbacks.
+        // Settlement is separate so a refusing Treasury cannot undo a sold NFT.
+        if(starsSold==MAX_STARS){starSalesClosed=true;emit StarSalesClosed();}
     }
 }
 

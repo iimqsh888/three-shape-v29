@@ -15,7 +15,8 @@
         "starsSold()",
         "starsBought(address)",
         "quoteStars(uint256)",
-        "canBurn(address,uint256[])"
+        "canBurn(address,uint256[])",
+        "starSalesClosed()"
       ],
       "writes": [
         "claimFree()",
@@ -28,7 +29,8 @@
         "Matched(address,uint8)",
         "Claimed(address,uint8,uint8,uint256)",
         "StarsPurchased(address,uint256,uint256)",
-        "LPAttemptFailed()"
+        "LPAttemptFailed()",
+        "StarSalesClosed()"
       ]
     },
     "NFT": {
@@ -78,6 +80,21 @@
       "writes": [],
       "events": [
         "Added(uint256,uint256,uint256)"
+      ]
+    },
+    "Reserve": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeReserveV29",
+      "reads": [
+        "game()",
+        "liquidity()",
+        "treasury()"
+      ],
+      "writes": [
+        "settleToTreasury()"
+      ],
+      "events": [
+        "TreasurySettled(address,address,uint256)"
       ]
     }
   },
@@ -129,6 +146,7 @@
   },
   "notes": {
     "resultRecovery": "No random Result event. Mint results use confirmed NFT Transfer and chain JSON. Burn results require confirmed calldata/burn logs plus pre-burn chain metadata or history because kind/tokenURI are removed.",
-    "quotes": "quoteStars(quantity) has no wallet parameter. Wallet quota and identity eligibility require separate authoritative reads."
+    "quotes": "quoteStars(quantity) has no wallet parameter. Wallet quota and identity eligibility require separate authoritative reads.",
+    "reserveSettlement": "Current source adds permissionless settlement to immutable Treasury after final Star LP attempt. Existing bsc-testnet-bnb deployment predates this change and does not support it; no settlement card action is enabled."
   }
 }

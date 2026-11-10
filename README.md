@@ -4,6 +4,12 @@
 
 Star 起价 **0.01 BNB**，每售出 **1,000** 枚上涨 **0.005 BNB**，最后区间 0.505 BNB。每钱包累计最多六枚，总销售十万枚。80% Reserve / 20% Treasury；LP 为 3SHAPE/WBNB。详见 [经济模型](docs/RULES_AND_ECONOMICS.zh-CN.md) 和 [BNB 迁移说明](docs/BNB_CONTRACT_MIGRATION.zh-CN.md)。
 
+## 本次源码新增：售罄结算
+
+销售期间 20% 直接进固定 T、80% 进 Reserve。最后一笔购星的 LP 尝试结束后，任何人可调用 Reserve.settleToTreasury()，将剩余原生 BNB 全部结算给固定 T；最后 LP 失败的留存余额也纳入结算。T 拒收会回滚本次结算，资金留存，可重试。无需管理员，不支持改收款地址或指定提款金额。详见 [结算规则与验证](docs/RESERVE_FINAL_SETTLEMENT.zh-CN.md)。
+
+**以下测试网地址和已发布卡片属于上一部署，不具备本次新增结算入口。** 新源码编译及本地边界测试通过后，仍需重新部署并验证，不能把旧部署测试报告当作新版链上验证。
+
 ## BSC 测试网
 
 Chain ID **97**，仅使用测试 BNB；主网未部署。
@@ -29,6 +35,7 @@ npm --prefix web ci
 npm run compile
 npm run test:evm
 npm run test:security
+npm run test:settlement
 npm run test:compatibility
 npm test
 npm run test:card

@@ -6,14 +6,14 @@ const output=JSON.parse(fs.readFileSync('artifacts/compiler-output.json','utf8')
 const source='contracts/ThreeShapeV29.sol';
 const artifact=(file,name)=>output.contracts[file][name];
 const UNIT=10n**18n;
-async function fixture(accounts=12,{registryFile='contracts/test/MocksV29.sol',registryName='MockRegistry',treasuryName=null}={}){
+async function fixture(accounts=12,{registryFile='contracts/test/MocksV29.sol',registryName='MockRegistry',treasuryName=null,treasuryFile='contracts/test/MocksV29.sol'}={}){
  const engine=ganache.provider({logging:{quiet:true},wallet:{totalAccounts:accounts},miner:{blockGasLimit:60000000}});
  const provider=new ethers.BrowserProvider(engine,'any',{cacheTimeout:-1});provider.pollingInterval=10;
  const signer=await provider.getSigner(),address=await signer.getAddress();
  async function deploy(file,name,args=[]){const a=artifact(file,name);const c=await new ethers.ContractFactory(a.abi,'0x'+a.evm.bytecode.object,signer).deploy(...args);await c.waitForDeployment();return c;}
  const mock='contracts/test/MocksV29.sol';
  const wbnb=await deploy(mock,'MockWBNB'),registry=await deploy(registryFile,registryName);
- const treasury=treasuryName?await (await deploy(mock,treasuryName)).getAddress():address;
+ const treasury=treasuryName?await (await deploy(treasuryFile,treasuryName)).getAddress():address;
  const factory=await deploy('contracts/ThreeShapeDeploymentV29.sol','ThreeShapeDeploymentV29');
  const pair=await deploy(mock,'MockPair',[await factory.predicted(1),await wbnb.getAddress()]);
  const amm=await deploy(mock,'MockFactory',[await pair.getAddress()]);
