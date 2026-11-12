@@ -71,7 +71,7 @@ npm run serve:testnet
 
 ## Agent 接入
 
-下载 `skills/three-shape/SKILL.md` / `SKILL.en.md`。Agent 先核对网络、依赖、规则及当前用户钱包，再按用户确认准备操作。接口为 `/api/rules`、`/api/capabilities`、`/api/deployment.json`、`/api/game?address=…`。
+下载 `skills/three-shape/SKILL.md` / `SKILL.en.md`。 中英文 Skill 包含自然语言意图转换、Emoji 状态与收藏面板、挑战补齐建议、购买／转赠／销毁／领奖确认、交易进度和恢复反馈。入口指令采用玩家口吻，可编辑自己的需求后复制；导入 Skill 不授予钱包权限。Agent 先核对网络、依赖、规则及当前用户钱包，再按用户确认准备操作。接口为 `/api/rules`、`/api/capabilities`、`/api/deployment.json`、`/api/game?address=…`。
 
 官方 Agentic Wallet 当前文档未列出 chainId 97；普通测试钱包不等于官方 Agentic Wallet。官方 .ai Registry 的主网读取与隔离 Fork 资格验证见身份验证报告；网站登录、.ai 转送解析和 AI Pro 内真实钱包执行仍待接入验收。未宣称币安已开放第三方 React 卡片渲染或 MCP 注册。
 
