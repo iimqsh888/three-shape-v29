@@ -87,6 +87,9 @@ contract ThreeShapeReserveV29 is ReentrancyGuard {
     }
 }
 contract ThreeShapeGameV29 is ReentrancyGuard {
+    // SPACE ID's official Binance Agent ID registry on BSC mainnet.
+    // Other chains may use an explicitly configured isolated test registry.
+    address public constant BSC_AGENT_ID=0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F;
     uint256 public constant MAX_CLAIMS=55_000;
     uint256 public constant MAX_STARS=100_000;
     uint256 public constant STARS_PER_PRICE_STEP=1_000;
@@ -113,6 +116,8 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     event StarSalesClosed();
     constructor(address token_,address nft_,address registry_,address reserve_,address treasury_,address liquidity_) {
         require(token_!=address(0)&&nft_!=address(0)&&registry_!=address(0)&&reserve_!=address(0)&&treasury_!=address(0)&&liquidity_!=address(0),"zero");
+        require(block.chainid!=56||registry_==BSC_AGENT_ID,"wrong BSC Agent ID registry");
+        require(registry_.code.length>0,"Agent ID registry has no code");
         token=ThreeShapeTokenV29(token_);nft=ThreeShapeNFTV29(nft_);
         registry=IAgentRegistryV29(registry_);reserve=reserve_;treasury=treasury_;liquidity=liquidity_;
     }

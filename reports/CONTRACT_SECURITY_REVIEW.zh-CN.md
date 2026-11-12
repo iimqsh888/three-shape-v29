@@ -102,3 +102,7 @@ npm run test:evm
 ## 用户后续决定
 
 用户已明确表示不因首次 LP 初始化问题进行修改。保留本报告的复现证据与技术定级，但按用户决定保留既有第一笔 Star 购星触发首次加池的逻辑；后续接口核对不再将该项作为擅自改变合约的理由。真实 ABI 与钱包接入仍需独立验收。
+
+## 2026-11-12 身份验证补充
+
+本次源码将 BSC 主网 Registry 固定到 SPACE ID 官方地址，并检查部署时存在字节码。官方文档明确 Agent ID 为 soulbound；对真实 Registry 的隔离主网 Fork 验证了身份不可转让。上述 C-01 是此前对可转让测试 Registry 的条件性分析，不代表官方 Agent ID 已复现该问题。新增验证、测试边界和部署状态见 `IDENTITY_VALIDATION.zh-CN.md` 与 `identity-mainnet-fork.json`。未改变钱包持有资格规则或经济模型。

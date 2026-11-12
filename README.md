@@ -4,11 +4,15 @@
 
 Star 起价 **0.01 BNB**，每售出 **1,000** 枚上涨 **0.005 BNB**，最后区间 0.505 BNB。每钱包累计最多六枚，总销售十万枚。80% Reserve / 20% Treasury；LP 为 3SHAPE/WBNB。详见 [经济模型](docs/RULES_AND_ECONOMICS.zh-CN.md) 和 [BNB 迁移说明](docs/BNB_CONTRACT_MIGRATION.zh-CN.md)。
 
-## 本次源码新增：售罄结算
+## 本次源码新增：主网 .ai 身份约束
+
+BSC 主网构造器仅接受官方 Registry `0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F`，并要求身份合约已部署。五个游戏写操作仍逐次检查调用钱包的 `balanceOf > 0`。无管理员替换或资格放行。详见 [.ai 身份与 Agent 接入](docs/AI_IDENTITY_AND_AGENT_UI.zh-CN.md)。本次源码尚未重新部署，以下测试网地址仍对应此前的售罄结算版本。
+
+## 售罄结算
 
 销售期间 20% 直接进固定 T、80% 进 Reserve。最后一笔购星的 LP 尝试结束后，任何人可调用 Reserve.settleToTreasury()，将剩余原生 BNB 全部结算给固定 T；最后 LP 失败的留存余额也纳入结算。T 拒收会回滚本次结算，资金留存，可重试。无需管理员，不支持改收款地址或指定提款金额。详见 [结算规则与验证](docs/RESERVE_FINAL_SETTLEMENT.zh-CN.md)。
 
-本版本已重新部署到 BSC 测试网，并验证公开接口与隔离 Fork 售罄结算。新部署记录见 deployments/bsc-testnet-settlement/；原 bsc-testnet-bnb 部署保留为历史，不支持新增结算。
+此前售罄结算版本已重新部署到 BSC 测试网，并验证公开接口与隔离 Fork 售罄结算。新部署记录见 deployments/bsc-testnet-settlement/；原 bsc-testnet-bnb 部署保留为历史，不支持新增结算。
 
 ## BSC 测试网
 
@@ -34,6 +38,8 @@ npm ci
 npm --prefix web ci
 npm run compile
 npm run test:evm
+npm run test:identity
+npm run test:identity:fork
 npm run test:security
 npm run test:settlement
 npm run test:compatibility
@@ -67,7 +73,7 @@ npm run serve:testnet
 
 下载 `skills/three-shape/SKILL.md` / `SKILL.en.md`。Agent 先核对网络、依赖、规则及当前用户钱包，再按用户确认准备操作。接口为 `/api/rules`、`/api/capabilities`、`/api/deployment.json`、`/api/game?address=…`。
 
-官方 Agentic Wallet 当前文档未列出 chainId 97；普通测试钱包不等于官方 Agentic Wallet。官方 .ai 资格、.ai 解析和 AI Pro 内真实钱包执行仍待环境支持。未宣称币安已开放第三方 React 卡片渲染或 MCP 注册。
+官方 Agentic Wallet 当前文档未列出 chainId 97；普通测试钱包不等于官方 Agentic Wallet。官方 .ai Registry 的主网读取与隔离 Fork 资格验证见身份验证报告；网站登录、.ai 转送解析和 AI Pro 内真实钱包执行仍待接入验收。未宣称币安已开放第三方 React 卡片渲染或 MCP 注册。
 
 新增维护接口 getReserveState / settleReserve 与只读 /api/reserve；结算需单独钱包签名，没有新增卡片管理员按钮。
 

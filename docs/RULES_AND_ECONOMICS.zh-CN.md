@@ -45,7 +45,7 @@ Three Shape 是嵌在 Agent 对话消息中的交互游戏卡片。用户在同�
 | 8 | 🍉 | Watermelon / 西瓜 |
 | 9 | 🌟 | Star / 星星 |
 
-免费领取要求：奖励份额尚未耗尽、该钱包从未免费领取、指定 .ai Agent ID NFT 的 balanceOf(wallet)>0。无需另部署 Registry 适配合约，当前源码中 registry 变量直接指向该 NFT 合约。
+免费领取要求：奖励份额尚未耗尽、该钱包从未免费领取、指定 .ai Agent ID NFT 的 balanceOf(wallet)>0。无需另部署 Registry 适配合约，当前源码中 registry 变量直接指向该 NFT 合约。 BSC 主网部署仅允许官方 Registry `0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F`，构造器还会检查其字节码；隔离测试网络使用显式配置的测试夹具。
 
 每钱包免费领取一次，每次 3 枚普通水果 NFT。免费领取不收 BNB，但仍需链上 gas。星星不由这个入口发放。
 

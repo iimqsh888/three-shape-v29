@@ -1,0 +1,40 @@
+{
+  "mode": "local Ganache fork of BSC mainnet; real official registry state; impersonation only on local chain",
+  "publicTransactionsSent": 0,
+  "registry": "0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F",
+  "holder": "0xA506ac7069937571DC56C5f8FDa53c4A729456c6",
+  "sourceSha256": "93b2c91b43bc383ec0feaeec2a5d2b1338c61b34b04746efc766611b2640816d",
+  "checks": [
+    {
+      "name": "official registry bytecode, collection, holder balance and bidirectional handle match",
+      "status": "passed"
+    },
+    {
+      "name": "one-shot deployment rejects a fake registry atomically on chain 56",
+      "status": "passed"
+    },
+    {
+      "name": "a wallet with no real Agent ID cannot perform any of the five game writes",
+      "status": "passed"
+    },
+    {
+      "name": "real ID holder can claim fruit, buy Star and complete the first match on the local fork",
+      "status": "passed"
+    },
+    {
+      "name": "real ID holder can claim the authoritative reward",
+      "status": "passed"
+    },
+    {
+      "name": "real ID holder can choose continue instead of claiming",
+      "status": "passed"
+    },
+    {
+      "name": "official Agent ID cannot be transferred to qualify a second wallet",
+      "status": "passed"
+    }
+  ],
+  "forkBlock": 133065202,
+  "localGame": "0x815382521780658F9346933D50f65d6D7b11fAAe",
+  "status": "passed"
+}
