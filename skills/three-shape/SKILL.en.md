@@ -191,7 +191,25 @@ Reserve settlement is maintenance, not a player reward. Only use deployments who
 
 Draft posts only: editable text, copying or system sharing. Never publish externally without a separate explicit request. Wallet/network changes invalidate pending preparations and confirmations. Rejection/failure must not advance game state.
 
-MysteryPortal is a placeholder only: no disclosed unlock condition, invented airdrop, credentials or locking mechanism.
+MysteryPortal now displays “Nine-Fruit Maze · Seasonal Challenge”, marked “Coming soon”. When asked about the entry or season, show the V1 preview below. This future season does not change the current Three Shape three-tier challenge. Do not execute or claim support for seasonal token locks, move settlement, prizes or medal minting, or add seasonal operations to current allowedActions.
+
+## Nine-Fruit Maze · Seasonal Challenge V1 preview
+
+Status: coming soon. The website entry expands on click; text hosts can show this preview when asked.
+
+- Fixed 🌟 obstacles cannot be moved or cleared.
+- Moves are limited. Tokens are locked before starting.
+- Each valid move costs 1 3SHAPE.
+- Moves accumulate during the game. At the end, settlement takes place on-chain and the tokens are transferred to Binance CZ’s address.
+- The first 10 players with valid completions receive BNB.
+- The champion receives 30%; places 2–10 share the remaining 70% equally.
+- The season prize pool is 1 BNB for S1, 2 BNB for S2, increasing by 1 BNB each season.
+- All nine collectible types remain an entry requirement.
+- The previous season’s completion medal qualifies a player for the next season.
+- All players who complete the maze receive a non-transferable medal.
+- The Agent handles puzzle-solving interaction; the contract verifies the result.
+
+This is a preview with no executable seasonal interface. No specific CZ address, move limit or S1 medal-qualification exception has been configured; do not invent these details, treat them as confirmed configuration or request wallet authorization. Retain the independent third-party notice. Do not claim Binance/CZ sponsorship, partnership, endorsement or acceptance of transfers.
 
 ## Project notice
 

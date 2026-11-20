@@ -6,3 +6,5 @@
 /* Keep the same compact card when embedded in a wide desktop container. */
 .ts-card{max-width:384px;margin-inline:auto}.ts-card .ts-play h1{font-size:32px}.ts-card .ts-reels>div{font-size:44px}
 .ts-card .ts-receipt{margin:0 23px 14px;color:#847393;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+
+.ts-card .ts-mystery>span:nth-child(2){font-size:14px;min-width:0;overflow-wrap:anywhere}.ts-card .ts-mystery small{font-size:14px}.ts-season-preview{margin-top:12px;padding:16px;border:1px solid #e1d7ec;border-radius:18px;background:#fffefb;font-size:16px;line-height:1.6;overflow-wrap:anywhere}.ts-season-preview h2{font-size:16px;line-height:1.5;margin:0 0 8px}.ts-season-preview p{font-size:14px;color:#71647d;margin:0 0 12px}.ts-season-preview ul{margin:0;padding-left:20px}.ts-season-preview li+li{margin-top:8px}
