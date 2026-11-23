@@ -1,50 +1,42 @@
-# Fruit Market V2.9 — implementation and release blockers
+# Fruit Market — authoritative Sites baseline
 
-## Repository audit
+The user selected the existing Sites source as the final project version. Baseline: Sites project `appgprj_6aefbcb1e6348191ab4e466f37b80ab2`, published version 24, commit `1325028d50238026b09b1c562aec90daa0f7dea1`. The GitHub feature branch now includes that source; differences from the old GitHub main include **baseline synchronization**, not new market economic changes. Never use the old GitHub core implementation as the deployment baseline.
 
-Base: `a2d67d02ce88137b18da749ea1e55d3d49460319` (`main`). This checkout contains core Solidity, small Agent presentation helpers and Node/EVM tests. It does **not** contain a homepage, season UI, frontend router, wallet integration or natural-language conversation dispatcher. There is no existing nine-fruit season implementation to regression-test. Therefore the requested homepage card placement/dimension comparison and conversation integration cannot be honestly delivered from this source tree. No replacement homepage or season rules were invented.
+## Preserved core
 
-## Architecture
+Game, Token, NFT, Reserve, Liquidity, deployment factory, season contracts, puzzle rules and original reward distribution are copied unchanged from the selected Sites commit. The market is an independent extension; it cannot mint/burn core assets, modify rewards, update season rules or administer those contracts. No core redeployment is required. Existing server sources come from the selected baseline; the market adds no server and requires none at runtime.
 
-`ThreeShapeFruitMarketV29` is a standalone non-upgradeable contract with immutable NFT and payment-token addresses. It uses the existing `kind(uint256)` getter, standard ERC-721 transfers and OpenZeppelin SafeERC20/ReentrancyGuard. Constructor dependencies must have code; deployment operators must independently verify they are the intended Three Shape NFT/3SHAPE contracts. The contract cannot establish deployment provenance from an arbitrary address by itself.
+## Contract
 
-`activate` takes an owned kind-9 NFT into permanent custody and permanently activates the caller. No administrator, withdrawal, rescue, cancellation of activation, fee, proxy or arbitrary execution path exists. `list` escrows owned kind-1–8 fruit at a positive price. `cancel` safely returns it to the seller. `buy` checks activation, expected price, order validity and distinct buyer/seller, transfers exactly the order price directly from buyer to seller, and safely transfers the NFT. All effects revert together on any failure. Terminal orders remain queryable. Listing IDs begin at 1; `tokenListing` prevents duplicate active custody.
+`ThreeShapeFruitMarketV29` binds immutable existing NFT and 3SHAPE ERC-20 addresses. Deployment operators must independently verify addresses; code-length validation does not establish provenance. OpenZeppelin SafeERC20, ReentrancyGuard and strict ERC-721 receiver validation protect transfers.
 
-Receiver acceptance is scoped to a pending market-initiated transfer: bound NFT contract, operator, source and token ID must match. Direct safe transfers and third-party NFTs are rejected. Standard ERC-721 **unsafe `transferFrom` cannot be intercepted by any receiver**: a user can force an NFT into this contract, but it cannot activate a wallet or create an order and cannot be rescued. Never transfer NFTs directly; use `activate`/`list`. This is an inherent ERC-721 limitation, not a recovery backdoor.
+Activation verifies ownership and kind=9, actually transfers Star into the market, then records permanent wallet qualification. Star continues to exist in contract custody: **not burned, not redeemable, no extraction or admin rescue**. Duplicate activation fails. Qualification is independent of season NFT holdings.
 
-Core Game/Token/NFT/Reserve/Liquidity and deployment-factory source files are unchanged. Existing reward and season eligibility rules are not replaced by market activation.
+Only kinds 1–8 may be escrow-listed at positive seller-defined 3SHAPE minimum-unit prices. Seller-only cancellation safely returns the fruit. `buy(listingId,expectedPrice)` checks active buyer/order, exact price and distinct buyer/seller; transfers exactly that price directly to the seller and safely transfers fruit to the buyer atomically. Any callback/payment failure reverts the entire operation. No fee, administrator, proxy, auction or price-edit API exists.
 
-## Static UI
+Safe receipt requires the bound NFT contract, market operator, expected sender and token ID within a pending transfer. Ordinary safe transfers cannot activate or create orders. ERC-721 **unsafe transferFrom is not interceptable**: it can force an NFT into any receiver, but creates no qualification/order and here has no rescue path. Never send NFTs directly.
 
-`web/fruit-market.html` is a standalone static page with injected-wallet connection, BSC network check/switch, activation, owned Star/fruit selection, exact decimal pricing, per-token NFT approval, exact ERC-20 approval when needed, escrow listing, cancellation, purchases, confirmations, receipt waiting, balances and history refresh. It verifies that the configured market binds the configured NFT/token. Network/account changes invalidate cached data and require reconnecting.
+## Existing frontend integration
 
-Orders are read through bounded 100-order pages; ownership uses bounded 100-ID segments through the existing NFT's `nextId`/`ownerOf`/`kind` interface (burned IDs are skipped). No historical block scan, database or server is required at runtime. Filtering and bigint sorting operate on loaded pages. The displayed cheapest result explicitly covers **loaded orders only**; load all pages to compare the whole market. My-order history likewise covers loaded pages. A refresh resets pagination and reads live chain state.
+`FruitMarketPortal` appears immediately above the unchanged `MysteryPortal` season entry inside `ThreeShapeCard`. Both buttons share `ts-mystery`, three spans and a small subtitle. Existing season CSS is untouched. A 12px gap separates the entries. Clicking navigates to `./fruit-market.html`; no new navigation framework is added.
 
-No original UI/style system exists to reuse. Current CSS is a minimal responsive standalone surface; exact homepage card parity remains blocked pending the actual frontend source. No homepage was invented.
+The market page adopts the selected preview's colors, card rounding, borders and shadows. It uses the same injected wallet via EIP-1193, displays activation and owned NFT choices, prepares per-token NFT approval and exact ERC-20 approvals, confirms each action, waits for receipts, and refreshes balance/ownership/orders. Network/account changes invalidate cached data and require reconnecting.
 
-## Agent boundary
+`getListings(start,limit)` returns at most 100 orders including final states. The UI displays active orders, filters fruit and sorts bigint prices. Ownership reads `nextId`/`ownerOf`/`kind` in 100-ID segments and handles burned IDs. There is no historical block scan or database. Cheapest/history displays explicitly cover loaded pages; load all pages to compare the full market. Large markets may warrant a future active-order index; none is introduced here.
 
-`agent/market.mjs` adds only presentation/confirmation helpers next to existing helpers. There is no AI backend, new conversation UI, key custody or autonomous transaction sender. The repository has no conversation dispatcher to extend. Consequently the six requested Chinese natural-language commands are **not wired or claimed supported**. Use the market page and wallet for basic trading. A future existing Agent consumer can call `marketPrompt` and direct the user to that same page; it must query chain state and obtain missing price/fruit/Star choices rather than guess them.
+## Existing Agent compatibility
 
-## Local build and static hosting
+The selected source uses `AgentStart` to copy instructions and download `skills/three-shape/SKILL.md` / `SKILL.en.md`. That existing entry and both Skills now explain market activation, listing, cancellation, cheapest-fruit queries and wallet confirmation. The Chinese Skill covers all six requested examples, including missing-price clarification and exact conversion of 500 万 to 5,000,000 tokens.
 
-1. `npm install --no-audit --no-fund` (pinned dependency versions and lockfile supplied).
-2. `npm run compile`; independently inspect ABI/bytecode, dependencies and deployed addresses before any deployment.
-3. After an authorized deployment, set verified BSC market/NFT/token addresses in `web/market-config.mjs`. Addresses intentionally default to empty; no contract is deployed by this PR.
-4. `npm run build:web`; host the contents of `web/` on GitHub Pages, including generated `market.bundle.js`, configuration module, HTML and CSS. No build output is committed and no Pages deployment is triggered by this change.
-5. Browse `/fruit-market.html` relative to that directory. An actual existing homepage must link to it once its source is available.
+No new AI router/backend/service, Agent contract, private-key custody or autonomous execution is added. The host Agent must possess reliable chain-query/wallet tools; otherwise the Skill directs users to the market page. Natural-language execution depends on that external host and has not been tested end to end. `agent/market.mjs` is only a presentation helper.
 
-## Validation
+## Build and delivery
 
-See the accompanying delivery report for executed results. Commands: `npm test`, `npm run compile`, `npm run test:evm`, `npm run test:market`, `npm run build:web`, `npm run test:ui`.
+- `npm install --no-audit --no-fund`; `npm --prefix web ci --ignore-scripts`.
+- `npm run compile`: selected baseline compiler plus standalone market.
+- `npm run build:web` or `npm run build:card`: build market assets into `web/public`, export existing Skills, then build the existing React website into `web/dist`. `build:web` also packages the same static output into root `dist`, matching the existing Sites hosting manifest.
+- Publish the contents of `web/dist` to GitHub Pages if desired. Runtime remains static.
+- `web/market-config.mjs` intentionally contains no guessed addresses. Set independently verified market/NFT/3SHAPE addresses and correct network, then rebuild. No deployment is performed by the build.
+- Review remains in [Draft PR #2](https://github.com/iimqsh888/three-shape-v29/pull/2). No GitHub main merge, Sites source-main push or mainnet deployment is performed. The published Sites preview is not proof that this feature branch is live.
 
-Original CLI compilation needs optimization to avoid a factory stack-depth error. The existing EVM test's compiler configuration enables viaIR to get past its stack-depth error without editing protected contracts. Original metadata assertions have not been weakened or removed.
-
-## Release blockers and unverified items
-
-- Actual homepage/season frontend source and Agent conversation entry point are absent.
-- No verified deployed market/core addresses or authenticated BSC fork RPC were supplied; no BSC fork, live BSC wallet integration or mainnet deployment was performed.
-- Browser wallet tests use an injected Ganache-backed EIP-1193 bridge, not a production wallet extension; production extensions and external RPC failure behaviour require further verification.
-- No independent security audit has been performed. Permanent Star custody and accidental unsafe NFT transfers have no recovery path by design.
-- Large-market pagination is bounded per request but comparing the entire market still requires loading all pages; no server index is introduced.
-- Existing baseline failures block declaring the project fully green or release-ready. This PR must remain unmerged pending review and missing integration inputs.
+See `fruit-market-delivery.md` for current-source validation results and unresolved limits. Historical imported reports are not rerun results for this change.

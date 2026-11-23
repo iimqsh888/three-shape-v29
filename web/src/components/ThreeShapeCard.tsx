@@ -5,6 +5,7 @@ import { metadata, formatAmount } from '../contracts/config/metadata';
 import type { Action, Mode, NFTItem, StarQuote, ThreeShapeAdapter } from '../contracts/types';
 import { useThreeShape } from '../state/useThreeShape';
 import { MysteryPortal } from './MysteryPortal';
+import {FruitMarketPortal} from './FruitMarketPortal';
 import {NineFruitsCard} from './NineFruitsCard';
 import './ThreeShapeCard.css';
 import { CollectionTransfer } from './CollectionTransfer';
@@ -103,6 +104,6 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
   {state.receipt?.success&&state.receipt.message&&<p className="ts-receipt" role="status">{t(state.receipt.message)}</p>}
   {state.hash && <p className="ts-hash">{mode === 'mock' ? t("模拟交易") : t("交易")}：{state.hash}</p>}
   {state.address && <button className="ts-refresh" disabled={busy} onClick={() => void state.refresh()}>{t("刷新状态")}</button>}
-  <footer><div className="ts-disclaimer">{unavailable ? t("等待真实 ABI 与钱包接入") : mode === 'mock' ? t("ⓘ 本地模拟 · 无真实资产 · 未经链上验证") : t("ⓘ 以链上状态为准 · 交易须用户钱包签名")}</div><MysteryPortal onEnter={()=>setSeasonOpen(true)}/><details className="ts-rules"><summary>{t("查看玩法与费用")}</summary><p>{t("免费领取、销毁、继续、领奖和购星均需持有 .ai ID。免费领取仍有 gas 成本。")}</p><p>{t("三档独立销毁 3 / 6 / 9 枚 NFT。第一档允许 Star 补齐，三档都至少含 1 枚普通水果且普通水果必须同种；后两档分别至少含 1 / 3 枚 Star。走完三档共销毁 18 枚 NFT。")}</p><p>{t("总奖励份额 55,000；实际领奖金额随全局十阶段变化。成功销毁后仍可能因份额耗尽无法领奖。")}</p><p>{t("Token 玩家与 LP 铸币上限各 1.43 万亿。Star 总量 100,000，最高价格 0.505 BNB。")}</p><p>{t("每枚 Star 本笔最多解锁 1,430 万 Token 的 LP 额度；未用额度立即过期，未用 BNB 保留。购星和 LP 结果应分别核实；LP 凭证发送至销毁地址。")}</p><p>{t("售罄后，Reserve 余款可单独结算给固定 T；最后 LP 失败的余额也包含在内。T 拒收则留存，可重试。")}</p></details><p className="ts-project-notice">{t("本项目围绕 Binance Agent ID 的一项长期链上实验，由第三方独立发起，与 Binance 无任何隶属或合作关系。3Shape没有任何实际用途，也不承诺任何价值或收益。")}</p></footer>
+  <footer><div className="ts-disclaimer">{unavailable ? t("等待真实 ABI 与钱包接入") : mode === 'mock' ? t("ⓘ 本地模拟 · 无真实资产 · 未经链上验证") : t("ⓘ 以链上状态为准 · 交易须用户钱包签名")}</div><FruitMarketPortal/><MysteryPortal onEnter={()=>setSeasonOpen(true)}/><details className="ts-rules"><summary>{t("查看玩法与费用")}</summary><p>{t("免费领取、销毁、继续、领奖和购星均需持有 .ai ID。免费领取仍有 gas 成本。")}</p><p>{t("三档独立销毁 3 / 6 / 9 枚 NFT。第一档允许 Star 补齐，三档都至少含 1 枚普通水果且普通水果必须同种；后两档分别至少含 1 / 3 枚 Star。走完三档共销毁 18 枚 NFT。")}</p><p>{t("总奖励份额 55,000；实际领奖金额随全局十阶段变化。成功销毁后仍可能因份额耗尽无法领奖。")}</p><p>{t("Token 玩家与 LP 铸币上限各 1.43 万亿。Star 总量 100,000，最高价格 0.505 BNB。")}</p><p>{t("每枚 Star 本笔最多解锁 1,430 万 Token 的 LP 额度；未用额度立即过期，未用 BNB 保留。购星和 LP 结果应分别核实；LP 凭证发送至销毁地址。")}</p><p>{t("售罄后，Reserve 余款可单独结算给固定 T；最后 LP 失败的余额也包含在内。T 拒收则留存，可重试。")}</p></details><p className="ts-project-notice">{t("本项目围绕 Binance Agent ID 的一项长期链上实验，由第三方独立发起，与 Binance 无任何隶属或合作关系。3Shape没有任何实际用途，也不承诺任何价值或收益。")}</p></footer>
  </article>;
 }

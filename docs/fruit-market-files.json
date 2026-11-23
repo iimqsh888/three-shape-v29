@@ -1,0 +1,1157 @@
+{
+  "source": {
+    "project": "appgprj_6aefbcb1e6348191ab4e466f37b80ab2",
+    "publishedVersion": 24,
+    "commit": "1325028d50238026b09b1c562aec90daa0f7dea1"
+  },
+  "baselineSynchronizationRelativeToGitHubMain": [
+    {
+      "status": "modified",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "status": "modified",
+      "path": ".gitignore"
+    },
+    {
+      "status": "added",
+      "path": ".openai/hosting.json"
+    },
+    {
+      "status": "modified",
+      "path": "README.md"
+    },
+    {
+      "status": "added",
+      "path": "agent/copy.mjs"
+    },
+    {
+      "status": "added",
+      "path": "config/mainnet.json"
+    },
+    {
+      "status": "added",
+      "path": "config/nine-fruits.example.json"
+    },
+    {
+      "status": "added",
+      "path": "config/testnet-wallet.public.json"
+    },
+    {
+      "status": "modified",
+      "path": "contracts/ThreeShapeDeploymentV29.sol"
+    },
+    {
+      "status": "modified",
+      "path": "contracts/ThreeShapeV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/abi/ThreeShapeGameV29.json"
+    },
+    {
+      "status": "added",
+      "path": "contracts/abi/ThreeShapeReserveV29.json"
+    },
+    {
+      "status": "added",
+      "path": "contracts/puzzle/NineFruitsGravityVerifier.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/puzzle/NineFruitsSessionHarness.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/puzzle/NineFruitsVerifier.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/season/NineFruitsMedal.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/season/NineFruitsSeason.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/season/NineFruitsTitle.sol"
+    },
+    {
+      "status": "modified",
+      "path": "contracts/test/MocksV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/test/NineFruitsSeasonMocks.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/test/SecurityV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/adapter-tests-gas-failure.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/adapter-tests-read-attempt-1.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/adapter-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/bytecode-verification.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/deployment.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/function-tests-attempt-1.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/function-tests-attempt-2.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/function-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-bnb/metadata-catalog.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/adapter-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/bytecode-verification.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/deployment.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/final-state-and-budget.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/fork-settlement-address-case-attempt.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/fork-settlement-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/function-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-settlement/metadata-catalog.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-usdt-legacy/ThreeShapeDeploymentV29.sol.snapshot"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-usdt-legacy/ThreeShapeV29.sol.snapshot"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-usdt-legacy/deployment.json"
+    },
+    {
+      "status": "added",
+      "path": "deployments/bsc-testnet-usdt-legacy/function-tests.json"
+    },
+    {
+      "status": "added",
+      "path": "docs/AGENTIC_WALLET_INTEGRATION.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/AI_IDENTITY_AND_AGENT_UI.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/BNB_CONTRACT_MIGRATION.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/RESERVE_FINAL_SETTLEMENT.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/RULES_AND_ECONOMICS.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/season/README.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "integrations/mcp-apps/README.md"
+    },
+    {
+      "status": "added",
+      "path": "package-lock.json"
+    },
+    {
+      "status": "modified",
+      "path": "package.json"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/README.md"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/engine.mjs"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/evm.mjs"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/generate.mjs"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/gravity.d.mts"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/gravity.mjs"
+    },
+    {
+      "status": "added",
+      "path": "puzzle/solve.mjs"
+    },
+    {
+      "status": "added",
+      "path": "reports/BNB_TESTNET_VALIDATION.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/CARD_PREVIEW.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/CONTRACT_SECURITY_REVIEW.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/IDENTITY_VALIDATION.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/INTERFACE_COMPATIBILITY.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/NINE_FRUITS_CARD.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/PRODUCTION_HANDOFF.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/RELEASE_REVIEW.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/RESERVE_SETTLEMENT_VALIDATION.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/RULE_UPDATE.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/SETTLEMENT_PUBLIC_TESTNET.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/SKILL_CONVERSATION_UPDATE.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/baseline/ThreeShapeDeploymentV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "reports/baseline/ThreeShapeV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "reports/bnb-publication.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/bnb-testnet-validation.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/bsc-testnet-funding-status.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/card-docs-github-tree.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/card-github-tree.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/contract-security-summary.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/github-checkpoint.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/github-tree-entries.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/identity-mainnet-fork.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/interface-compatibility-summary.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/basic-rule-update.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/basic-updated.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/basic.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-adapter-live.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-api-live.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-build.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-compatibility.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-local-evm-security.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-native-price-band.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-solidity-compile.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-treasury-rollback.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-ui.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/bnb-unit.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/card-preview-build.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/card-preview-tests.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/compile-updated.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/compile.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/contract-baseline-20261109.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/contract-basic-20261109.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/contract-security-20261109.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/evm-updated.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/evm.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/interface-chain-20261109.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/interface-ui-20261109.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-abi-map.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-compile.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-live-build.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-live-ui.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-live-unit.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-public-adapter.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-public-api.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-public-deploy.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-public-fork.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-public-functions.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-regression.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-tests.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-typescript.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/logs/settlement-unit.log"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/README.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/gas.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/gravity/FRAMEWORK.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/gravity/gas.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/gravity/seed-2909.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/seed-2901.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/seed-2907.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/nine-fruits/seed-2919.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/pair-bootstrap-inspection.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/reserve-settlement-validation.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/results.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/season/README.zh-CN.md"
+    },
+    {
+      "status": "added",
+      "path": "reports/season/bsc-fork.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/season/gas.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/season/verification.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/settlement-deployment-blocker.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/settlement-public-budget.json"
+    },
+    {
+      "status": "added",
+      "path": "scripts/bsc-testnet-adapter-test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/bsc-testnet-deploy.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/bsc-testnet-test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/bsc-testnet-verify.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/check-pair-bootstrap.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/check-production.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/compile-season.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/compile.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/export-public.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/gravity-benchmark.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/lib/bsc-mainnet-readonly.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/lib/bsc-testnet-rpc.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/prepare-season-deployment.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/puzzle-benchmark.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/puzzle-solve.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/test-identity-mainnet-fork.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/test-season-bsc-fork.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/test-settlement-testnet-fork.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/verify-season-puzzle.mjs"
+    },
+    {
+      "status": "added",
+      "path": "server/README.md"
+    },
+    {
+      "status": "added",
+      "path": "server/handler.mjs"
+    },
+    {
+      "status": "added",
+      "path": "server/index.mjs"
+    },
+    {
+      "status": "added",
+      "path": "server/rules.mjs"
+    },
+    {
+      "status": "added",
+      "path": "server/testnet.mjs"
+    },
+    {
+      "status": "added",
+      "path": "skills/three-shape/SKILL.en.md"
+    },
+    {
+      "status": "added",
+      "path": "skills/three-shape/SKILL.md"
+    },
+    {
+      "status": "added",
+      "path": "test/compatibility.integration.test.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "test/deployment-metadata.test.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "test/economics.test.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "test/evm.integration.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/helpers/evm.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/identity.integration.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/public-copy.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/puzzle/gravity.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/puzzle/verifier.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/season/helpers.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/season/season.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/security.integration.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/server.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/settlement.integration.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/testnet-api.integration.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/.gitignore"
+    },
+    {
+      "status": "added",
+      "path": "web/README.md"
+    },
+    {
+      "status": "added",
+      "path": "web/index.html"
+    },
+    {
+      "status": "added",
+      "path": "web/package-lock.json"
+    },
+    {
+      "status": "added",
+      "path": "web/package.json"
+    },
+    {
+      "status": "added",
+      "path": "web/public/three-shape-logo-v2.jpg"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/CollectionTransfer.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/MysteryPortal.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/NineFruitsCard.css"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/NineFruitsCard.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/PostComposer.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/SeasonSponsorForm.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/SponsorTokenNotice.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/ThreeShapeCard.css"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/ThreeShapeCard.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/abi/README.md"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/abi/local-interface-map.json"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/adapter/ContractAdapter.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/adapter/EthersThreeShapeAdapter.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/adapter/InjectedWalletAdapter.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/adapter/stateMapping.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/config/bsc-testnet-bnb.json"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/config/bsc-testnet-settlement.json"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/config/metadata.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/contracts/types/index.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/game/nineFruits.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/game/nineFruitsGravity.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/game/presentation.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/game/seasonDeck.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/game/seasonSettlement.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/i18n/index.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/index.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/integrations/mcp-apps/index.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/main.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/state/useThreeShape.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/style.css"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/card.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/contract-matching.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/fixtures/MockAdapter.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/injected-wallet.test.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/language.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/nine-fruits.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/recovery.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/setup.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/star-entry.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/text-game.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/transfer.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/updates.test.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/vite-env.d.ts"
+    },
+    {
+      "status": "added",
+      "path": "web/src/website/AgentStart.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/website/TextGamePanel.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/website/Website.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/website/website.css"
+    },
+    {
+      "status": "added",
+      "path": "web/tsconfig.json"
+    },
+    {
+      "status": "added",
+      "path": "web/vite.config.ts"
+    }
+  ],
+  "marketChangesRelativeToSelectedSitesSource": [
+    {
+      "status": "modified",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "status": "modified",
+      "path": ".gitignore"
+    },
+    {
+      "status": "modified",
+      "path": "README.md"
+    },
+    {
+      "status": "added",
+      "path": "agent/market.mjs"
+    },
+    {
+      "status": "added",
+      "path": "contracts/ThreeShapeFruitMarketV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/test/MarketActorsV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "docs/fruit-market-delivery.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/fruit-market.md"
+    },
+    {
+      "status": "modified",
+      "path": "package-lock.json"
+    },
+    {
+      "status": "modified",
+      "path": "package.json"
+    },
+    {
+      "status": "added",
+      "path": "playwright.config.mjs"
+    },
+    {
+      "status": "added",
+      "path": "reports/fruit-market/season-bsc-fork.json"
+    },
+    {
+      "status": "modified",
+      "path": "reports/season/gas.json"
+    },
+    {
+      "status": "added",
+      "path": "scripts/build-market.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "scripts/compile.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/package-static.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "skills/three-shape/SKILL.en.md"
+    },
+    {
+      "status": "modified",
+      "path": "skills/three-shape/SKILL.md"
+    },
+    {
+      "status": "added",
+      "path": "test/market.evm.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/market.model.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/ui/market-wallet.spec.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/ui/market.spec.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/fruit-market.html"
+    },
+    {
+      "status": "added",
+      "path": "web/market-config.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market-model.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market.css"
+    },
+    {
+      "status": "added",
+      "path": "web/market.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "web/package.json"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/FruitMarketPortal.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/components/ThreeShapeCard.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/fruit-market-portal.test.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/test/language.test.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/website/AgentStart.tsx"
+    }
+  ],
+  "unchangedProtectedFiles": [
+    {
+      "path": "contracts/ThreeShapeDeploymentV29.sol",
+      "sha256": "35f29fe1268b75f789565d59a2f7dbd7d2a9f8b84662d702f46c9243608159da"
+    },
+    {
+      "path": "contracts/ThreeShapeV29.sol",
+      "sha256": "93b2c91b43bc383ec0feaeec2a5d2b1338c61b34b04746efc766611b2640816d"
+    },
+    {
+      "path": "contracts/abi/ThreeShapeGameV29.json",
+      "sha256": "325e09e606f41d939e6a65d853df6eff77be40b540cb38319795450bfd7297c7"
+    },
+    {
+      "path": "contracts/abi/ThreeShapeReserveV29.json",
+      "sha256": "12763ca9a903b01731ea53702551ea350b0ccc7b21ac7a6303061672827d6f9d"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsGravityVerifier.sol",
+      "sha256": "f1165f19daa67ca066c9329a0513872a6176baef1666f77a9bcc7844ce20ed6f"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsSessionHarness.sol",
+      "sha256": "a723a74ba1f22aea22580ca056fa648944c68844b3336838620664ceb7d69bcf"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsVerifier.sol",
+      "sha256": "68a99c9446c1ff9ea4b0dc10ae463ad6bd82b171030f665c7462d638cfca75de"
+    },
+    {
+      "path": "contracts/season/NineFruitsMedal.sol",
+      "sha256": "415af7c542a68a87bb752027271e7cd0c95aa048dd8d250e088ea97d0646bb4d"
+    },
+    {
+      "path": "contracts/season/NineFruitsSeason.sol",
+      "sha256": "162dd559fc27a0e7a82286e7da662fe4b27e7b8c647255ab53c02ed0898d34a9"
+    },
+    {
+      "path": "contracts/season/NineFruitsTitle.sol",
+      "sha256": "9f83439a2760f388f19b8df8ec0889a68f0782c0f2a58bd02f5754754851e7a0"
+    },
+    {
+      "path": "contracts/test/MocksV29.sol",
+      "sha256": "506cfbeac408e58328b9a3b8154c869f941808fcca6fd58cbef38e9fcca88f6b"
+    },
+    {
+      "path": "contracts/test/NineFruitsSeasonMocks.sol",
+      "sha256": "e72282770b0dd278d3464597e9d1380818fe8540ed482059aa0862ffbd1c89bb"
+    },
+    {
+      "path": "contracts/test/SecurityV29.sol",
+      "sha256": "2dcff66b201f9de4c055bf75dfb6f0aca192cb28e110248237d391cf5ee476a7"
+    },
+    {
+      "path": "puzzle/README.md",
+      "sha256": "a81739a209aa90544d047a004b9167ffa872b9b600577371a4000a5af15ae1c1"
+    },
+    {
+      "path": "puzzle/engine.mjs",
+      "sha256": "e55370bba2f988dbf9df45c84ede28336d0975be6d969ba12c49ddd063bf7aee"
+    },
+    {
+      "path": "puzzle/evm.mjs",
+      "sha256": "70f498ccb007accd89331b806087a4a636399569e853238faf081b4675bab288"
+    },
+    {
+      "path": "puzzle/generate.mjs",
+      "sha256": "52b5d216309f8f233739e5a0a53d759cd7e432c199107d39cd07eac66b9d05ab"
+    },
+    {
+      "path": "puzzle/gravity.d.mts",
+      "sha256": "ec5f45882af11984dc996e4e50f543bc58d1aad649c8376346217f856df6bf7f"
+    },
+    {
+      "path": "puzzle/gravity.mjs",
+      "sha256": "74e11563e9e0d0d566a1afb545d61cd84357dd26723bac1cd0473a6066d9c009"
+    },
+    {
+      "path": "puzzle/solve.mjs",
+      "sha256": "b44ceb11ebabd3380870c4628261d739e92884fc08c997133786a410250cc658"
+    }
+  ]
+}

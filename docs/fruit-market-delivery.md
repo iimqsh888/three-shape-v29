@@ -1,61 +1,64 @@
-# 水果市场交付报告（开发分支，禁止直接主网上线）
+# 水果市场交付报告 — Sites 最终基线
 
-## 交付范围
+用户已明确指定 Sites 源码为最终版本。基线是预览项目 `appgprj_6aefbcb1e6348191ab4e466f37b80ab2` 的 v24，源码提交 `1325028d50238026b09b1c562aec90daa0f7dea1`。现有 GitHub 功能分支已同步该完整项目，并在其上正式集成市场，不再以旧 GitHub 合约或独立前端为最终版本。
 
-独立市场合约、静态市场页面、钱包操作、链上分页查询、现有 Agent 辅助函数扩展、自动化测试及 CI 已实现。首页原入口和 Agent 对话路由在实际仓库缺失，因此不能声称完整满足首页尺寸一致或自然语言交易接入。详见 [架构与阻碍](fruit-market.md)。
+**基线同步和市场修改应分别评审。** 相对旧 GitHub main 出现的 BNB/Game 等差异来自用户指定的既有 Sites 版本，并非市场修改经济模型。逐字节比对了 Sites 原始 `contracts/` 与 `puzzle/` 下 20 个文件，全部一致。市场只新增独立合约，不修改既有核心或赛季规则。
 
-## 文件清单
+## 文件与架构
 
-新增：
-- `contracts/ThreeShapeFruitMarketV29.sol`：无管理员、不可升级的独立市场。
-- `contracts/test/MarketActorsV29.sol`：拒收 NFT 与重入攻击测试钱包。
-- `web/fruit-market.html`、`web/market.css`、`web/market.mjs`：静态页面及钱包流程。
-- `web/market-config.mjs`：待填写的已验证部署地址；默认不允许交易。
-- `web/market-model.mjs`：精确金额及筛选排序。
-- `agent/market.mjs`：复用页面与钱包流程的确认提示辅助函数，无新 Agent 系统。
-- `test/market.evm.test.mjs`、`test/market.model.test.mjs`：市场专属 EVM 和数据模型测试。
-- `test/ui/market.spec.mjs`、`test/ui/market-wallet.spec.mjs`：浏览器测试。
-- `playwright.config.mjs`、`package-lock.json`：测试配置与依赖锁定。
-- `docs/fruit-market.md`、本报告。
+完整清单见 `fruit-market-files.json`；区分 Sites 基线同步和相对 Sites 源码的市场修改。
+
+新增市场文件：
+- `contracts/ThreeShapeFruitMarketV29.sol`：永久 Star 激活、托管上架、取消及 3SHAPE 原子结算。
+- `contracts/test/MarketActorsV29.sol`：恶意接收与重入测试钱包。
+- `web/fruit-market.html`、`web/market.mjs`、`web/market.css`、`web/market-model.mjs`、`web/market-config.mjs`：静态市场页面、钱包交互、精确金额与有界分页。
+- `web/src/components/FruitMarketPortal.tsx`：正式复用原首页季赛入口样式的市场按钮。
+- `web/src/test/fruit-market-portal.test.tsx`、`test/market.evm.test.mjs`、`test/market.model.test.mjs`、`test/ui/market*.spec.mjs`、`playwright.config.mjs`：测试。
+- `scripts/build-market.mjs`、`scripts/package-static.mjs`：构建市场资源并打包原静态网站。
+- `agent/market.mjs`：提示辅助函数，没有新 Agent 系统。
+- 本报告、架构文档、文件/验证清单和 `reports/fruit-market/` 中当前执行记录。
 
 修改：
-- `package.json`：市场编译、测试、浏览器测试及静态构建命令；添加构建与测试依赖；CLI 开启优化。
-- `.github/workflows/ci.yml`：市场测试、浏览器测试与静态预览 artifact；前面步骤失败仍继续收集后续检查，整体任务仍然失败。
-- `.gitignore`：忽略生成的 bundle 和测试输出。
-- `test/evm.integration.test.mjs`：仅编译配置启用 viaIR，未删除或放宽原有断言。
+- 原 `ThreeShapeCard.tsx`：仅新增市场入口 import 和插入位置；`MysteryPortal`、季赛组件及其 CSS 未改。
+- 原 `AgentStart.tsx`、中英文 `skills/three-shape/SKILL*.md`：复用复制指令及下载 Skill 流程，补充市场操作、缺价询问与确认要求。
+- `web/src/test/language.test.tsx`：把九种 NFT 的数量断言限定在原收藏网格内，防止新增市场按钮中的 Star 文案被误算为收藏按钮；保留九种 NFT 断言。
+- `scripts/compile.mjs`：在原编译工具中添加市场和市场测试合约，不改变原编译配置。
+- 根/前端 `package.json`、依赖锁文件、`.gitignore` 和 CI：新增市场构建、测试、静态产物；原 CI 工作流保留。
 
-原有两个核心 Solidity 源文件与原 Agent 函数均未修改。未部署任何网络、未合并主分支。
+无管理员、手续费、升级代理、救援接口或新中心化服务。Star 激活时实际转入市场，永久保留且不可提取，不属于销毁。购买只用绑定 3SHAPE，付款与 NFT 交付失败时整体回滚。
 
-## 实际验证结果
+## 首页与 Agent
 
-| 命令 | 结果 |
+市场入口位于九果迷阵正上方，复用相同 `ts-mystery` 类及三段 span/副标题结构，原入口样式不改。浏览器实际检查在 390px 和 1280px 下宽高完全一致，圆角、背景、边框、阴影、字体和 padding 一致，且跳转成功。市场页面沿用预览的浅色卡片与绿色体系。
+
+现有 Agent 是复制指令及 Skill 的宿主接入方式，没有本站自然语言后端。中文 Skill 已覆盖六条需求例句，并指明先查询、补齐参数、展示信息再由钱包确认；没有可靠宿主能力时直接使用市场页面。外部宿主的自然语言端到端执行仍未验证，不声称本站新增了自动路由。
+
+## 实际运行结果
+
+以下仅记录本次在 Sites 最终源码上实际执行的结果；旧 GitHub 基线的 20/1 元数据失败结论已被替换，不适用于当前源码。
+
+| 检查 | 当前结果 |
 | --- | --- |
-| `npm run compile` | 通过，solc 0.8.24，优化编译核心、部署工厂及市场 |
-| `npm run build:web` | 通过，生成静态 ESM bundle |
-| `npm run test:market` | Node 报告 26 通过、0 失败：21 个 EVM 子测试、1 个父测试及 4 个模型/Agent 辅助函数测试 |
-| `npm test` | 原有 Node 测试 20 通过、1 失败 |
-| `npm run test:evm` | 原有 EVM 集成测试 0 通过、1 失败；执行到 NFT metadata 名称断言失败 |
-| `npm run test:ui` | 6 通过、0 失败，包含本地链上的激活→上架→切换钱包→购买→刷新恢复，以及移动/桌面布局 |
-| `git diff --check` | 通过 |
+| `npm test` | 27 通过，0 失败 |
+| `npm run compile` | 通过，原编译配置；包括市场，检查字节码大小限制 |
+| `npm run build:web` | 通过，原 React 网站和市场生成到 `web/dist` |
+| `npm run test:market` | 26 通过，0 失败；包含 21 个 EVM 子测试、父测试和 4 个模型/Agent helper 测试 |
+| `npm run test:card` | 93 通过，0 失败，11 个文件 |
+| `npm run test:ui` | 8 通过，0 失败；包括钱包完整交易流程、入口实际尺寸与跳转、移动及桌面布局 |
+| EVM / 安全 / Reserve / 身份 / ABI 兼容 | 28 通过，0 失败 |
+| 九果迷阵 gravity / season | 正在收集最终结果 |
+| `npm run test:season:fork` | 失败；官方 registry 与真实持有者资格检查通过后发生 `could not coalesce error`，后续检查未通过；公开链发送交易数 0 |
+| 核心文件基线比对 | 20 个现有 contracts/puzzle 文件逐字节一致 |
 
-市场测试覆盖激活/锁定、权限、审批、重复上架、八种水果交易、金额、取消、过期订单状态、自买、expectedPrice、余额/授权不足、原子结算、拒收回滚、重入与并发购买。测试使用现有真实 NFT 和 Token 合约，不以替代 NFT 假设兼容性。
+首次前端回归曾因新增按钮含 Star 文案触发宽泛选择器而失败，已按收藏网格收紧测试范围并完整重跑至 93 项通过；没有放宽产品行为断言。Ganache 在当前 Node 环境回退 JS µWS 实现，测试仍实际执行。
 
-浏览器测试使用本地 Ganache 钱包桥接，不等于真实 BSC 钱包扩展测试。Ganache 的 µWS 原生模块与当前 Node 版本不匹配，回退 JS 实现；市场测试仍实际运行通过。
+## 未验证与阻碍
 
-## 失败原因及未验证项
+- Fork 只完成上述一项检查，完整 Fork 未通过；失败记录见 `reports/fruit-market/season-bsc-fork.json`，不能把导入的旧报告作为本次通过证据。
+- 市场没有部署；`web/market-config.mjs` 的 NFT/3SHAPE/market 地址留空，需独立验证并在授权部署后配置。未部署 BSC 主网，也不要求重部署原合约。
+- 浏览器交易使用本地 Ganache EIP-1193 桥，不等于生产钱包扩展或真实 BSC 市场测试。
+- 未进行独立安全审计。标准 ERC-721 不安全 `transferFrom` 无法由接收方拒绝；直接强制转入不会激活或创建订单，也无法取回。正常安全转入均严格校验。
+- 最低价/历史只覆盖已加载分页；完整市场比较需加载全部页面。
+- 线上 Sites 预览保持原发布版本；此交付是功能分支和 PR，未向 Sites 源码主分支推送或发布，未合并 GitHub main。
 
-原有 `NFT metadata name includes human-readable fruit name` 断言要求名称拼接水果名称，但受保护 NFT 合约实际返回 `Three Shape #编号`。原 EVM 测试同样要求 Star 名称包含 `Star`。这些断言在市场开发前的核心实现上已经不匹配；未为通过测试而修改核心 NFT 或弱化断言。原 EVM 测试在此失败后，后续 Game 场景没有执行，不能宣称完整回归通过。
-
-CLI 原始未优化编译存在工厂 Stack too deep；开启优化后通过。原 EVM standard-JSON 编译也出现栈深度问题，启用 viaIR 后执行到上述断言。
-
-未验证：真实 BSC Fork（无指定 RPC 和验证后的部署地址）、生产钱包扩展、真实部署 ABI/地址、九果迷阵赛季回归（代码不存在）、原首页入口位置/尺寸（代码不存在）、六条中文 Agent 指令的端到端路由（路由不存在）、独立安全审计。当前不应声明可主网上线。
-
-## 安全及部署阻碍
-
-部署时必须绑定已验证的现有 NFT 与 3SHAPE 地址。页面也核对市场绑定地址；默认配置为空，不会猜测地址。只有标准 ERC-721 safeTransfer 回调可阻止意外入账；用户直接使用不安全的 transferFrom 强制转入 NFT 无法由接收合约拒绝，也不会获得资格或订单，且无法找回。Star 永久锁定没有任何救援接口。
-
-无手续费、无管理员、无升级代理、无后端、无私钥托管。订单分页最多 100 条，最便宜和历史仅针对已加载订单，加载全部分页才代表全市场。原首页和对话层需在获得真实源代码后完成接入。
-
-## Pull Request
-
-[PR #2](https://github.com/iimqsh888/three-shape-v29/pull/2)，分支 `feat/fruit-market-v29`。保持 Draft，不合并。CI 已接入；远程 Actions 结果需以实际运行记录为准，不等同于本地测试结果。
+[Draft PR #2](https://github.com/iimqsh888/three-shape-v29/pull/2)。远程 CI 已接入，结果需以实际 Actions 为准，不能用本地结果代替。

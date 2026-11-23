@@ -32,12 +32,18 @@
     "test:season": "node --test test/season/season.test.mjs",
     "test:season:fork": "node scripts/test-season-bsc-fork.mjs",
     "verify:season:puzzle": "node scripts/verify-season-puzzle.mjs",
-    "prepare:season": "node scripts/prepare-season-deployment.mjs"
+    "prepare:season": "node scripts/prepare-season-deployment.mjs",
+    "build:market": "node scripts/build-market.mjs",
+    "build:web": "npm run build:card && node scripts/package-static.mjs",
+    "test:market": "node --test test/market*.test.mjs",
+    "test:ui": "playwright test"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
     "ethers": "6.13.5",
     "ganache": "7.9.2",
-    "solc": "0.8.24"
+    "solc": "0.8.24",
+    "esbuild": "0.25.12",
+    "@playwright/test": "1.56.1"
   }
 }
