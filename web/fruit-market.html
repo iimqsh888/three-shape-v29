@@ -1,9 +1,12 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>水果交易市场 · Three Shape</title><link rel="stylesheet" href="market.css"></head><body>
-<main><h1>水果交易市场</h1><p>永久锁定一枚 🌟 解锁 · 仅使用 3SHAPE · 无交易手续费</p>
-<button id="connect">连接钱包</button><button id="network">切换至 BSC</button><button id="refresh">刷新链上数据</button><p id="wallet"></p><p id="message" role="status" aria-live="polite"></p>
-<section><h2>市场激活状态</h2><p>激活会将所选 Star 实际转入市场合约，NFT 永久存在合约中，不会销毁；任何人都无法提取或赎回。</p><p id="activation">请连接钱包</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button></section>
-<section><h2>市场浏览</h2><label>水果类型 <select id="filter"><option value="0">全部</option></select></label><p>按价格从低到高排列；最便宜仅针对已加载订单。加载全部订单后可比较全市场。</p><p id="cheapest"></p><div id="orders"></div><button id="moreOrders">加载下一页订单（100 条）</button></section>
-<section><h2>我的水果</h2><p>按 NFT 编号分段读取链上持有情况，每次最多 100 枚。</p><button id="moreNFTs">加载下一段 NFT</button><label>水果 <select id="fruits"></select></label><label>售价（3SHAPE）<input id="price" inputmode="decimal" placeholder="5000000"></label><button id="list">授权并上架</button></section>
-<section><h2>我的订单与成交记录</h2><p>仅显示已加载订单中的记录；可在市场浏览中继续加载下一页。</p><div id="mine"></div></section>
-<dialog id="confirm"><h2>确认链上操作</h2><p id="confirmation"></p><p>钱包可能分别请求授权和交易签名。每笔交易仍需支付网络 Gas。</p><button id="yes">确认并打开钱包</button><button id="no">取消</button></dialog>
+<main><article class="market-card"><header class="market-head"><a href="./" class="back" aria-label="返回首页">‹</a><div><span class="eyebrow">THREE SHAPE</span><h1>水果交易市场</h1></div><button id="connect">连接钱包</button></header>
+<div class="market-meta"><span>🍏 水果自由集市</span><span>3SHAPE · 零手续费</span></div>
+<div class="market-toolbar"><label class="filter-label">水果 <select id="filter"><option value="0">全部水果</option></select></label><button id="openMyShop">我的商铺</button><button id="refresh">刷新</button><button id="network">BSC</button></div>
+<p id="message" role="status" aria-live="polite"></p><p id="cheapest"></p><p id="demoNotice" hidden>布局示例 · 店铺与价格均为示意，非真实挂单，不能交易。</p>
+<div id="marketFeed" tabindex="0" aria-label="水果店铺列表"><div id="pullHint">下拉刷新 · 上滑浏览更多店铺</div><div id="orders"></div><div class="feed-end"><button id="moreOrders">加载更多店铺</button><p id="feedState"></p></div></div>
+<footer class="market-foot">以 .ai ID 为店铺名 · 单价以 3SHAPE 计价</footer></article>
+<dialog id="shopPanel" class="tools"><button id="closeMyShop" class="close-panel" aria-label="关闭我的商铺">×</button><h2>我的商铺 <span id="myShopName">连接钱包后显示 .ai ID</span></h2><p id="wallet"></p><h3>市场激活状态</h3><p id="activation">请连接钱包</p><p>开启商铺需转入 1 枚 Star，永久保留在市场合约中，不销毁、不可提取或赎回。</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button>
+<h3>我的水果</h3><button id="moreNFTs">加载下一段 NFT</button><label>水果 <select id="fruits"></select></label><label>单价（3SHAPE）<input id="price" inputmode="decimal" placeholder="5000000"></label><button id="list">授权并上架</button>
+<h3>我的订单与成交记录</h3><p>仅显示已加载订单中的记录。</p><div id="mine"></div></dialog><dialog id="storePanel" class="tools"><button id="closeStore" class="close-panel" aria-label="关闭商铺">×</button><h2 id="storeTitle"></h2><div id="storeItems"></div></dialog>
+<dialog id="confirm"><h2>确认链上操作</h2><p id="confirmation"></p><p>授权和交易均需钱包确认，并支付网络 Gas。</p><button id="yes">确认并打开钱包</button><button id="no">取消</button></dialog>
 </main><script type="module" src="market.bundle.js"></script></body></html>

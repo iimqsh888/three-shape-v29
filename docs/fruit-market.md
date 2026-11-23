@@ -40,3 +40,11 @@ No new AI router/backend/service, Agent contract, private-key custody or autonom
 - Review remains in [Draft PR #2](https://github.com/iimqsh888/three-shape-v29/pull/2). No GitHub main merge, Sites source-main push or mainnet deployment is performed. The published Sites preview is not proof that this feature branch is live.
 
 See `fruit-market-delivery.md` for current-source validation results and unresolved limits. Historical imported reports are not rerun results for this change.
+
+## Compact shop UI update
+
+The market uses the original homepage's 464px card width, green/cream palette, borders, corners and typography. The first screen presents compact storefront strips with roughly ten rows depending on viewport size. Official BSC `handleOf(address)` plus `ownerOfHandle(handle)` verifies the current .ai owner before displaying a shop name. Failed/missing lookups are explicitly labelled; no user-supplied name is trusted. Identity display does not add a new contract eligibility rule.
+
+Market browsing groups active fruit orders by seller, orders fruit by price within each shop and shops by their minimum loaded price. Clicking another storefront opens its fruit/price list for purchasing. The My Shop entry opens the owner's Star activation, fruit selector, exact 3SHAPE price form, listing and cancellation controls. Own listings offer management, not self-purchase. Scroll-down loads one bounded page at a time; a downward pull of at least 60px from the top refreshes. A visible refresh/load button remains available.
+
+When no market deployment is configured, the preview clearly marks all shop names, fruit and prices as illustrative examples. Example purchases, activation and listing are disabled. No simulated data can enter a real transaction. The deployed market version uses chain orders and verified identity lookups.

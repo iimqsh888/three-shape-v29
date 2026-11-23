@@ -51,5 +51,13 @@
     }
   ],
   "deploymentPerformed": false,
-  "mainBranchMerged": false
+  "mainBranchMerged": false,
+  "compactShopUI": {
+    "browserTestsPassed": 9,
+    "identityAndModelTestsPassed": 7,
+    "contractChanges": 0,
+    "previewVersion": 26,
+    "previewURL": "https://three-shape-agent-preview-v29.helpfulshore2.chatgpt.site/fruit-market.html",
+    "realMarketConfigured": false
+  }
 }
