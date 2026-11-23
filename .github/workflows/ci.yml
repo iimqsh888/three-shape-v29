@@ -13,7 +13,29 @@ jobs:
           node-version: '22'
       - run: npm install --no-audit --no-fund
       - run: npm test
-      - run: npm run compile
+      - if: ${{ !cancelled() }}
+        run: npm run compile
 
-      - name: Ganache EVM contract integration
+      - if: ${{ !cancelled() }}
+        name: Ganache EVM contract integration
         run: npm run test:evm
+
+      - if: ${{ !cancelled() }}
+        name: Fruit market contract and model tests
+        run: npm run test:market
+      - if: ${{ !cancelled() }}
+        name: Build static market
+        run: npm run build:web
+
+      - if: ${{ !cancelled() }}
+        name: Install UI test browser
+        run: npx playwright install --with-deps chromium
+      - if: ${{ !cancelled() }}
+        name: Market browser tests
+        run: npm run test:ui
+      - if: ${{ !cancelled() }}
+        name: Upload static market preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fruit-market-static
+          path: web/

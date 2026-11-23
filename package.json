@@ -5,13 +5,18 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs",
-    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol",
-    "test:evm": "node --test test/evm.integration.test.mjs"
+    "compile": "solcjs --optimize --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol contracts/ThreeShapeFruitMarketV29.sol",
+    "test:evm": "node --test test/evm.integration.test.mjs",
+    "test:market": "node --test test/market*.test.mjs",
+    "build:web": "esbuild web/market.mjs --bundle --format=esm --outfile=web/market.bundle.js --external:./market-config.mjs",
+    "test:ui": "playwright test"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
-    "solc": "0.8.24",
+    "@playwright/test": "1.56.1",
+    "esbuild": "0.25.12",
     "ethers": "6.13.5",
-    "ganache": "7.9.2"
+    "ganache": "7.9.2",
+    "solc": "0.8.24"
   }
 }

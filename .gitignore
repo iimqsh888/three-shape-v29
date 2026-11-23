@@ -2,3 +2,8 @@ node_modules/
 artifacts/
 coverage/
 .env
+
+web/market.bundle.js
+
+test-results/
+playwright-report/

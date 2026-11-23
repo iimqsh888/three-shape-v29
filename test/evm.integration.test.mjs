@@ -9,7 +9,7 @@ import {ethers} from 'ethers';
 const sources={};
 for(const p of ['contracts/ThreeShapeV29.sol','contracts/ThreeShapeDeploymentV29.sol','contracts/test/MocksV29.sol'])
   sources[p]={content:fs.readFileSync(p,'utf8')};
-const input={language:'Solidity',sources,settings:{optimizer:{enabled:true,runs:200},outputSelection:{'*':{'*':['abi','evm.bytecode.object']}}}};
+const input={language:'Solidity',sources,settings:{viaIR:true,optimizer:{enabled:true,runs:200},outputSelection:{'*':{'*':['abi','evm.bytecode.object']}}}};
 const output=JSON.parse(solc.compile(JSON.stringify(input),{import:(name)=>{
   const p=path.join('node_modules',name);
   return fs.existsSync(p)?{contents:fs.readFileSync(p,'utf8')}:{error:'Missing import: '+name};
