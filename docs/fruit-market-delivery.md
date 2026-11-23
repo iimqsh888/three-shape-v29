@@ -58,4 +58,4 @@ CLI 原始未优化编译存在工厂 Stack too deep；开启优化后通过。�
 
 ## Pull Request
 
-待推送功能分支后记录链接；保持 Draft，不合并。
+[PR #2](https://github.com/iimqsh888/three-shape-v29/pull/2)，分支 `feat/fruit-market-v29`。保持 Draft，不合并。CI 已接入；远程 Actions 结果需以实际运行记录为准，不等同于本地测试结果。
