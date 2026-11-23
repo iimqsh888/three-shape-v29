@@ -1,0 +1,15 @@
+{
+  "mode": "Local fork of BSC mainnet. Official registry state is real. Token/NFT/season deployments and holder impersonation are LOCAL ONLY.",
+  "publicTransactionsSent": 0,
+  "registry": "0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F",
+  "holder": "0xA506ac7069937571DC56C5f8FDa53c4A729456c6",
+  "checks": [
+    {
+      "name": "official registry bytecode and actual holder eligibility",
+      "status": "passed"
+    }
+  ],
+  "forkBlock": 135324886,
+  "status": "failed",
+  "error": "could not coalesce error"
+}

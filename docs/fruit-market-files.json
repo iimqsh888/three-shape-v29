@@ -1,0 +1,237 @@
+{
+  "source": {
+    "project": "appgprj_6aefbcb1e6348191ab4e466f37b80ab2",
+    "publishedVersion": 24,
+    "commit": "1325028d50238026b09b1c562aec90daa0f7dea1"
+  },
+  "marketChangesRelativeToSelectedSitesSource": [
+    {
+      "status": "modified",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "status": "modified",
+      "path": ".gitignore"
+    },
+    {
+      "status": "modified",
+      "path": "README.md"
+    },
+    {
+      "status": "added",
+      "path": "agent/market.mjs"
+    },
+    {
+      "status": "added",
+      "path": "contracts/ThreeShapeFruitMarketV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "contracts/test/MarketActorsV29.sol"
+    },
+    {
+      "status": "added",
+      "path": "docs/fruit-market-delivery.md"
+    },
+    {
+      "status": "added",
+      "path": "docs/fruit-market-files.json"
+    },
+    {
+      "status": "added",
+      "path": "docs/fruit-market.md"
+    },
+    {
+      "status": "modified",
+      "path": "package-lock.json"
+    },
+    {
+      "status": "modified",
+      "path": "package.json"
+    },
+    {
+      "status": "added",
+      "path": "playwright.config.mjs"
+    },
+    {
+      "status": "added",
+      "path": "reports/fruit-market/season-bsc-fork.json"
+    },
+    {
+      "status": "added",
+      "path": "reports/fruit-market/validation.json"
+    },
+    {
+      "status": "added",
+      "path": "scripts/build-market.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "scripts/compile.mjs"
+    },
+    {
+      "status": "added",
+      "path": "scripts/package-static.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "skills/three-shape/SKILL.en.md"
+    },
+    {
+      "status": "modified",
+      "path": "skills/three-shape/SKILL.md"
+    },
+    {
+      "status": "added",
+      "path": "test/market.evm.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/market.identity.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/market.model.test.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/ui/market-wallet.spec.mjs"
+    },
+    {
+      "status": "added",
+      "path": "test/ui/market.spec.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/fruit-market.html"
+    },
+    {
+      "status": "added",
+      "path": "web/market-config.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market-identity.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market-model.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market.css"
+    },
+    {
+      "status": "added",
+      "path": "web/market.mjs"
+    },
+    {
+      "status": "modified",
+      "path": "web/package.json"
+    },
+    {
+      "status": "added",
+      "path": "web/src/components/FruitMarketPortal.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/components/ThreeShapeCard.tsx"
+    },
+    {
+      "status": "added",
+      "path": "web/src/test/fruit-market-portal.test.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/test/language.test.tsx"
+    },
+    {
+      "status": "modified",
+      "path": "web/src/website/AgentStart.tsx"
+    }
+  ],
+  "unchangedProtectedFiles": [
+    {
+      "path": "contracts/ThreeShapeDeploymentV29.sol",
+      "sha256": "35f29fe1268b75f789565d59a2f7dbd7d2a9f8b84662d702f46c9243608159da"
+    },
+    {
+      "path": "contracts/ThreeShapeV29.sol",
+      "sha256": "93b2c91b43bc383ec0feaeec2a5d2b1338c61b34b04746efc766611b2640816d"
+    },
+    {
+      "path": "contracts/abi/ThreeShapeGameV29.json",
+      "sha256": "325e09e606f41d939e6a65d853df6eff77be40b540cb38319795450bfd7297c7"
+    },
+    {
+      "path": "contracts/abi/ThreeShapeReserveV29.json",
+      "sha256": "12763ca9a903b01731ea53702551ea350b0ccc7b21ac7a6303061672827d6f9d"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsGravityVerifier.sol",
+      "sha256": "f1165f19daa67ca066c9329a0513872a6176baef1666f77a9bcc7844ce20ed6f"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsSessionHarness.sol",
+      "sha256": "a723a74ba1f22aea22580ca056fa648944c68844b3336838620664ceb7d69bcf"
+    },
+    {
+      "path": "contracts/puzzle/NineFruitsVerifier.sol",
+      "sha256": "68a99c9446c1ff9ea4b0dc10ae463ad6bd82b171030f665c7462d638cfca75de"
+    },
+    {
+      "path": "contracts/season/NineFruitsMedal.sol",
+      "sha256": "415af7c542a68a87bb752027271e7cd0c95aa048dd8d250e088ea97d0646bb4d"
+    },
+    {
+      "path": "contracts/season/NineFruitsSeason.sol",
+      "sha256": "162dd559fc27a0e7a82286e7da662fe4b27e7b8c647255ab53c02ed0898d34a9"
+    },
+    {
+      "path": "contracts/season/NineFruitsTitle.sol",
+      "sha256": "9f83439a2760f388f19b8df8ec0889a68f0782c0f2a58bd02f5754754851e7a0"
+    },
+    {
+      "path": "contracts/test/MocksV29.sol",
+      "sha256": "506cfbeac408e58328b9a3b8154c869f941808fcca6fd58cbef38e9fcca88f6b"
+    },
+    {
+      "path": "contracts/test/NineFruitsSeasonMocks.sol",
+      "sha256": "e72282770b0dd278d3464597e9d1380818fe8540ed482059aa0862ffbd1c89bb"
+    },
+    {
+      "path": "contracts/test/SecurityV29.sol",
+      "sha256": "2dcff66b201f9de4c055bf75dfb6f0aca192cb28e110248237d391cf5ee476a7"
+    },
+    {
+      "path": "puzzle/README.md",
+      "sha256": "a81739a209aa90544d047a004b9167ffa872b9b600577371a4000a5af15ae1c1"
+    },
+    {
+      "path": "puzzle/engine.mjs",
+      "sha256": "e55370bba2f988dbf9df45c84ede28336d0975be6d969ba12c49ddd063bf7aee"
+    },
+    {
+      "path": "puzzle/evm.mjs",
+      "sha256": "70f498ccb007accd89331b806087a4a636399569e853238faf081b4675bab288"
+    },
+    {
+      "path": "puzzle/generate.mjs",
+      "sha256": "52b5d216309f8f233739e5a0a53d759cd7e432c199107d39cd07eac66b9d05ab"
+    },
+    {
+      "path": "puzzle/gravity.d.mts",
+      "sha256": "ec5f45882af11984dc996e4e50f543bc58d1aad649c8376346217f856df6bf7f"
+    },
+    {
+      "path": "puzzle/gravity.mjs",
+      "sha256": "74e11563e9e0d0d566a1afb545d61cd84357dd26723bac1cd0473a6066d9c009"
+    },
+    {
+      "path": "puzzle/solve.mjs",
+      "sha256": "b44ceb11ebabd3380870c4628261d739e92884fc08c997133786a410250cc658"
+    }
+  ],
+  "reviewBaseBranch": "sites-v24-baseline",
+  "reviewBaseCommit": "4c5f6fb2638128d8ac05351b63bb4cb7e2265934"
+}

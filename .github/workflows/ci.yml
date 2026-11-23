@@ -21,6 +21,8 @@ jobs:
         run: node --test --test-isolation=none test/security.integration.test.mjs
       - name: Reserve final settlement regressions
         run: node --test --test-isolation=none test/settlement.integration.test.mjs
+      - name: Identity gate regression
+        run: node --test --test-isolation=none test/identity.integration.test.mjs
       - name: ABI and frontend rule compatibility
         run: node --test --test-isolation=none test/compatibility.integration.test.mjs
   card:
@@ -30,6 +32,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - run: npm install --no-audit --no-fund
       - run: npm --prefix web ci --ignore-scripts
       - run: npm run build:card
       - run: npm run build:card:testnet
@@ -48,3 +51,22 @@ jobs:
         run: npm run test:gravity
       - name: Season funds, progression, rank and security integration
         run: npm run test:season
+
+  fruit-market:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --no-audit --no-fund
+      - run: npm --prefix web ci --ignore-scripts
+      - run: npm run test:market
+      - run: npm run build:web
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:ui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fruit-market-static
+          path: web/dist/

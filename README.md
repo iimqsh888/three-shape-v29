@@ -80,3 +80,7 @@ npm run serve:testnet
 ## 验证边界
 
 本次见 [新版公开测试网报告](reports/SETTLEMENT_PUBLIC_TESTNET.zh-CN.md)；旧版报告仅作历史。此前用户接受的首次加池储备污染限制保持原逻辑，不将接受风险说成修复；详见[历史安全报告](reports/CONTRACT_SECURITY_REVIEW.zh-CN.md)。测试不是独立安全审计，不能保证不存在未知问题。
+
+## Independent Fruit Market
+
+The user-selected Sites v24 source (`1325028d50238026b09b1c562aec90daa0f7dea1`) is the authoritative baseline for this feature branch. The market adds permanent Star custody and fee-free 3SHAPE fruit trading without changing those existing core or season contracts. Use `npm run build:web` to build/package the integrated static website. Deployment addresses intentionally remain unconfigured. See [architecture](docs/fruit-market.md) and [delivery/validation report](docs/fruit-market-delivery.md). No market contract or mainnet deployment is performed by this build.

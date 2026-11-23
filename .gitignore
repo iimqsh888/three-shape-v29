@@ -8,3 +8,11 @@ web/public/skills/
 web/src/generated/
 
 dist/
+
+web/market.bundle.js
+web/public/market.bundle.js
+web/public/market-config.mjs
+web/public/market.css
+web/public/fruit-market.html
+test-results/
+playwright-report/
