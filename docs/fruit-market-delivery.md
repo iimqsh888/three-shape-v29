@@ -1,12 +1,12 @@
 # 水果市场交付报告 — Sites 最终基线
 
-用户已明确指定 Sites 源码为最终版本。基线是预览项目 `appgprj_6aefbcb1e6348191ab4e466f37b80ab2` 的 v24，源码提交 `1325028d50238026b09b1c562aec90daa0f7dea1`。现有 GitHub 功能分支已同步该完整项目，并在其上正式集成市场，不再以旧 GitHub 合约或独立前端为最终版本。
+用户已明确指定 Sites 源码为最终版本。基线是预览项目 `appgprj_6aefbcb1e6348191ab4e466f37b80ab2` 的 v24，源码提交 `1325028d50238026b09b1c562aec90daa0f7dea1`。PR #2 直接以未经修改的 `sites-v24-baseline` 为对照，只展示独立市场与最小前端接入差异；整套源码同步不属于这个 PR 的差异。
 
-**基线同步和市场修改应分别评审。** 相对旧 GitHub main 出现的 BNB/Game 等差异来自用户指定的既有 Sites 版本，并非市场修改经济模型。逐字节比对了 Sites 原始 `contracts/` 与 `puzzle/` 下 20 个文件，全部一致。市场只新增独立合约，不修改既有核心或赛季规则。
+**不修改其他合约和规则。** 原有 Game、Token、NFT、Reserve、Liquidity、部署工厂、季赛合约和谜题规则的差异为零。逐字节比对的 20 个既有 contracts/puzzle 文件全部一致。GitHub main 和 Sites 源码 main 均未修改或合并。
 
 ## 文件与架构
 
-完整清单见 `fruit-market-files.json`；区分 Sites 基线同步和相对 Sites 源码的市场修改。
+完整清单见 `fruit-market-files.json`；仅列出相对未经修改 Sites 基线的市场修改。
 
 新增市场文件：
 - `contracts/ThreeShapeFruitMarketV29.sol`：永久 Star 激活、托管上架、取消及 3SHAPE 原子结算。

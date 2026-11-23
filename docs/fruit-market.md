@@ -1,6 +1,6 @@
 # Fruit Market — authoritative Sites baseline
 
-The user selected the existing Sites source as the final project version. Baseline: Sites project `appgprj_6aefbcb1e6348191ab4e466f37b80ab2`, published version 24, commit `1325028d50238026b09b1c562aec90daa0f7dea1`. The GitHub feature branch now includes that source; differences from the old GitHub main include **baseline synchronization**, not new market economic changes. Never use the old GitHub core implementation as the deployment baseline.
+The user selected the existing Sites source as the final project version. Baseline: Sites project `appgprj_6aefbcb1e6348191ab4e466f37b80ab2`, published version 24, commit `1325028d50238026b09b1c562aec90daa0f7dea1`. PR #2 compares the market feature branch directly against `sites-v24-baseline`, an unmodified snapshot of that source. Only market additions and minimal existing-frontend integration are in the review diff. No original core contract or rule is changed, and neither GitHub main nor Sites source main is merged or updated.
 
 ## Preserved core
 
