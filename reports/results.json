@@ -1,0 +1,29 @@
+{
+  "compile": {
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "exitCode": 1
+  },
+  "basic": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "test/agent.test.mjs",
+      "test/economics.test.mjs",
+      "test/deployment-metadata.test.mjs"
+    ],
+    "exitCode": 1
+  },
+  "evm": {
+    "command": [
+      "npm",
+      "run",
+      "test:evm"
+    ],
+    "exitCode": 1
+  }
+}

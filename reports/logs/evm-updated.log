@@ -1,0 +1,42 @@
+
+> three-shape-v29@0.1.0 test:evm
+> npm run compile && node --test --test-isolation=none test/evm.integration.test.mjs
+
+
+> three-shape-v29@0.1.0 compile
+> node scripts/compile.mjs
+
+ThreeShapeCodeV29 init=386, runtime=62 bytes
+ThreeShapeCodebookV29 init=29090, runtime=366 bytes
+ThreeShapeDeploymentV29 init=32033, runtime=2782 bytes
+ThreeShapeGameV29 init=9795, runtime=8529 bytes
+ThreeShapeLiquidityV29 init=6303, runtime=4750 bytes
+ThreeShapeNFTV29 init=6967, runtime=6263 bytes
+ThreeShapeReserveV29 init=1322, runtime=1032 bytes
+ThreeShapeTokenV29 init=3245, runtime=2479 bytes
+MockFactory init=429, runtime=292 bytes
+MockPair init=922, runtime=739 bytes
+MockRegistry init=313, runtime=284 bytes
+MockRouter init=1530, runtime=1319 bytes
+MockUSDT init=2354, runtime=1883 bytes
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ all five write steps reject missing .ai ID; holder can buy Star, add LP and claim once (10201.530762ms)
+✔ nine NFT names and Emoji compile to valid on-chain JSON (1475.167463ms)
+✔ Star price rises every 1,000; boundaries, crossing quote and total revenue (3095.054841ms)
+✔ three tiers and revoked identity: reward/continue branches remain independent (14984.660355ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30125.251525

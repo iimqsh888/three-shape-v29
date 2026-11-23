@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-09T02:54:36.107531+00:00",
+  "chainId": 97,
+  "deployer": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "balanceWei": "0",
+  "deploymentStatus": "not_deployed",
+  "transactionsSent": 0,
+  "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
+  "faucet": "https://www.bnbchain.org/en/testnet-faucet",
+  "faucetObservedRequirement": "Recipient must hold at least 0.002 BNB on BSC mainnet; new wallet does not satisfy this. No faucet claim submitted.",
+  "nextStep": "Fund with BSC testnet BNB only. Confirm dependency strategy before deploying isolated identity/USDT/DEX fixtures."
+}

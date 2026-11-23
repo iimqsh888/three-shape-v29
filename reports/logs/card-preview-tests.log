@@ -1,0 +1,15 @@
+
+> three-shape-agent-card@2.9.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspace/project/web
+
+ ✓ src/test/card.test.tsx (19 tests) 1765ms
+   ✓ embedded card > advances all three tiers inside one card and claims only final reward  496ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  00:08:48
+   Duration  2.75s (transform 174ms, setup 115ms, collect 205ms, tests 1.77s, environment 379ms, prepare 82ms)
+

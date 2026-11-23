@@ -10,10 +10,41 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
       - run: npm install --no-audit --no-fund
       - run: npm test
       - run: npm run compile
 
       - name: Ganache EVM contract integration
         run: npm run test:evm
+      - name: Contract security regressions
+        run: node --test --test-isolation=none test/security.integration.test.mjs
+      - name: Reserve final settlement regressions
+        run: node --test --test-isolation=none test/settlement.integration.test.mjs
+      - name: ABI and frontend rule compatibility
+        run: node --test --test-isolation=none test/compatibility.integration.test.mjs
+  card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm --prefix web ci --ignore-scripts
+      - run: npm run build:card
+      - run: npm run build:card:testnet
+      - run: npm run test:card
+  season:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --omit=optional --no-package-lock --no-audit --no-fund
+      - run: npm run compile:season
+      - name: Deterministic gravity verifier
+        run: npm run test:gravity
+      - name: Season funds, progression, rank and security integration
+        run: npm run test:season

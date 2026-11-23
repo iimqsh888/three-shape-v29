@@ -1,0 +1,17 @@
+
+> three-shape-v29@0.1.0 compile
+> node scripts/compile.mjs
+
+ThreeShapeCodeV29 init=386, runtime=62 bytes
+ThreeShapeCodebookV29 init=29090, runtime=366 bytes
+ThreeShapeDeploymentV29 init=32033, runtime=2782 bytes
+ThreeShapeGameV29 init=9795, runtime=8529 bytes
+ThreeShapeLiquidityV29 init=6303, runtime=4750 bytes
+ThreeShapeNFTV29 init=6967, runtime=6263 bytes
+ThreeShapeReserveV29 init=1322, runtime=1032 bytes
+ThreeShapeTokenV29 init=3245, runtime=2479 bytes
+MockFactory init=429, runtime=292 bytes
+MockPair init=922, runtime=739 bytes
+MockRegistry init=313, runtime=284 bytes
+MockRouter init=1530, runtime=1319 bytes
+MockUSDT init=2354, runtime=1883 bytes

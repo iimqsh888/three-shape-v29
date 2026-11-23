@@ -1,0 +1,44 @@
+
+> three-shape-v29@0.1.0 test
+> node --test --test-isolation=none test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs test/public-copy.test.mjs test/server.test.mjs
+
+✔ 9 emoji NFT types (2.143813ms)
+✔ burn requires confirmation and live shares (0.637444ms)
+✔ no burn when exhausted (0.208831ms)
+✔ on-chain JSON metadata carries emoji, name and typed traits (0.876834ms)
+✔ deployment predicts five CREATE contract addresses (0.431781ms)
+✔ LP budget expires at sale even if pool add fails (0.469989ms)
+✔ star sales are independent from game shares (0.748092ms)
+✔ initial pool uses fixed 0.008 BNB per 14.3m 3SHAPE, independent of accumulated reserve (0.145504ms)
+✔ NFT metadata name includes human-readable fruit name (0.136428ms)
+✔ Solidity UTF-8 emoji literals use unicode prefix (0.343207ms)
+✔ reward calculation uses valid Solidity ether denomination (0.423375ms)
+✔ 55,000 shares and 1.43T player worst case (0.352084ms)
+✔ 1.43T LP and 2.86T combined caps (0.085736ms)
+✔ all reward amounts are integers (0.24849ms)
+✔ burn checks shares without consuming; claim consumes one share (0.105177ms)
+✔ three independent burns and minimum star thresholds (0.119092ms)
+✔ stars continue selling after game end (0.069936ms)
+✔ no owner-controlled mint or withdrawals (0.201652ms)
+✔ NFT metadata is on-chain emoji JSON without SVG (0.240151ms)
+✔ native BNB price uses integer wei without ERC20 payment (0.07864ms)
+✔ LP mint budget is one-time and never carried forward (0.147582ms)
+✔ public copy includes identity requirement, current pricing and irreversible burn risk (0.101763ms)
+✔ public copy does not disclose allocation sequence or describe a random lottery (0.181984ms)
+✔ light service returns rules, capabilities, Skill and website without wallet authorization (113.90756ms)
+✔ missing live ABI returns 503 instead of mock chain results; invalid addresses fail (15.697172ms)
+✔ service rejects writes, auth routes, hidden files and traversal (43.739829ms)
+✔ optional live reader must return the requested address and live structured data (43.403012ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 293.273522
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

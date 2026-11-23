@@ -1,0 +1,18 @@
+Chain 97; deployer 0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3 balance 0.200289655208767
+Submitted deploy testIdentityRegistry 0xbdc238fdf32bd6e6ba0f3adfbc88be083dab9b8d11dc7075ce28a4b955e291c9
+Submitted deploy deploymentFactory 0xf630601f3501e1f955900b65352bd007672ac7cf5cacf515eed533204f21d576
+Submitted create real PancakeSwap V2 testnet pair 0x0d8fcc7c6e441a2295ba9d5c53f57b722d909e3c9b63aa9aeb119d3123fede35
+Submitted deploy five immutable production contracts 0x743df3bc9e732b58928f43902a487428a88b7b21f1c107d86b7025179d8eae97
+{
+  "status": "deployed",
+  "contracts": {
+    "testIdentityRegistry": "0x335011e84A27546f70FefaFCD4D2A5F8719655B8",
+    "deploymentFactory": "0xE4b0Aa4822FF340CD2a023f4b380d38dFff7a953",
+    "pair": "0xEFD6ebC03A0e039332BCE6c4D56470103ba55479",
+    "token": "0x568c4dA7324F6Be81739F70458306b66Cf9B88b2",
+    "nft": "0x525F3fA24156734b53aAeEA815A225340FB56f15",
+    "reserve": "0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c",
+    "game": "0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7",
+    "liquidity": "0x99E6184b07525Fc6b5A7f4fDb261eD2EF2E2009a"
+  }
+}

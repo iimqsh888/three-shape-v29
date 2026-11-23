@@ -4,14 +4,40 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs",
-    "compile": "solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol",
-    "test:evm": "node --test test/evm.integration.test.mjs"
+    "test": "node --test --test-isolation=none test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs test/public-copy.test.mjs test/server.test.mjs",
+    "compile": "node scripts/compile.mjs",
+    "test:evm": "npm run compile && node --test --test-isolation=none test/evm.integration.test.mjs",
+    "dev:card": "npm --prefix web run dev",
+    "build:card": "npm --prefix web run build",
+    "test:card": "npm --prefix web test",
+    "serve": "node server/index.mjs",
+    "test:security": "npm run compile && node --test --test-isolation=none test/security.integration.test.mjs",
+    "test:compatibility": "npm run compile && node --test --test-isolation=none test/compatibility.integration.test.mjs",
+    "build:card:testnet": "VITE_THREE_SHAPE_NETWORK=bsc-testnet npm --prefix web run build",
+    "deploy:testnet": "npm run compile && node scripts/bsc-testnet-deploy.mjs",
+    "test:testnet": "node scripts/bsc-testnet-test.mjs",
+    "test:adapter:testnet": "node scripts/bsc-testnet-adapter-test.mjs",
+    "serve:testnet": "node server/testnet.mjs",
+    "test:settlement": "npm run compile && node --test --test-isolation=none test/settlement.integration.test.mjs",
+    "test:fork:testnet": "node scripts/test-settlement-testnet-fork.mjs",
+    "test:api:testnet": "THREE_SHAPE_CONFIG=web/src/contracts/config/bsc-testnet-settlement.json node --test test/testnet-api.integration.test.mjs",
+    "test:identity": "npm run compile && node --test --test-isolation=none test/identity.integration.test.mjs",
+    "test:identity:fork": "node scripts/test-identity-mainnet-fork.mjs",
+    "test:puzzle": "node --test test/puzzle/verifier.test.mjs",
+    "benchmark:puzzle": "node scripts/puzzle-benchmark.mjs",
+    "solve:puzzle": "node scripts/puzzle-solve.mjs",
+    "test:gravity": "node --test test/puzzle/gravity.test.mjs",
+    "benchmark:gravity": "node scripts/gravity-benchmark.mjs",
+    "compile:season": "node scripts/compile-season.mjs",
+    "test:season": "node --test test/season/season.test.mjs",
+    "test:season:fork": "node scripts/test-season-bsc-fork.mjs",
+    "verify:season:puzzle": "node scripts/verify-season-puzzle.mjs",
+    "prepare:season": "node scripts/prepare-season-deployment.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
-    "solc": "0.8.24",
     "ethers": "6.13.5",
-    "ganache": "7.9.2"
+    "ganache": "7.9.2",
+    "solc": "0.8.24"
   }
 }

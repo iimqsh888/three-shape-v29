@@ -1,0 +1,31 @@
+✔ 9 emoji NFT types (1.540766ms)
+✔ burn requires confirmation and live shares (0.272165ms)
+✔ no burn when exhausted (0.206053ms)
+✔ on-chain JSON metadata carries emoji, name and typed traits (0.3411ms)
+✔ deployment predicts five CREATE contract addresses (0.366039ms)
+✔ LP budget expires at sale even if pool add fails (0.187877ms)
+✔ star sales are independent from game shares (0.260036ms)
+✔ initial pool uses fixed 8 USDT per 14.3m 3SHAPE, independent of accumulated reserve (0.136741ms)
+✔ NFT metadata name includes human-readable fruit name (0.158588ms)
+✔ Solidity UTF-8 emoji literals use unicode prefix (0.205475ms)
+✔ reward calculation uses valid Solidity ether denomination (0.159328ms)
+✔ 55,000 shares and 1.43T player worst case (0.15467ms)
+✔ 1.43T LP and 2.86T combined caps (0.10465ms)
+✔ all reward amounts are integers (0.128262ms)
+✔ burn checks shares without consuming; claim consumes one share (0.251525ms)
+✔ three independent burns and minimum star thresholds (0.092348ms)
+✔ stars continue selling after game end (0.064264ms)
+✔ no owner-controlled mint or withdrawals (0.229373ms)
+✔ NFT metadata is on-chain emoji JSON without SVG (0.111956ms)
+✔ USDT price uses token decimals (0.054433ms)
+✔ LP mint budget is one-time and never carried forward (0.060778ms)
+✔ public copy includes identity requirement, current pricing and irreversible burn risk (0.067037ms)
+✔ public copy does not disclose allocation sequence or describe a random lottery (0.133958ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36.757684

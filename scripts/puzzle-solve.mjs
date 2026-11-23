@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import {solve} from '../puzzle/solve.mjs';
+import {replay} from '../puzzle/engine.mjs';
+const file=process.argv[2];
+if(!file)throw new Error('Usage: npm run solve:puzzle -- <board-json-file>');
+const data=JSON.parse(fs.readFileSync(file,'utf8')),board=Array.isArray(data)?data:data.board;
+const result=solve(board);
+if(result.status==='solved')replay(board,result.solution,{requireClear:true});
+console.log(JSON.stringify({...result,coordinates:'zero-based cell indices, row-major, 6x6',warning:'Local reasoning only; no wallet, payment, rank or on-chain submission.'},null,2));
+if(result.status!=='solved')process.exitCode=2;

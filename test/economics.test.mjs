@@ -13,5 +13,5 @@ test('stars continue selling after game end',()=>{const buy=src.split('function 
 test('no owner-controlled mint or withdrawals',()=>assert.ok(!/function (ownerMint|adminMint|withdraw|setOwner|setCap)\(/.test(src)));
 
 test('NFT metadata is on-chain emoji JSON without SVG',()=>{assert.ok(src.includes('function tokenURI('));assert.ok(src.includes('data:application/json;base64,'));assert.ok(src.includes('🍏'));assert.ok(src.includes('🌟'));assert.ok(!src.includes('image/svg+xml'))});
-test('USDT price uses token decimals',()=>{assert.ok(src.includes('IERC20Metadata(usdt_).decimals()'));assert.ok(src.includes('usdtUnit=10**uint256(decimals)'));assert.ok(src.includes(')*usdtUnit'))});
-test('LP mint budget is one-time and never carried forward',()=>{assert.ok(src.includes('lpBudgetExpired+=batchBudget'));assert.ok(src.includes('attempt(batchBudget)'));assert.ok(src.includes('if(tokens>maxMint)tokens=maxMint'));assert.ok(src.includes('router.addLiquidity('))});
+test('native BNB price uses integer wei without ERC20 payment',()=>{assert.ok(src.includes('0.01 ether+0.005 ether*(sold/STARS_PER_PRICE_STEP)'));assert.ok(src.includes('msg.value==payment'));assert.ok(!src.includes('usdt'))});
+test('LP mint budget is one-time and never carried forward',()=>{assert.ok(src.includes('lpBudgetExpired+=batchBudget'));assert.ok(src.includes('attempt(batchBudget)'));assert.ok(src.includes('if(tokens>maxMint)tokens=maxMint'));assert.ok(src.includes('router.addLiquidityETH{value:funds}'))});

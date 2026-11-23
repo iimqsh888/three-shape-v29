@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import {isAddress,ZeroAddress,ContractFactory} from 'ethers';
+import {compileSeason} from './compile-season.mjs';
+const file=process.argv[2];if(!file)throw new Error('Usage: node scripts/prepare-season-deployment.mjs <verified-config.json>. No transaction is sent.');
+const config=JSON.parse(fs.readFileSync(file,'utf8'));
+if(config.chainId!==56&&config.chainId!==97)throw new Error('Expected BSC mainnet 56 or testnet 97');
+for(const key of ['shapeToken','fruitNFT','agentRegistry','admin'])if(typeof config[key]!=='string'||!isAddress(config[key])||config[key]===ZeroAddress)throw new Error('Configure a verified nonzero address: '+key);
+if(config.chainId===56&&config.agentRegistry.toLowerCase()!=='0x60b9262456de011f7d15a54cdd8c48baaa8b022f')throw new Error('Wrong BSC .ai registry');
+const compiled=compileSeason(),a=compiled.artifacts.NineFruitsSeason,factory=new ContractFactory(a.abi,'0x'+a.evm.bytecode.object);
+const request=await factory.getDeployTransaction(config.shapeToken,config.fruitNFT,config.agentRegistry,config.admin);
+console.log(JSON.stringify({mode:'unsigned-offline-deployment-plan',chainId:config.chainId,publicTransactionsSent:0,constructor:config,creates:['NineFruitsSeason','NineFruitsGravityVerifier','NineFruitsMedal'],initcodeBytes:(request.data.length-2)/2,runtimeBytes:a.evm.deployedBytecode.object.length/2,data:request.data,warning:'No RPC, signer, key, source/address verification or deployment. Review dependencies and admin before any future signed transaction.'},null,2));

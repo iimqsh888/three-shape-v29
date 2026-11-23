@@ -1,0 +1,33 @@
+
+> three-shape-v29@0.1.0 test
+> node --test --test-isolation=none test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs
+
+✔ 9 emoji NFT types (1.690168ms)
+✔ burn requires confirmation and live shares (0.353221ms)
+✔ no burn when exhausted (0.15103ms)
+✔ on-chain JSON metadata carries emoji, name and typed traits (0.411686ms)
+✔ deployment predicts five CREATE contract addresses (0.480887ms)
+✔ LP budget expires at sale even if pool add fails (0.250071ms)
+✔ star sales are independent from game shares (1.870762ms)
+✔ initial pool uses fixed 8 USDT per 14.3m 3SHAPE, independent of accumulated reserve (0.373973ms)
+✔ NFT metadata name includes human-readable fruit name (0.501776ms)
+✔ Solidity UTF-8 emoji literals use unicode prefix (0.445104ms)
+✔ reward calculation uses valid Solidity ether denomination (0.180465ms)
+✔ 55,000 shares and 1.43T player worst case (0.118444ms)
+✔ 1.43T LP and 2.86T combined caps (0.055543ms)
+✔ all reward amounts are integers (0.162618ms)
+✔ burn checks shares without consuming; claim consumes one share (0.318344ms)
+✔ three independent burns and minimum star thresholds (0.12627ms)
+✔ stars continue selling after game end (0.095829ms)
+✔ no owner-controlled mint or withdrawals (0.193778ms)
+✔ NFT metadata is on-chain emoji JSON without SVG (0.084027ms)
+✔ USDT price uses token decimals (0.056444ms)
+✔ LP mint budget is one-time and never carried forward (0.114986ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.182629

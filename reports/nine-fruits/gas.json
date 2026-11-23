@@ -1,0 +1,133 @@
+{
+  "network": "Local Ganache EVM, chainId 31337; NOT BSC fork/testnet/mainnet",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "shanghai",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode.object",
+          "evm.deployedBytecode.object"
+        ]
+      }
+    }
+  },
+  "scope": "Pure replay and stateful research harness only; excludes NFT/.ai checks, token fees, ranks, rewards, medals, transaction-order protection.",
+  "deployment": {
+    "NineFruitsSessionHarness": {
+      "runtimeBytes": 1466
+    },
+    "NineFruitsVerifier": {
+      "runtimeBytes": 1786
+    }
+  },
+  "samples": [
+    {
+      "seed": 2901,
+      "fruitCount": 30,
+      "constructiveMoves": 5472,
+      "solverMoves": 31,
+      "searchNodes": 42025,
+      "pureReplayGas": 310016
+    },
+    {
+      "seed": 2919,
+      "fruitCount": 30,
+      "constructiveMoves": 1394,
+      "solverMoves": 41,
+      "searchNodes": 64739,
+      "pureReplayGas": 361873
+    },
+    {
+      "seed": 2907,
+      "fruitCount": 30,
+      "constructiveMoves": 757,
+      "solverMoves": 51,
+      "searchNodes": 86188,
+      "pureReplayGas": 401613
+    }
+  ],
+  "longPaths": [
+    {
+      "moves": 51,
+      "paddedDetourMoves": 0,
+      "pureReplayGas": 401613,
+      "statefulBatchGasTotal": 432765,
+      "batches": [
+        {
+          "moves": 51,
+          "gas": 432765
+        }
+      ]
+    },
+    {
+      "moves": 201,
+      "paddedDetourMoves": 150,
+      "pureReplayGas": 1198227,
+      "statefulBatchGasTotal": 1521410,
+      "batches": [
+        {
+          "moves": 64,
+          "gas": 470572
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 486665
+        },
+        {
+          "moves": 9,
+          "gas": 110701
+        }
+      ]
+    },
+    {
+      "moves": 501,
+      "paddedDetourMoves": 450,
+      "pureReplayGas": 2791559,
+      "statefulBatchGasTotal": 3617675,
+      "batches": [
+        {
+          "moves": 64,
+          "gas": 470572
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 64,
+          "gas": 453472
+        },
+        {
+          "moves": 53,
+          "gas": 426271
+        }
+      ]
+    }
+  ]
+}

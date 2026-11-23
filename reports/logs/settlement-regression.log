@@ -1,0 +1,35 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ MATCH-01: every documented adapter read/write/event exists in the compiled local ABI (11.347566ms)
+✔ MATCH-02: frontend/public rules match real contract reward stages, supply limits and Star prices (3765.308079ms)
+✔ MATCH-03: chain permits challenge/claim with transferred fruit before free claim; Settled tier needs Claimed (9559.808466ms)
+✔ all five write steps reject missing .ai ID; holder can buy Star, add LP and claim once (8364.283415ms)
+✔ nine NFT names and Emoji compile to valid on-chain JSON (1709.707244ms)
+✔ Star price rises every 1,000; boundaries, crossing quote and total revenue (3550.148437ms)
+✔ three tiers and revoked identity: reward/continue branches remain independent (18980.56878ms)
+✔ first tier Star substitutions require at least one ordinary fruit; mixed fruits and all Stars fail (4088.18588ms)
+✔ native price-band crossing retains spare BNB without carrying unused mint budget (2976.681228ms)
+✔ SEC-01: one-wei WBNB donation and permissionless sync block LP bootstrap repeatedly (3329.982127ms)
+✔ SEC-02: all five write functions reject reentry from NFT mint callbacks (4084.124551ms)
+✔ SEC-03: rejecting NFT receivers roll back free eligibility, sales, payments and minting (2969.668206ms)
+✔ SEC-04: minting, burning, reserve spending, LP attempts and repeat deployment are restricted (2715.768455ms)
+✔ SEC-05: duplicate, foreign, malformed and nonexistent NFT submissions cannot burn (4420.237308ms)
+✔ SEC-06: underquotes, missing/incorrect value and exhausted quota revert atomically (2912.155352ms)
+✔ SEC-07: high minimum reward and exhausted shares cannot mint or advance matched state (3835.05904ms)
+✔ SEC-08: a transferable Agent ID can qualify multiple wallets sequentially (conditional identity limitation) (4214.369137ms)
+✔ SEC-09: a Treasury refusing native BNB rolls back sale, reserve and NFTs (2849.530274ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84682.286195

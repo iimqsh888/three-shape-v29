@@ -1,0 +1,22 @@
+{
+  "chainId": 97,
+  "game": "0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7",
+  "reserve": "0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c",
+  "endingWalletBalanceBNB": "0.116700266588767",
+  "startingWalletBalanceBNB": "0.200289655208767",
+  "walletNetOutflowBNB": "0.08358938862",
+  "deploymentGasFeeBNB": "0.0014242567",
+  "starPurchasePaymentsBNB": "0.08",
+  "budgetMaximumOutflowBNB": "0.10",
+  "budgetRespected": true,
+  "publicState": {
+    "starsSold": "8",
+    "totalClaims": "4",
+    "remainingShares": "54996",
+    "lpMinted": "114400000000000000000000000",
+    "playerMinted": "112000000000000000000000000",
+    "reserveBalanceWei": "0",
+    "starSalesClosed": false
+  },
+  "checkedAt": "2026-11-10T22:42:35.865Z"
+}

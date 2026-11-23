@@ -1,0 +1,540 @@
+{
+  "chainId": 97,
+  "startedAt": "2026-11-09T03:18:34.140Z",
+  "status": "interrupted_by_user_rule_change",
+  "dependencyNotice": "USDT and identity registry are isolated test fixtures, NOT real USDT or official Binance .ai Agent ID. DEX router/factory are the documented PancakeSwap V2 testnet deployments.",
+  "checks": [
+    {
+      "name": "all five game writes reject missing identity",
+      "status": "passed"
+    },
+    {
+      "name": "on-chain revert preserves progress",
+      "status": "passed"
+    },
+    {
+      "name": "free claim once per qualified wallet and all eight ordinary kinds",
+      "status": "passed"
+    },
+    {
+      "name": "real DEX bootstrap; 80/20 USDT split; LP sent to burn address",
+      "status": "passed"
+    },
+    {
+      "name": "six-Star wallet limit; price and quote protections",
+      "status": "passed"
+    },
+    {
+      "name": "nine metadata names and Emoji originate from on-chain JSON",
+      "status": "passed"
+    },
+    {
+      "name": "subsequent buys add liquidity on the real V2 reserve ratio",
+      "status": "passed"
+    },
+    {
+      "name": "NFT transfers and ownership checks",
+      "status": "passed"
+    },
+    {
+      "name": "invalid all-Star, mixed fruit and duplicate burns are rejected",
+      "status": "passed"
+    },
+    {
+      "name": "first-tier claim pays one million exactly",
+      "status": "passed"
+    },
+    {
+      "name": "second-tier continue and claim pays ten million exactly",
+      "status": "passed"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "expected missing-identity revert",
+      "hash": "0x596a0e79372d1ab2bfec2f038018ef9b9239336958b4770c12b9d48f82556a70",
+      "status": "expected_revert",
+      "blockNumber": 141652087,
+      "gasUsed": "31869",
+      "feeWei": "3186900000000"
+    },
+    {
+      "name": "test gas player 1",
+      "hash": "0x01db39e170b401baaab996bb1ca90e5e5218dec2b5e956bf91885c36fabd53b9",
+      "status": "confirmed",
+      "blockNumber": 141652098,
+      "gasUsed": "21000",
+      "feeWei": "2100000000000"
+    },
+    {
+      "name": "test gas player 2",
+      "hash": "0x4b8ef3defe3b3127e1959b6bb7b1ebb83e6492f6100a8fe6cc725de14d150dd9",
+      "status": "confirmed",
+      "blockNumber": 141652104,
+      "gasUsed": "21000",
+      "feeWei": "2100000000000"
+    },
+    {
+      "name": "test gas player 3",
+      "hash": "0x7845a7bb302c123ed2365d7bc45e2acc246b216bb4617a7f476491af67a71669",
+      "status": "confirmed",
+      "blockNumber": 141652110,
+      "gasUsed": "21000",
+      "feeWei": "2100000000000"
+    },
+    {
+      "name": "test gas player 4",
+      "hash": "0x0c1bd8730bb96909c53b15bf53dc2f4dec84adeeebd9e20a39affeeac69bb7fd",
+      "status": "confirmed",
+      "blockNumber": 141652119,
+      "gasUsed": "21000",
+      "feeWei": "2100000000000"
+    },
+    {
+      "name": "test gas player 5",
+      "hash": "0x9696d8c6cbb51c7721e38835ce8945fd9ab51d221035258c1a8720d1b3fe6a9a",
+      "status": "confirmed",
+      "blockNumber": 141652126,
+      "gasUsed": "21000",
+      "feeWei": "2100000000000"
+    },
+    {
+      "name": "issue isolated test identity player 0",
+      "hash": "0xb2bfa4f3036545908a43f4a2b81fec3a9ab5cc4b0bbf2d6d24f1efac2d073a05",
+      "status": "confirmed",
+      "blockNumber": 141652132,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "free claim player 0",
+      "hash": "0x3a1568f7349fd41a0f5b8a30950bf711755ac926784d187b32ecdefb7ccc4297",
+      "status": "confirmed",
+      "blockNumber": 141652140,
+      "gasUsed": "252491",
+      "feeWei": "25249100000000"
+    },
+    {
+      "name": "issue isolated test identity player 1",
+      "hash": "0x4db0c4c359191637d75ecf4a2e596ce9c73f1facdf40ef4db75d1bc4c404427b",
+      "status": "confirmed",
+      "blockNumber": 141652153,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "free claim player 1",
+      "hash": "0xc4ad3ce4cdd5cd499da4c43a777fad43c1e599ab490f30342c041e5e1c38ea0e",
+      "status": "confirmed",
+      "blockNumber": 141652162,
+      "gasUsed": "235391",
+      "feeWei": "23539100000000"
+    },
+    {
+      "name": "issue isolated test identity player 2",
+      "hash": "0x06a0a9c4fd8abbd73b270318f38e92aa291e4f941eab1f5a5a2f5ec8013ddd13",
+      "status": "confirmed",
+      "blockNumber": 141652173,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "free claim player 2",
+      "hash": "0xd16fc72efcbb541bfdfdd389927f2d7bca4e17269e47ab0e7997eb27ac148b30",
+      "status": "confirmed",
+      "blockNumber": 141652181,
+      "gasUsed": "235391",
+      "feeWei": "23539100000000"
+    },
+    {
+      "name": "issue isolated test identity player 3",
+      "hash": "0x762bc808fd9ead41399886c389fb03b62ce1cef6e2447c0d626da6bb1f291087",
+      "status": "confirmed",
+      "blockNumber": 141652194,
+      "gasUsed": "44064",
+      "feeWei": "4406400000000"
+    },
+    {
+      "name": "free claim player 3",
+      "hash": "0x7b8d327103bc9d1002afa53823592f1ca89a529ba6ed0dc62712b943cbb49e8c",
+      "status": "confirmed",
+      "blockNumber": 141652201,
+      "gasUsed": "235391",
+      "feeWei": "23539100000000"
+    },
+    {
+      "name": "issue isolated test identity player 4",
+      "hash": "0x1c5808c7f910dde740a1285f5cd174419ca6dc4abd63f5ac540287705fc6a3c1",
+      "status": "confirmed",
+      "blockNumber": 141652211,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "free claim player 4",
+      "hash": "0xbb0d02dfebd3aad0b114a76b52ff2604dcfaa2b0a74c3c0755e34d9ff89d12c1",
+      "status": "confirmed",
+      "blockNumber": 141652224,
+      "gasUsed": "235391",
+      "feeWei": "23539100000000"
+    },
+    {
+      "name": "issue isolated test identity player 5",
+      "hash": "0x20271837d9080f8e5175f24b911234a076faa8da14aafb6bf61a4fb360718eb0",
+      "status": "confirmed",
+      "blockNumber": 141652234,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "free claim player 5",
+      "hash": "0x1534673b8e7ba5e60aa435a6ebceb70ae935b78a7ee292b2fa0c53ad62484ad3",
+      "status": "confirmed",
+      "blockNumber": 141652242,
+      "gasUsed": "235391",
+      "feeWei": "23539100000000"
+    },
+    {
+      "name": "fund test USDT player 0",
+      "hash": "0xb56dbbecdca0667f2a7ff0212afb7e73ceb2d43dc095bbba50dbff94b17319b3",
+      "status": "confirmed",
+      "blockNumber": 141652253,
+      "gasUsed": "68402",
+      "feeWei": "6840200000000"
+    },
+    {
+      "name": "approve exact USDT player 0",
+      "hash": "0x1e5422a525d0e4435bc5e0c60e6378cd7ff95d48183eab8c2d8f9c606facd1c9",
+      "status": "confirmed",
+      "blockNumber": 141652261,
+      "gasUsed": "46331",
+      "feeWei": "4633100000000"
+    },
+    {
+      "name": "buy 6 Stars player 0",
+      "hash": "0x93844d1b9fb86deb6c300aa1c128eb7f03db48fb8d0b3e86c84556e020b5e6b5",
+      "status": "confirmed",
+      "blockNumber": 141652269,
+      "gasUsed": "763794",
+      "feeWei": "76379400000000"
+    },
+    {
+      "name": "fund test USDT player 1",
+      "hash": "0xec7ca502e4193c58cb7e6aa47027820b96625700a6bfb2013f0344115bae240d",
+      "status": "confirmed",
+      "blockNumber": 141652318,
+      "gasUsed": "51302",
+      "feeWei": "5130200000000"
+    },
+    {
+      "name": "approve exact USDT player 1",
+      "hash": "0xf2ccc2a81c81582544a4ee87d3578ce0a1da52239bc824b1acd04549f19ea99d",
+      "status": "confirmed",
+      "blockNumber": 141652326,
+      "gasUsed": "46331",
+      "feeWei": "4633100000000"
+    },
+    {
+      "name": "buy 6 Stars player 1",
+      "hash": "0xa6b30aca33f2747713b14a417fbbe17018993888e1f09f38e7d2ebe93a6f432f",
+      "status": "confirmed",
+      "blockNumber": 141652334,
+      "gasUsed": "583420",
+      "feeWei": "58342000000000"
+    },
+    {
+      "name": "fund test USDT player 2",
+      "hash": "0x12ec51edaaca0f82e9a081749fe68aef0bc1f2a3012a2d910830558f2ceab379",
+      "status": "confirmed",
+      "blockNumber": 141652345,
+      "gasUsed": "51302",
+      "feeWei": "5130200000000"
+    },
+    {
+      "name": "approve exact USDT player 2",
+      "hash": "0x4f9fa251c95ae4dd93df0cb62f65d201f7b8820c025efd2818662b10c4dcfdb5",
+      "status": "confirmed",
+      "blockNumber": 141652353,
+      "gasUsed": "46331",
+      "feeWei": "4633100000000"
+    },
+    {
+      "name": "buy 6 Stars player 2",
+      "hash": "0x23d464d032d402ab40d359ce1b314e58efe5869acb78e4c5f9ca69b766b2268f",
+      "status": "confirmed",
+      "blockNumber": 141652368,
+      "gasUsed": "549438",
+      "feeWei": "54943800000000"
+    },
+    {
+      "name": "fund test USDT player 3",
+      "hash": "0x4c67b15feebebbf6ac4b7283090fec2da400e1abdd6c6ce8c3a4ad663aba2ddf",
+      "status": "confirmed",
+      "blockNumber": 141652379,
+      "gasUsed": "51290",
+      "feeWei": "5129000000000"
+    },
+    {
+      "name": "approve exact USDT player 3",
+      "hash": "0x83c1368032e181e33c014076a6fa882413b5895dcb956b0ddc55c9e119504093",
+      "status": "confirmed",
+      "blockNumber": 141652388,
+      "gasUsed": "46331",
+      "feeWei": "4633100000000"
+    },
+    {
+      "name": "buy 6 Stars player 3",
+      "hash": "0xab2e9f9e1b49b5d7f01d79edb6009e0b46fdbd0cb8562d57b601c95faf4a306e",
+      "status": "confirmed",
+      "blockNumber": 141652395,
+      "gasUsed": "549438",
+      "feeWei": "54943800000000"
+    },
+    {
+      "name": "transfer NFT 37 player 3 to 0",
+      "hash": "0x13229fe1b5fb3b07c73223dcd8ec58831996050c642530d10341c4a38a15d442",
+      "status": "confirmed",
+      "blockNumber": 141652406,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 38 player 3 to 0",
+      "hash": "0x7e12f915749389c9c2d2719dd4c33a07a2449886519f9125f5129cae91e1ff97",
+      "status": "confirmed",
+      "blockNumber": 141652416,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 39 player 3 to 0",
+      "hash": "0x41307ce565d6aa45fee37abd2bc1b79196599b5c2f714466cf4c53c588663bc3",
+      "status": "confirmed",
+      "blockNumber": 141652423,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 40 player 3 to 0",
+      "hash": "0x7f45561189bfe2ad99ecf754f949ef33c63c236691fb648327aca7eb95bc941b",
+      "status": "confirmed",
+      "blockNumber": 141652431,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 41 player 3 to 0",
+      "hash": "0xa564b8b32615d66d6811cebfc93c817574217c5c1431007debea8269d2922a69",
+      "status": "confirmed",
+      "blockNumber": 141652440,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 42 player 3 to 0",
+      "hash": "0x31d83e34dba14a946469d6fe6ee401ebdcfe59db64cb8bdfbc560fd3da9a51a1",
+      "status": "confirmed",
+      "blockNumber": 141652448,
+      "gasUsed": "42730",
+      "feeWei": "4273000000000"
+    },
+    {
+      "name": "transfer NFT 25 player 1 to 0",
+      "hash": "0xeba11f30d9e1b662ef42c7373e1f0c9fadd66259c3374065615caf8783f6cd4d",
+      "status": "confirmed",
+      "blockNumber": 141652457,
+      "gasUsed": "42742",
+      "feeWei": "4274200000000"
+    },
+    {
+      "name": "transfer NFT 26 player 1 to 0",
+      "hash": "0x513d22979ef5225841bad92e80d715648200e0bb6aa4b39962debf640f8e633d",
+      "status": "confirmed",
+      "blockNumber": 141652467,
+      "gasUsed": "42742",
+      "feeWei": "4274200000000"
+    },
+    {
+      "name": "transfer NFT 27 player 1 to 0",
+      "hash": "0x00b902b034bf1ef1de77b7babf02da395ef2c3dfdce375aab02ede4476ad0094",
+      "status": "confirmed",
+      "blockNumber": 141652475,
+      "gasUsed": "42742",
+      "feeWei": "4274200000000"
+    },
+    {
+      "name": "transfer NFT 28 player 1 to 2",
+      "hash": "0x20e173a3af1637896d9732c685c7976195d7bb7ac82007c3ccb92522c6b787a2",
+      "status": "confirmed",
+      "blockNumber": 141652483,
+      "gasUsed": "42742",
+      "feeWei": "4274200000000"
+    },
+    {
+      "name": "match tier 1 player 1",
+      "hash": "0x395424140863a01101617ecc5278faec4b80ca9406394852167bf9d399c764db",
+      "status": "confirmed",
+      "blockNumber": 141652496,
+      "gasUsed": "99275",
+      "feeWei": "9927500000000"
+    },
+    {
+      "name": "claim tier 1 player 1",
+      "hash": "0x7f902a6d2941d213b2687eee909596f52ce762099a60308ac54a1f74d46625c0",
+      "status": "confirmed",
+      "blockNumber": 141652512,
+      "gasUsed": "114915",
+      "feeWei": "11491500000000"
+    },
+    {
+      "name": "match tier 1 player 2",
+      "hash": "0xbc47a15d9c24790b5b62e8c6886f90157eefbbd61512dd5578e0717b4e3ec0d4",
+      "status": "confirmed",
+      "blockNumber": 141652524,
+      "gasUsed": "99275",
+      "feeWei": "9927500000000"
+    },
+    {
+      "name": "continue player 2 to tier 2",
+      "hash": "0x2783cf1e62d9da8101a08e2c9d203254a62fd8815656855d950e0d6becbc55e1",
+      "status": "confirmed",
+      "blockNumber": 141652536,
+      "gasUsed": "36583",
+      "feeWei": "3658300000000"
+    },
+    {
+      "name": "match tier 2 player 2",
+      "hash": "0xca31daf738896be3f435c65dc2b06ee6721f7c27d03f09789298449e9233423d",
+      "status": "confirmed",
+      "blockNumber": 141652545,
+      "gasUsed": "133120",
+      "feeWei": "13312000000000"
+    },
+    {
+      "name": "claim tier 2 player 2",
+      "hash": "0x35f6f2717ebf626f24a592cdf360cf61280a1e220c6bed7cad8391c84b989d48",
+      "status": "confirmed",
+      "blockNumber": 141652561,
+      "gasUsed": "81343",
+      "feeWei": "8134300000000"
+    },
+    {
+      "name": "set test identity 0",
+      "hash": "0x052fe3999a38749e0689a8e7c2a2db96c8a975b42fb24d3c1ca707baac1e7657",
+      "status": "confirmed",
+      "blockNumber": 141652571,
+      "gasUsed": "22400",
+      "feeWei": "2240000000000"
+    },
+    {
+      "name": "set test identity 1",
+      "hash": "0xb61a84b3896802e12726c30446944ebf0f5c4467b3d46e70e3fab435eaacd17e",
+      "status": "confirmed",
+      "blockNumber": 141652584,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "match tier 1 player 0",
+      "hash": "0x99aef60caa8efde665586c1ddb5794e1dfdb0bb8432cb61478e14f0ec6c55392",
+      "status": "confirmed",
+      "blockNumber": 141652592,
+      "gasUsed": "99275",
+      "feeWei": "9927500000000"
+    },
+    {
+      "name": "set test identity 0",
+      "hash": "0x479407e63b2d0f76cc96420e045f9e54387527c42c1c87643f5c7385ebd26e4e",
+      "status": "confirmed",
+      "blockNumber": 141652604,
+      "gasUsed": "22400",
+      "feeWei": "2240000000000"
+    },
+    {
+      "name": "set test identity 1",
+      "hash": "0x82e4e7d2618217f09c5af6a8e5ea859752658992fa7b9cf89b90da59d772bb89",
+      "status": "confirmed",
+      "blockNumber": 141652613,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "continue main to tier 2",
+      "hash": "0x8168ece3982208ffaf00875181edcbc8762a256878d295cd59255a45abb831c9",
+      "status": "confirmed",
+      "blockNumber": 141652621,
+      "gasUsed": "36583",
+      "feeWei": "3658300000000"
+    },
+    {
+      "name": "set test identity 0",
+      "hash": "0x3af8a691a61a8e1c098b9adde4f4073450f46589fc818408a44f204a0787257a",
+      "status": "confirmed",
+      "blockNumber": 141652630,
+      "gasUsed": "22400",
+      "feeWei": "2240000000000"
+    },
+    {
+      "name": "set test identity 1",
+      "hash": "0x765fb00e7f1041b4a0d65a3ccbb8e6cca9e961937b686b20d927a67c7dcefdd2",
+      "status": "confirmed",
+      "blockNumber": 141652638,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "match tier 2 player 0",
+      "hash": "0x68ca7403f98c6c0f560efd3f245b1b2b06473df125c8decbb0812616eeb208ce",
+      "status": "confirmed",
+      "blockNumber": 141652646,
+      "gasUsed": "133120",
+      "feeWei": "13312000000000"
+    },
+    {
+      "name": "set test identity 0",
+      "hash": "0xbe1f7ca745d8e7ea3afd0d7d8cc937f40288bdf17e2a85ec362b05a17b98c91e",
+      "status": "confirmed",
+      "blockNumber": 141652662,
+      "gasUsed": "22400",
+      "feeWei": "2240000000000"
+    },
+    {
+      "name": "set test identity 1",
+      "hash": "0x8fc9496196b3a16e8f627e27328213d1f9d30b1f8e596c607f461e6ce5b4c309",
+      "status": "confirmed",
+      "blockNumber": 141652671,
+      "gasUsed": "44076",
+      "feeWei": "4407600000000"
+    },
+    {
+      "name": "continue main to tier 3",
+      "hash": "0x05f4d4727954818d1c9bd2715f169fd9b9685b2c4d199a71d11ebd317f00c4eb",
+      "status": "confirmed",
+      "blockNumber": 141652678,
+      "gasUsed": "36630",
+      "feeWei": "3663000000000"
+    },
+    {
+      "name": "set test identity 0",
+      "hash": "0x72a830fbdd160eb3c49427a4cb32db35236c9f4686ca7880dcdb63890214332c",
+      "status": "confirmed",
+      "blockNumber": 141652687,
+      "gasUsed": "22400",
+      "feeWei": "2240000000000"
+    },
+    {
+      "name": "set test identity 1",
+      "hash": "0x6d0b97834cde106720ab0d4133daa2e149602b527d39c2a679990de3347a09fe",
+      "status": "pending"
+    }
+  ],
+  "players": [
+    "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+    "0xAFebe21Be36Ee160C35428011e7C09A49fE5ec65",
+    "0xDB07E77da821385c25C7319FFD6fdBf42D9aB67b",
+    "0x1Db743A99155b92E3c3665469742220076E51468",
+    "0x2235EAF5fE424275DaDD672a53b5c7753D228F30",
+    "0x4CFc621891436d9badB552972ed2d12B3121Fe8d"
+  ],
+  "note": "Stopped USDT runner when user requested native BNB. Pending submissions must be checked individually; this is not a full passing test run."
+}

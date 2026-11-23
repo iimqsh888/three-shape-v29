@@ -1,0 +1,49 @@
+{
+  "status": "passed-with-stated-limits",
+  "sourceSha256": {
+    "contracts/season/NineFruitsSeason.sol": "162dd559fc27a0e7a82286e7da662fe4b27e7b8c647255ab53c02ed0898d34a9",
+    "contracts/season/NineFruitsMedal.sol": "c8fbdac9490594dd6fe2cc595e778036504f842c543f34b7049c26986c58123e",
+    "contracts/season/NineFruitsTitle.sol": "9f83439a2760f388f19b8df8ec0889a68f0782c0f2a58bd02f5754754851e7a0",
+    "contracts/puzzle/NineFruitsGravityVerifier.sol": "f1165f19daa67ca066c9329a0513872a6176baef1666f77a9bcc7844ce20ed6f"
+  },
+  "checks": [
+    {
+      "name": "season-main-suite",
+      "status": "passed",
+      "count": 8
+    },
+    {
+      "name": "strict-funding-followup",
+      "status": "passed",
+      "count": 2
+    },
+    {
+      "name": "complex-puzzle-followup",
+      "status": "passed",
+      "count": 1
+    },
+    {
+      "name": "original-base",
+      "status": "passed",
+      "count": 27
+    },
+    {
+      "name": "original-security",
+      "status": "passed",
+      "count": 9
+    },
+    {
+      "name": "original-EVM-reserve-compatibility",
+      "status": "passed",
+      "count": 16
+    }
+  ],
+  "forkReport": "reports/season/bsc-fork.json",
+  "compiler": "Solidity 0.8.24, optimizer 200, Shanghai",
+  "scopeNotes": [
+    "The 8-group season suite passed; a subsequent exact-sponsor-debit hardening was checked with the funding group and new sender-fee regression, plus the final BSC state fork. The complex seven-move puzzle was checked separately. Counts overlap; they are not one combined test-run total.",
+    "BSC fork uses real registry state but locally deployed Token/NFT/season and Shanghai Ganache execution. Public transactions: zero.",
+    "No external audit or public-network deployment. Offline manager-reviewed solvability is still trusted.",
+    "Frontend remains simulated; no live wallet adapter was enabled."
+  ]
+}

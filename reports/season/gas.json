@@ -1,0 +1,9 @@
+{
+  "startNineNFTs": 185526,
+  "network": "Local Ganache chainId 31337, Shanghai; not BSC Fork",
+  "settleFiveMovesWithMedal": 755004,
+  "claimBNB": 94807,
+  "settleWithOriginalTokenAndNFT": 751742,
+  "maximumSettleAcross101Players": 755004,
+  "settleSevenMoveShuffledBoard": 890177
+}
