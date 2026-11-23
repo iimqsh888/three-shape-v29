@@ -59,6 +59,10 @@
     },
     {
       "status": "added",
+      "path": "reports/fruit-market/validation.json"
+    },
+    {
+      "status": "added",
       "path": "scripts/build-market.mjs"
     },
     {
@@ -83,6 +87,10 @@
     },
     {
       "status": "added",
+      "path": "test/market.identity.test.mjs"
+    },
+    {
+      "status": "added",
       "path": "test/market.model.test.mjs"
     },
     {
@@ -100,6 +108,10 @@
     {
       "status": "added",
       "path": "web/market-config.mjs"
+    },
+    {
+      "status": "added",
+      "path": "web/market-identity.mjs"
     },
     {
       "status": "added",
@@ -136,10 +148,6 @@
     {
       "status": "modified",
       "path": "web/src/website/AgentStart.tsx"
-    },
-    {
-      "status": "added",
-      "path": "reports/fruit-market/validation.json"
     }
   ],
   "unchangedProtectedFiles": [
