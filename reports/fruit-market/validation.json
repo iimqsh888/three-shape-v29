@@ -1,0 +1,55 @@
+{
+  "reviewBase": "sites-v24-baseline",
+  "sitesSourceCommit": "1325028d50238026b09b1c562aec90daa0f7dea1",
+  "existingCoreOrRuleFileChanges": 0,
+  "compile": "passed",
+  "staticBuild": "passed",
+  "checks": [
+    {
+      "name": "Node baseline",
+      "passed": 27,
+      "failed": 0
+    },
+    {
+      "name": "Market EVM/model (includes parent)",
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "name": "Existing frontend",
+      "passed": 93,
+      "failed": 0
+    },
+    {
+      "name": "Browser",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "name": "Core/security/Reserve/identity/ABI EVM",
+      "passed": 28,
+      "failed": 0
+    },
+    {
+      "name": "Gravity",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "name": "Season full regression",
+      "status": "interrupted",
+      "completedCases": 4,
+      "rankProgress": "60/101",
+      "fullPass": false
+    },
+    {
+      "name": "BSC season fork",
+      "status": "failed",
+      "completedChecks": 1,
+      "error": "could not coalesce error",
+      "publicTransactionsSent": 0
+    }
+  ],
+  "deploymentPerformed": false,
+  "mainBranchMerged": false
+}

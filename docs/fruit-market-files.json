@@ -136,6 +136,10 @@
     {
       "status": "modified",
       "path": "web/src/website/AgentStart.tsx"
+    },
+    {
+      "status": "added",
+      "path": "reports/fruit-market/validation.json"
     }
   ],
   "unchangedProtectedFiles": [

@@ -46,7 +46,7 @@
 | `npm run test:card` | 93 通过，0 失败，11 个文件 |
 | `npm run test:ui` | 8 通过，0 失败；包括钱包完整交易流程、入口实际尺寸与跳转、移动及桌面布局 |
 | EVM / 安全 / Reserve / 身份 / ABI 兼容 | 28 通过，0 失败 |
-| 九果迷阵 gravity / season | 正在收集最终结果 |
+| 九果迷阵 gravity / season | Gravity 7 通过；完整 season 长测中断：已完成前 4 项，排名仅执行到 60/101，不能记为完整通过 |
 | `npm run test:season:fork` | 失败；官方 registry 与真实持有者资格检查通过后发生 `could not coalesce error`，后续检查未通过；公开链发送交易数 0 |
 | 核心文件基线比对 | 20 个现有 contracts/puzzle 文件逐字节一致 |
 
@@ -54,6 +54,7 @@
 
 ## 未验证与阻碍
 
+- 赛季长测的测试进程在会话中断后已结束，未取得完整结果，需重跑；未修改赛季源码。
 - Fork 只完成上述一项检查，完整 Fork 未通过；失败记录见 `reports/fruit-market/season-bsc-fork.json`，不能把导入的旧报告作为本次通过证据。
 - 市场没有部署；`web/market-config.mjs` 的 NFT/3SHAPE/market 地址留空，需独立验证并在授权部署后配置。未部署 BSC 主网，也不要求重部署原合约。
 - 浏览器交易使用本地 Ganache EIP-1193 桥，不等于生产钱包扩展或真实 BSC 市场测试。
