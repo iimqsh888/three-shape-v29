@@ -1,0 +1,13 @@
+{
+  "chainId": 97,
+  "deployer": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "startingBalanceWei": "200289655208767000",
+  "startingBalanceBNB": "0.200289655208767",
+  "gasPriceWei": "120000000",
+  "estimatedDeploymentGas": "15000000",
+  "deploymentFeeAtCurrentGasBNB": "0.0018",
+  "plannedStarPurchasesBNB": "0.08",
+  "otherTestAndFundingBufferBNB": "0.01",
+  "maximumPlannedWalletOutflowBNB": "0.10",
+  "preserveAtLeastBNB": "0.10"
+}

@@ -1,0 +1,6 @@
+{
+  "address": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "chainId": 97,
+  "purpose": "BSC-testnet-only deployment signer; not an Agentic Wallet or a deployed contract",
+  "fundingAsset": "test BNB only"
+}

@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+/// @dev Test-only dependency: demonstrates qualification reuse IF Agent IDs are transferable.
+contract TransferableRegistrySecurityV29 is ERC721 {
+    constructor() ERC721("Test-only Agent ID", "TESTID") {}
+    function issue(address to,uint256 id) external { _mint(to,id); }
+}
+
+interface IGameSecurityV29 {
+    function claimFree() external;
+    function buyStars(uint256 quantity,uint256 maxPayment) external payable;
+}
+
+/// @dev Never included in the production deployment factory or website assets.
+contract ReceiverSecurityV29 is IERC721Receiver {
+    address public immutable game;
+    bool public reject;
+    uint256 public callbacks;
+    uint256 public guarded;
+    uint256 public bypassed;
+
+    constructor(address game_) {game=game_;}
+    receive() external payable {}
+    function setReject(bool value) external { reject=value; }
+    function free() external { IGameSecurityV29(game).claimFree(); }
+    function purchase(uint256 quantity,uint256 payment) external payable {
+        IGameSecurityV29(game).buyStars{value:msg.value}(quantity,payment);
+    }
+    function onERC721Received(address,address,uint256,bytes calldata) external returns(bytes4) {
+        require(!reject,"receiver rejected");
+        callbacks++;
+        bytes[] memory calls=new bytes[](5);
+        calls[0]=abi.encodeWithSignature("claimFree()");
+        calls[1]=abi.encodeWithSignature("burnForTier(uint256[])",new uint256[](0));
+        calls[2]=abi.encodeWithSignature("continueChallenge()");
+        calls[3]=abi.encodeWithSignature("claimReward(uint256)",0);
+        calls[4]=abi.encodeWithSignature("buyStars(uint256,uint256)",1,type(uint256).max);
+        for(uint256 i;i<calls.length;i++) {
+            (bool success,bytes memory result)=game.call(calls[i]);
+            if(success)bypassed++;
+            else if(result.length>=4 && bytes4(result)==bytes4(keccak256("ReentrancyGuardReentrantCall()")))guarded++;
+        }
+        return IERC721Receiver.onERC721Received.selector;
+    }
+}
+
+interface ISettlementReserveSecurityV29 {
+    function settleToTreasury() external;
+}
+/// @dev Local regression fixture only; never deployed by the production factory.
+contract SettlementTreasurySecurityV29 {
+    address public reserve;
+    address public game;
+    bool public reject;
+    bool public attemptDuringPayment;
+    bool public attemptDuringSettlement;
+    uint256 public paymentSettlementAttempts;
+    uint256 public earlySettlementSuccesses;
+    uint256 public reentrantSuccesses;
+    uint256 public received;
+    function configure(address reserve_,address game_) external {reserve=reserve_;game=game_;}
+    function setModes(bool reject_,bool payment_,bool settlement_) external {
+        reject=reject_;attemptDuringPayment=payment_;attemptDuringSettlement=settlement_;
+    }
+    receive() external payable {
+        require(!reject,"Treasury refused");received+=msg.value;
+        if(attemptDuringPayment && msg.sender==game){
+            paymentSettlementAttempts++;
+            (bool success,)=reserve.call(abi.encodeCall(ISettlementReserveSecurityV29.settleToTreasury,()));
+            if(success)earlySettlementSuccesses++;
+        }
+        if(attemptDuringSettlement && msg.sender==reserve){
+            (bool success,)=reserve.call(abi.encodeCall(ISettlementReserveSecurityV29.settleToTreasury,()));
+            if(success)reentrantSuccesses++;
+        }
+    }
+}
+

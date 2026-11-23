@@ -3,7 +3,8 @@ artifacts/
 coverage/
 .env
 
-web/market.bundle.js
+web/public/api/
+web/public/skills/
+web/src/generated/
 
-test-results/
-playwright-report/
+dist/

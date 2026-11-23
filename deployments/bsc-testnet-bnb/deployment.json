@@ -1,0 +1,68 @@
+{
+  "chainId": 97,
+  "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
+  "network": "BSC Testnet",
+  "paymentAsset": "BNB",
+  "status": "deployed",
+  "dependencyNotice": "The identity registry is an isolated test fixture, NOT official Binance .ai Agent ID. Purchases use native test BNB. DEX router/factory/WBNB are the documented PancakeSwap V2 testnet dependencies.",
+  "router": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
+  "dexFactory": "0x6725F303b657a9451d8BA641348b6761A6CC7a17",
+  "treasury": "0x19a00449a5af7a51279b401dfe3bf92cb90a2751",
+  "contracts": {
+    "testIdentityRegistry": "0x60b2862c06BF19f7d1c5c60f5CC178Bee415Ddd7",
+    "deploymentFactory": "0x3519fB955629e8448472E198eF372056c12E57D0",
+    "pair": "0x5bAcd39c4aB30ef25B968F6dd021469a48D3C0B9",
+    "token": "0xB56fA7318a6A0b1b256a72F1336d0de1c6692680",
+    "nft": "0x2975a4D564c1058c51B693Ec7D11dA3cB72eC2FF",
+    "reserve": "0x4C051bb5d0b8408d2A16799d58115B45e7596ca4",
+    "game": "0x3A0Bc1D0a7982F0680e4C4F2dEAc00b945bdF17C",
+    "liquidity": "0xfc2cbc087d48eB628274991E00839FF19104cf7D"
+  },
+  "transactions": [
+    {
+      "label": "deploy testIdentityRegistry",
+      "hash": "0x9e25c26a500fad6fa1f307eaf6e9bb7b932309e47c6cfd7853c47a100c67828d",
+      "status": "confirmed",
+      "blockNumber": 141653437,
+      "gasUsed": "114871"
+    },
+    {
+      "label": "deploy deploymentFactory",
+      "hash": "0x3ea451b2b14e59ab97865f30cd1403171872bff57c3d328723dac304bbc841e2",
+      "status": "confirmed",
+      "blockNumber": 141653448,
+      "gasUsed": "6760265"
+    },
+    {
+      "label": "create real PancakeSwap V2 testnet pair",
+      "hash": "0x6104f707e0f8a060ba1c9b71d642a2dea387ea48f607ebfe8be14be5c87e8a71",
+      "status": "confirmed",
+      "blockNumber": 141653456,
+      "gasUsed": "1980249"
+    },
+    {
+      "label": "deploy five immutable production contracts",
+      "hash": "0x4605cb2ca40ac165648a5b8c415a2d0bc49f04834fe23110b9a039b958c662f6",
+      "status": "confirmed",
+      "blockNumber": 141653465,
+      "gasUsed": "4935216"
+    }
+  ],
+  "sources": {
+    "contracts/ThreeShapeV29.sol": "92996df1849b15a165a3857acf1ec275e123766054188512c17e210cdeacf3cc",
+    "contracts/ThreeShapeDeploymentV29.sol": "c00f9dc54e875dfa2b39aa935d1a7de06466884fad3bfa1313eaddbae928e986",
+    "contracts/test/MocksV29.sol": "a0da8892886c574b6bf4f16e205e6bffd89b806c6542284ad203a4055d59eb64"
+  },
+  "deployer": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "wbnb": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+  "deploymentBlock": 141653465,
+  "verifiedAt": "2026-11-09T03:29:05.036Z",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "payment": {
+    "symbol": "BNB",
+    "decimals": 18,
+    "initialWei": "10000000000000000",
+    "stepWei": "5000000000000000",
+    "stepSales": 1000
+  }
+}

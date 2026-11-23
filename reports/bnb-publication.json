@@ -1,0 +1,12 @@
+{
+  "githubCommit": "5d861b9d78760e5282e1ef1ac9897a9f4b9f57d8",
+  "githubBranch": "codex/rules-1000-stars-ai-checks-20261107",
+  "siteSourceCommit": "367e9faa443aaf04cc698baa29271b57f813da16",
+  "deploymentId": "appgdep_6af282410bfc8191a1c425c3b5c39e62",
+  "versionId": "appgprj_6aefbcb1e6348191ab4e466f37b80ab2~appgver_1d3a351233d4819188395628beb5b4ab",
+  "status": "succeeded",
+  "url": "https://three-shape-agent-preview-v29.helpfulshore2.chatgpt.site",
+  "audience": "owner-private",
+  "chainId": 97,
+  "mainnetDeployed": false
+}

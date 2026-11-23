@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {keccak256,hexlify} from 'ethers';
+import {replay} from '../puzzle/gravity.mjs';
+const file=process.argv[2];if(!file)throw new Error('Usage: npm run verify:season:puzzle -- <private-board-and-solution.json>');
+const input=JSON.parse(fs.readFileSync(file,'utf8')),board=input.board,path=input.solution;
+assert.ok(Array.isArray(path)&&path.length>0&&path.length<=12,'A complete solution of at most 12 valid swaps is required');
+assert.ok(path.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isInteger)),'Invalid solution format');
+const checked=replay(board,path,{requireClear:true});for(let kind=1;kind<=8;kind++)assert.ok(board.filter(v=>v===kind).length>=3,`Fruit ${kind} missing or insufficient`);assert.ok(board.includes(9),'Fixed star required');
+const packed=board.reduce((value,k,i)=>value|(BigInt(k)<<BigInt(i*4)),0n),encoded=hexlify(Uint8Array.from(path.flat()));
+console.log(JSON.stringify({rules:'gravity-v1',packedBoard:packed.toString(),solutionCommitment:keccak256(encoded),moves:checked.moves,cascadeRounds:checked.rounds,remaining:checked.remaining,warning:'Offline solvability check only. Publish the board and commitment, never the private solution file.'},null,2));

@@ -1,0 +1,23 @@
+
+> three-shape-v29@0.1.0 build:card:testnet
+> VITE_THREE_SHAPE_NETWORK=bsc-testnet npm --prefix web run build
+
+
+> three-shape-agent-card@2.9.0 prebuild
+> node ../scripts/export-public.mjs
+
+
+> three-shape-agent-card@2.9.0 build
+> tsc --noEmit && vite build && node ../scripts/check-production.mjs
+
+vite v6.4.5 building for production...
+transforming...
+✓ 188 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.67 kB │ gzip:  0.47 kB
+dist/assets/index-Be3qUY0U.css   18.32 kB │ gzip:  4.67 kB
+dist/assets/wallet-BrEhA7Oc.js  254.96 kB │ gzip: 94.90 kB
+dist/assets/index-SNG_NDsX.js   303.65 kB │ gzip: 91.87 kB
+✓ built in 2.86s
+Production assets contain no development scenario controls or simulated wallet fixtures.

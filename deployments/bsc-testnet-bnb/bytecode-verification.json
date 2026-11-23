@@ -1,0 +1,56 @@
+{
+  "chainId": 97,
+  "checkedAt": "2026-11-09T03:30:54.440Z",
+  "checks": [
+    {
+      "contract": "deploymentFactory",
+      "address": "0x3519fB955629e8448472E198eF372056c12E57D0",
+      "runtimeBytes": 2712,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "game",
+      "address": "0x3A0Bc1D0a7982F0680e4C4F2dEAc00b945bdF17C",
+      "runtimeBytes": 8544,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "token",
+      "address": "0xB56fA7318a6A0b1b256a72F1336d0de1c6692680",
+      "runtimeBytes": 2479,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "nft",
+      "address": "0x2975a4D564c1058c51B693Ec7D11dA3cB72eC2FF",
+      "runtimeBytes": 6263,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "reserve",
+      "address": "0x4C051bb5d0b8408d2A16799d58115B45e7596ca4",
+      "runtimeBytes": 547,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "liquidity",
+      "address": "0xfc2cbc087d48eB628274991E00839FF19104cf7D",
+      "runtimeBytes": 4328,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    },
+    {
+      "contract": "testIdentityRegistry",
+      "address": "0x60b2862c06BF19f7d1c5c60f5CC178Bee415Ddd7",
+      "runtimeBytes": 284,
+      "compiledRuntimeMatch": true,
+      "immutableRangesMasked": true
+    }
+  ],
+  "status": "passed"
+}

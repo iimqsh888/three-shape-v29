@@ -1,0 +1,65 @@
+{
+  "sourceSha256": "2cf001210968b10baa7318643574a8b75ca948905196e9131382ef7d1fde9cb6",
+  "deploymentStatus": "deployed-bsc-testnet-97",
+  "treasury": "0x19a00449a5af7a51279b401dfe3bf92cb90a2751",
+  "semantics": {
+    "duringSale": "20% Treasury, 80% Reserve for liquidity",
+    "settlement": "permissionless separate transaction after the final Star purchase LP attempt",
+    "finalLPFailure": "remaining BNB still settles to Treasury; no expired LP budget revival",
+    "transferFailure": "revert only settlement and preserve funds for retry",
+    "recipient": "immutable Treasury; caller cannot choose recipient or amount",
+    "adminRequired": false,
+    "oldLiveDeploymentSupportsSettlement": false
+  },
+  "checks": {
+    "compile": "passed",
+    "compilerWarnings": 1,
+    "settlementEVM": {
+      "passed": 7,
+      "failed": 0
+    },
+    "existingEVMAndSecurityAndCompatibility": {
+      "passed": 18,
+      "failed": 0
+    },
+    "basicUnitAndHTTP": {
+      "passed": 27,
+      "failed": 0
+    },
+    "newABIMap": {
+      "passed": 1,
+      "failed": 0
+    },
+    "typescript": "passed",
+    "publicContractGroups": {
+      "passed": 13,
+      "failed": 0
+    },
+    "publicAdapterGroups": {
+      "passed": 9,
+      "failed": 0
+    },
+    "forkSettlementAndAdapter": {
+      "passed": 4,
+      "failed": 0
+    },
+    "liveReadOnlyAPI": {
+      "passed": 1,
+      "failed": 0
+    },
+    "frontend": {
+      "passed": 68,
+      "failed": 0
+    },
+    "productionBuild": "passed"
+  },
+  "limitations": [
+    "Public sellout was not performed: successful settlement uses isolated fork boundary fixtures",
+    "Identity is an isolated test Registry, not official Binance .ai ID",
+    "Official Agentic Wallet chain97, official .ai resolver and real browser wallet visual QA remain unverified",
+    "Accepted first-LP reserve contamination limitation remains unchanged",
+    "Mainnet not deployed"
+  ],
+  "publicGame": "0x7e67eF9Ef352c856b7497A325fa74e43eEBE44C7",
+  "publicReserve": "0x85E5623d1268152e93A42f0A3E1Ba0C13eCd5d8c"
+}

@@ -1,0 +1,152 @@
+{
+  "status": "local-source-reference-not-live-ABI",
+  "source": "contracts/ThreeShapeV29.sol",
+  "contracts": {
+    "Game": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeGameV29",
+      "reads": [
+        "state(address)",
+        "freeClaimed(address)",
+        "ended()",
+        "remainingShares()",
+        "currentStage()",
+        "currentReward(uint8)",
+        "starsSold()",
+        "starsBought(address)",
+        "quoteStars(uint256)",
+        "canBurn(address,uint256[])",
+        "starSalesClosed()"
+      ],
+      "writes": [
+        "claimFree()",
+        "burnForTier(uint256[])",
+        "continueChallenge()",
+        "claimReward(uint256)",
+        "buyStars(uint256,uint256)"
+      ],
+      "events": [
+        "Matched(address,uint8)",
+        "Claimed(address,uint8,uint8,uint256)",
+        "StarsPurchased(address,uint256,uint256)",
+        "LPAttemptFailed()",
+        "StarSalesClosed()"
+      ]
+    },
+    "NFT": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeNFTV29",
+      "reads": [
+        "balanceOf(address)",
+        "ownerOf(uint256)",
+        "tokenURI(uint256)",
+        "kind(uint256)",
+        "nextId()"
+      ],
+      "writes": [
+        "safeTransferFrom(address,address,uint256)"
+      ],
+      "events": [
+        "Transfer(address,address,uint256)"
+      ]
+    },
+    "Token": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeTokenV29",
+      "reads": [
+        "balanceOf(address)",
+        "decimals()",
+        "playerMinted()",
+        "lpMinted()"
+      ],
+      "writes": [],
+      "events": []
+    },
+    "Registry": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "IAgentRegistryV29",
+      "reads": [
+        "balanceOf(address)"
+      ],
+      "writes": [],
+      "events": []
+    },
+    "Liquidity": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeLiquidityV29",
+      "reads": [
+        "initialized()"
+      ],
+      "writes": [],
+      "events": [
+        "Added(uint256,uint256,uint256)"
+      ]
+    },
+    "Reserve": {
+      "source": "contracts/ThreeShapeV29.sol",
+      "name": "ThreeShapeReserveV29",
+      "reads": [
+        "game()",
+        "liquidity()",
+        "treasury()"
+      ],
+      "writes": [
+        "settleToTreasury()"
+      ],
+      "events": [
+        "TreasurySettled(address,address,uint256)"
+      ]
+    }
+  },
+  "businessMethods": {
+    "connectWallet": "Official user wallet session; no Solidity counterpart",
+    "getGameState": "Game reads plus current Registry balance; Settled tier from the player's Claimed event",
+    "getCollection": "Index NFT Transfer events and read tokenURI JSON; ERC721Enumerable is not implemented",
+    "getRewardState": "Choice states + currentReward(tier); skip currentReward after ended()",
+    "play": [
+      "claimFree()",
+      "burnForTier(uint256[])"
+    ],
+    "claimReward": "claimReward(uint256 minAmount): retain the user-approved minimum reward",
+    "continueChallenge": "continueChallenge()",
+    "getTokenBalance": "Token.balanceOf(address)",
+    "quoteStars": "Game.quoteStars(uint256 quantity), read-only",
+    "buyStars": "Game.buyStars(quantity,maxPayment) payable with exact quoted native BNB value; no ERC20 approval. Parse LP outcome separately.",
+    "transferNFT": "NFT.safeTransferFrom(from,to,tokenId); .ai resolution uses the official wallet resolver"
+  },
+  "states": {
+    "0": {
+      "phase": "ready",
+      "tier": 1
+    },
+    "1": {
+      "phase": "choice",
+      "tier": 1
+    },
+    "2": {
+      "phase": "ready",
+      "tier": 2
+    },
+    "3": {
+      "phase": "choice",
+      "tier": 2
+    },
+    "4": {
+      "phase": "ready",
+      "tier": 3
+    },
+    "5": {
+      "phase": "choice",
+      "tier": 3
+    },
+    "6": {
+      "phase": "settled",
+      "tierFrom": "Claimed.tier"
+    }
+  },
+  "notes": {
+    "resultRecovery": "No random Result event. Mint results use confirmed NFT Transfer and chain JSON. Burn results require confirmed calldata/burn logs plus pre-burn chain metadata or history because kind/tokenURI are removed.",
+    "quotes": "quoteStars(quantity) has no wallet parameter. Wallet quota and identity eligibility require separate authoritative reads.",
+    "reserveSettlement": "Current source adds permissionless settlement to immutable Treasury after final Star LP attempt. Existing bsc-testnet-bnb deployment predates this change and does not support it; no settlement card action is enabled."
+  }
+}

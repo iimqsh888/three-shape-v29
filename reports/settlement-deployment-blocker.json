@@ -1,0 +1,14 @@
+{
+  "status": "resolved",
+  "reason": "Network-enabled deployment command was cancelled before execution",
+  "newVersionDeployed": false,
+  "transactionsSubmitted": 0,
+  "fundingCheckedBNB": "0.200289655208767",
+  "chainId": 97,
+  "deployer": "0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3",
+  "intendedDeploymentDirectory": "deployments/bsc-testnet-settlement",
+  "command": "THREE_SHAPE_DEPLOYMENT_DIR=deployments/bsc-testnet-settlement node scripts/bsc-testnet-deploy.mjs",
+  "localValidation": "reports/reserve-settlement-validation.json",
+  "pending": [],
+  "resolvedByDeployment": "deployments/bsc-testnet-settlement/deployment.json"
+}

@@ -4,7 +4,6 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -49,7 +48,7 @@ contract ThreeShapeNFTV29 is ERC721 {
         string[9] memory symbols=[unicode"🍏",unicode"🍋",unicode"🍇",unicode"🍒",unicode"🍓",unicode"🍐",unicode"🥭",unicode"🍉",unicode"🌟"];
         string[9] memory names=["Green Apple","Lemon","Grapes","Cherries","Strawberry","Pear","Mango","Watermelon","Star"];
         string memory symbol=symbols[k-1];
-        bytes memory json=abi.encodePacked('{"name":"Three Shape #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
+        bytes memory json=abi.encodePacked('{"name":"Three Shape ',names[k-1],' #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
         return string.concat("data:application/json;base64,",Base64.encode(json));
     }
     function burnMatch(address from,uint256 id) external {
@@ -57,34 +56,53 @@ contract ThreeShapeNFTV29 is ERC721 {
         _burn(id);delete kind[id];
     }
 }
-contract ThreeShapeReserveV29 {
-    using SafeERC20 for IERC20;
-    IERC20 public immutable usdt;
+interface IGameReserveV29 {
+    function starSalesClosed() external view returns(bool);
+}
+contract ThreeShapeReserveV29 is ReentrancyGuard {
+    address public immutable game;
     address public immutable liquidity;
-    constructor(address usdt_,address liquidity_) {
-        require(usdt_!=address(0)&&liquidity_!=address(0),"zero");
-        usdt=IERC20(usdt_);liquidity=liquidity_;
+    address public immutable treasury;
+    event TreasurySettled(address indexed caller,address indexed treasury,uint256 amount);
+    constructor(address game_,address liquidity_,address treasury_) {
+        require(game_!=address(0)&&liquidity_!=address(0)&&treasury_!=address(0),"zero");
+        game=game_;liquidity=liquidity_;treasury=treasury_;
     }
-    function provide(uint256 amount) external {
+    receive() external payable {}
+    function provide(uint256 amount) external nonReentrant {
         require(msg.sender==liquidity,"not liquidity");
-        usdt.safeTransfer(liquidity,amount);
+        (bool ok,)=payable(liquidity).call{value:amount}("");
+        require(ok,"BNB reserve transfer failed");
+    }
+    /// @notice Permissionless final settlement to the immutable Treasury only.
+    /// Sales close after the last purchase's LP attempt, even if that attempt fails.
+    /// A failed Treasury transfer reverts, preserving funds for a later retry.
+    function settleToTreasury() external nonReentrant {
+        require(IGameReserveV29(game).starSalesClosed(),"Star sales not closed");
+        uint256 amount=address(this).balance;
+        require(amount>0,"no BNB to settle");
+        (bool ok,)=payable(treasury).call{value:amount}("");
+        require(ok,"BNB Treasury settlement failed");
+        emit TreasurySettled(msg.sender,treasury,amount);
     }
 }
 contract ThreeShapeGameV29 is ReentrancyGuard {
-    using SafeERC20 for IERC20;
+    // SPACE ID's official Binance Agent ID registry on BSC mainnet.
+    // Other chains may use an explicitly configured isolated test registry.
+    address public constant BSC_AGENT_ID=0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F;
     uint256 public constant MAX_CLAIMS=55_000;
     uint256 public constant MAX_STARS=100_000;
+    uint256 public constant STARS_PER_PRICE_STEP=1_000;
     uint256 public constant LP_PER_STAR=14_300_000 ether;
     ThreeShapeTokenV29 public immutable token;
     ThreeShapeNFTV29 public immutable nft;
-    IERC20 public immutable usdt;
     IAgentRegistryV29 public immutable registry;
     address public immutable reserve;
     address public immutable treasury;
     address public immutable liquidity;
     uint256 public totalClaims;
-    uint256 public immutable usdtUnit;
     uint256 public starsSold;
+    bool public starSalesClosed;
     uint256 public lpBudgetExpired;
     uint256 public nextFreeIndex;
     mapping(address=>bool) public freeClaimed;
@@ -95,13 +113,17 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     event Claimed(address indexed player,uint8 tier,uint8 stage,uint256 amount);
     event StarsPurchased(address indexed player,uint256 count,uint256 paid);
     event LPAttemptFailed();
-    constructor(address token_,address nft_,address usdt_,address registry_,address reserve_,address treasury_,address liquidity_) {
-        require(token_!=address(0)&&nft_!=address(0)&&usdt_!=address(0)&&registry_!=address(0)&&reserve_!=address(0)&&treasury_!=address(0)&&liquidity_!=address(0),"zero");
-        token=ThreeShapeTokenV29(token_);nft=ThreeShapeNFTV29(nft_);usdt=IERC20(usdt_);
-        uint8 decimals=IERC20Metadata(usdt_).decimals();
-        require(decimals>=6&&decimals<=18,"unsupported USDT decimals");
-        usdtUnit=10**uint256(decimals);
+    event StarSalesClosed();
+    constructor(address token_,address nft_,address registry_,address reserve_,address treasury_,address liquidity_) {
+        require(token_!=address(0)&&nft_!=address(0)&&registry_!=address(0)&&reserve_!=address(0)&&treasury_!=address(0)&&liquidity_!=address(0),"zero");
+        require(block.chainid!=56||registry_==BSC_AGENT_ID,"wrong BSC Agent ID registry");
+        require(registry_.code.length>0,"Agent ID registry has no code");
+        token=ThreeShapeTokenV29(token_);nft=ThreeShapeNFTV29(nft_);
         registry=IAgentRegistryV29(registry_);reserve=reserve_;treasury=treasury_;liquidity=liquidity_;
+    }
+    modifier onlyAgent() {
+        require(registry.balanceOf(msg.sender)>0,"no .ai Agent ID");
+        _;
     }
     function ended() public view returns(bool){return totalClaims==MAX_CLAIMS;}
     function remainingShares() external view returns(uint256){return MAX_CLAIMS-totalClaims;}
@@ -121,9 +143,8 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     function currentReward(uint8 tier) external view returns(uint256){
         require(!ended(),"ended");return reward(tier,currentStage());
     }
-    function claimFree() external nonReentrant {
+    function claimFree() external nonReentrant onlyAgent {
         require(!ended()&&!freeClaimed[msg.sender],"ineligible/ended");
-        require(registry.balanceOf(msg.sender)>0,"no .ai Agent ID");
         freeClaimed[msg.sender]=true;
         for(uint256 i=0;i<3;i++){
             uint8 fruit=uint8((nextFreeIndex%16)/2+1);
@@ -147,25 +168,25 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
             else if(k>=1&&k<=8){if(fruit==0)fruit=k;else if(fruit!=k)return false;}
             else return false;
         }
-        return fruit!=0&&(tier==1?stars==0:(tier==2?stars>=1:stars>=3));
+        return fruit!=0&&(tier==1?true:(tier==2?stars>=1:stars>=3));
     }
     function canBurn(address player,uint256[] calldata ids) external view returns(bool){
-        return _check(player,ids,_tier(state[player]));
+        return registry.balanceOf(player)>0&&_check(player,ids,_tier(state[player]));
     }
-    function burnForTier(uint256[] calldata ids) external nonReentrant {
+    function burnForTier(uint256[] calldata ids) external nonReentrant onlyAgent {
         uint8 tier=_tier(state[msg.sender]);
         require(_check(msg.sender,ids,tier),"invalid burn/shares exhausted");
         state[msg.sender]=tier==1?State.Choice1:(tier==2?State.Choice2:State.Choice3);
         for(uint256 i=0;i<ids.length;i++)nft.burnMatch(msg.sender,ids[i]);
         emit Matched(msg.sender,tier);
     }
-    function continueChallenge() external {
+    function continueChallenge() external nonReentrant onlyAgent {
         require(!ended(),"ended");
         State s=state[msg.sender];
         require(s==State.Choice1||s==State.Choice2,"cannot continue");
         state[msg.sender]=s==State.Choice1?State.Ready2:State.Ready3;
     }
-    function claimReward(uint256 minAmount) external nonReentrant {
+    function claimReward(uint256 minAmount) external nonReentrant onlyAgent {
         require(!ended(),"shares exhausted");
         State s=state[msg.sender];
         require(s==State.Choice1||s==State.Choice2||s==State.Choice3,"no claim");
@@ -180,27 +201,33 @@ contract ThreeShapeGameV29 is ReentrancyGuard {
     }
     function starPrice(uint256 sold) public view returns(uint256){
         require(sold<MAX_STARS,"sold out");
-        return (10+2*(sold/10_000))*usdtUnit;
+        return 0.01 ether+0.005 ether*(sold/STARS_PER_PRICE_STEP);
     }
     function quoteStars(uint256 quantity) public view returns(uint256 payment){
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"quantity");
         for(uint256 i=0;i<quantity;i++)payment+=starPrice(starsSold+i);
     }
     function lpMintedActual() external view returns(uint256){return token.lpMinted();}
-    function buyStars(uint256 quantity,uint256 maxPayment) external nonReentrant {
+    function buyStars(uint256 quantity,uint256 maxPayment) external payable nonReentrant onlyAgent {
         require(quantity>0&&quantity<=6&&starsSold+quantity<=MAX_STARS,"sold out/quantity");
         require(uint256(starsBought[msg.sender])+quantity<=6,"wallet limit");
         uint256 payment=quoteStars(quantity);
         require(payment<=maxPayment,"slippage");
         starsBought[msg.sender]+=uint8(quantity);starsSold+=quantity;
-        usdt.safeTransferFrom(msg.sender,reserve,payment*80/100);
-        usdt.safeTransferFrom(msg.sender,treasury,payment-payment*80/100);
+        require(msg.value==payment,"incorrect BNB payment");
+        (bool reserveOK,)=payable(reserve).call{value:payment*80/100}("");
+        require(reserveOK,"BNB reserve transfer failed");
+        (bool treasuryOK,)=payable(treasury).call{value:payment-payment*80/100}("");
+        require(treasuryOK,"BNB treasury transfer failed");
         for(uint256 i=0;i<quantity;i++)nft.mintTo(msg.sender,9);
         emit StarsPurchased(msg.sender,quantity,payment);
         uint256 batchBudget=quantity*LP_PER_STAR;
         // The full batch budget expires whether LP addition succeeds or fails.
         lpBudgetExpired+=batchBudget;
         try ILPManagerV29(liquidity).attempt(batchBudget) {} catch {emit LPAttemptFailed();}
+        // Do not expose settlement during the final payment/NFT/LP callbacks.
+        // Settlement is separate so a refusing Treasury cannot undo a sold NFT.
+        if(starsSold==MAX_STARS){starSalesClosed=true;emit StarSalesClosed();}
     }
 }
 
@@ -213,65 +240,66 @@ interface IPairV29 {
 interface IFactoryV29 {function getPair(address,address) external view returns(address);}
 interface IRouterV29 {
     function factory() external view returns(address);
-    function addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)
-        external returns(uint256,uint256,uint256);
+    function WETH() external view returns(address);
+    function addLiquidityETH(address,uint256,uint256,uint256,address,uint256)
+        external payable returns(uint256,uint256,uint256);
 }
 interface IGameLPV29 {}
 contract ThreeShapeLiquidityV29 is ReentrancyGuard {
     using SafeERC20 for IERC20;
     address public constant BURN=0x000000000000000000000000000000000000dEaD;
     ThreeShapeTokenV29 public immutable token;
-    IERC20 public immutable usdt;
     IGameLPV29 public immutable game;
     ThreeShapeReserveV29 public immutable reserve;
     IRouterV29 public immutable router;
     IPairV29 public immutable pair;
     bool public initialized;
-    event Added(uint256 tokens,uint256 usdtAmount,uint256 lp);
-    constructor(address token_,address usdt_,address game_,address reserve_,address router_,address pair_) {
-        require(token_!=address(0)&&usdt_!=address(0)&&game_!=address(0)&&reserve_!=address(0)&&router_!=address(0)&&pair_!=address(0),"zero");
-        token=ThreeShapeTokenV29(token_);usdt=IERC20(usdt_);game=IGameLPV29(game_);
-        reserve=ThreeShapeReserveV29(reserve_);router=IRouterV29(router_);pair=IPairV29(pair_);
-        require(IFactoryV29(router.factory()).getPair(token_,usdt_)==pair_,"invalid pair");
-        require((pair.token0()==token_&&pair.token1()==usdt_)||(pair.token0()==usdt_&&pair.token1()==token_),"assets");
+    address public immutable wbnb;
+    event Added(uint256 tokens,uint256 bnbAmount,uint256 lp);
+    constructor(address token_,address game_,address reserve_,address router_,address pair_) {
+        require(token_!=address(0)&&game_!=address(0)&&reserve_!=address(0)&&router_!=address(0)&&pair_!=address(0),"zero");
+        token=ThreeShapeTokenV29(token_);game=IGameLPV29(game_);
+        reserve=ThreeShapeReserveV29(payable(reserve_));router=IRouterV29(router_);pair=IPairV29(pair_);
+        wbnb=router.WETH();
+        require(wbnb!=address(0),"zero WBNB");
+        require(IFactoryV29(router.factory()).getPair(token_,wbnb)==pair_,"invalid pair");
+        require((pair.token0()==token_&&pair.token1()==wbnb)||(pair.token0()==wbnb&&pair.token1()==token_),"assets");
     }
+    receive() external payable {require(msg.sender==address(reserve)||msg.sender==address(router),"unexpected BNB sender");}
     // Each Star purchase supplies a one-time mint budget. Unused budget expires.
     // After bootstrap, LP contributions follow the live pool reserve ratio.
     function attempt(uint256 maxMint) external nonReentrant {
         require(msg.sender==address(game),"game only");
         require(maxMint>0&&maxMint<=6*14_300_000 ether,"batch budget");
-        uint256 available=usdt.balanceOf(address(reserve));
-        require(available>0,"no USDT");
+        uint256 available=address(reserve).balance;
+        require(available>0,"no BNB");
         uint256 tokens;
         uint256 funds;
         if(!initialized){
             (uint112 a,uint112 b,)=pair.getReserves();
             require(a==0&&b==0&&pair.totalSupply()==0,"nonempty initial pair");
             tokens=maxMint;
-            // Fixed initial price: 8 USDT per 14.3m 3SHAPE.
-            uint256 unit=10**uint256(IERC20Metadata(address(usdt)).decimals());
-            funds=maxMint*8*unit/(14_300_000 ether);
-            require(available>=funds&&funds>0,"initial USDT insufficient");
+            // Fixed initial price: 0.008 BNB per 14.3m 3SHAPE.
+            funds=maxMint*0.008 ether/(14_300_000 ether);
+            require(available>=funds&&funds>0,"initial BNB insufficient");
             initialized=true;
         }else{
             (uint112 a,uint112 b,)=pair.getReserves();
             uint256 rt=pair.token0()==address(token)?uint256(a):uint256(b);
             uint256 ru=pair.token0()==address(token)?uint256(b):uint256(a);
             require(rt>0&&ru>0,"empty pair");
-            // Prioritize reserve USDT, but never mint more than this sale unlocked.
+            // Prioritize reserve BNB, but never mint more than this sale unlocked.
             tokens=available*rt/ru;
             if(tokens>maxMint)tokens=maxMint;
             require(tokens>0,"dust");
             funds=tokens*ru/rt;
-            require(funds>0&&funds<=available,"USDT dust");
+            require(funds>0&&funds<=available,"BNB dust");
         }
         reserve.provide(funds);
         token.mintLP(address(this),tokens);
         IERC20(address(token)).forceApprove(address(router),tokens);
-        usdt.forceApprove(address(router),funds);
-        (uint256 usedT,uint256 usedU,uint256 lp)=router.addLiquidity(
-            address(token),address(usdt),tokens,funds,
-            tokens,funds,BURN,block.timestamp
+        (uint256 usedT,uint256 usedU,uint256 lp)=router.addLiquidityETH{value:funds}(
+            address(token),tokens,tokens,funds,BURN,block.timestamp
         );
         require(usedT==tokens&&usedU==funds&&lp>0,"ratio changed");
         emit Added(usedT,usedU,lp);

@@ -1,0 +1,26 @@
+
+> three-shape-v29@0.1.0 compile
+> solcjs --bin --abi --base-path . --include-path node_modules -o artifacts contracts/ThreeShapeV29.sol contracts/ThreeShapeDeploymentV29.sol
+
+CompilerError: Stack too deep. Try compiling with `--via-ir` (cli) or the equivalent `viaIR: true` (standard JSON) while enabling the optimizer. Otherwise, try removing local variables.
+  --> contracts/ThreeShapeDeploymentV29.sol:35:66:
+   |
+35 |             tokenAddress,nftAddress,usdt,registry,reserveAddress,treasury,liquidityAddress
+   |                                                                  ^^^^^^^^
+
+
+/workspace/project/node_modules/solc/solc.js:246
+            writeFile(contractFileName + '.bin', output.contracts[fileName][contractName].evm.bytecode.object);
+                                                                                              ^
+
+TypeError: Cannot read properties of undefined (reading 'bytecode')
+    at Object.<anonymous> (/workspace/project/node_modules/solc/solc.js:246:95)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.22.1

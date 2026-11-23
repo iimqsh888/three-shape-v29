@@ -1,0 +1,22 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_linux_x64_137.node'
+Require stack:
+- /workspace/project/node_modules/ganache/node_modules/@trufflesuite/uws-js-unofficial/src/uws.js
+- /workspace/project/node_modules/ganache/dist/node/core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ all five write steps reject missing .ai ID; holder can buy Star, add LP and claim once (9439.953924ms)
+✔ nine NFT names and Emoji compile to valid on-chain JSON (1740.329621ms)
+✔ Star price rises every 1,000; boundaries, crossing quote and total revenue (3656.734235ms)
+✔ three tiers and revoked identity: reward/continue branches remain independent (18329.322016ms)
+✔ first tier Star substitutions require at least one ordinary fruit; mixed fruits and all Stars fail (4516.767804ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38019.302219

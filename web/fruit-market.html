@@ -1,7 +1,7 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>水果交易市场 · Three Shape</title><link rel="stylesheet" href="market.css"></head><body>
 <main><h1>水果交易市场</h1><p>永久锁定一枚 🌟 解锁 · 仅使用 3SHAPE · 无交易手续费</p>
 <button id="connect">连接钱包</button><button id="network">切换至 BSC</button><button id="refresh">刷新链上数据</button><p id="wallet"></p><p id="message" role="status" aria-live="polite"></p>
-<section><h2>市场激活状态</h2><p id="activation">请连接钱包</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button></section>
+<section><h2>市场激活状态</h2><p>激活会将所选 Star 实际转入市场合约，NFT 永久存在合约中，不会销毁；任何人都无法提取或赎回。</p><p id="activation">请连接钱包</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button></section>
 <section><h2>市场浏览</h2><label>水果类型 <select id="filter"><option value="0">全部</option></select></label><p>按价格从低到高排列；最便宜仅针对已加载订单。加载全部订单后可比较全市场。</p><p id="cheapest"></p><div id="orders"></div><button id="moreOrders">加载下一页订单（100 条）</button></section>
 <section><h2>我的水果</h2><p>按 NFT 编号分段读取链上持有情况，每次最多 100 枚。</p><button id="moreNFTs">加载下一段 NFT</button><label>水果 <select id="fruits"></select></label><label>售价（3SHAPE）<input id="price" inputmode="decimal" placeholder="5000000"></label><button id="list">授权并上架</button></section>
 <section><h2>我的订单与成交记录</h2><p>仅显示已加载订单中的记录；可在市场浏览中继续加载下一页。</p><div id="mine"></div></section>

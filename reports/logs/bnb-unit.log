@@ -1,0 +1,93 @@
+
+> three-shape-v29@0.1.0 test
+> node --test --test-isolation=none test/agent.test.mjs test/economics.test.mjs test/deployment-metadata.test.mjs test/public-copy.test.mjs test/server.test.mjs
+
+✔ 9 emoji NFT types (2.742589ms)
+✔ burn requires confirmation and live shares (0.551654ms)
+✔ no burn when exhausted (0.209967ms)
+✔ on-chain JSON metadata carries emoji, name and typed traits (0.556631ms)
+✔ deployment predicts five CREATE contract addresses (0.398271ms)
+✔ LP budget expires at sale even if pool add fails (0.566121ms)
+✔ star sales are independent from game shares (0.490618ms)
+✔ initial pool uses fixed 0.008 BNB per 14.3m 3SHAPE, independent of accumulated reserve (0.195504ms)
+✔ NFT metadata name includes human-readable fruit name (0.239669ms)
+✔ Solidity UTF-8 emoji literals use unicode prefix (1.079866ms)
+✔ reward calculation uses valid Solidity ether denomination (0.37887ms)
+✔ 55,000 shares and 1.43T player worst case (0.186437ms)
+✔ 1.43T LP and 2.86T combined caps (0.100526ms)
+✔ all reward amounts are integers (0.108203ms)
+✔ burn checks shares without consuming; claim consumes one share (0.124226ms)
+✔ three independent burns and minimum star thresholds (0.105678ms)
+✔ stars continue selling after game end (0.109292ms)
+✔ no owner-controlled mint or withdrawals (0.184912ms)
+✔ NFT metadata is on-chain emoji JSON without SVG (0.067373ms)
+✔ native BNB price uses integer wei without ERC20 payment (0.163819ms)
+✔ LP mint budget is one-time and never carried forward (0.130451ms)
+✔ public copy includes identity requirement, current pricing and irreversible burn risk (0.16738ms)
+✔ public copy does not disclose allocation sequence or describe a random lottery (0.199958ms)
+✖ light service returns rules, capabilities, Skill and website without wallet authorization (18.043792ms)
+✖ missing live ABI returns 503 instead of mock chain results; invalid addresses fail (6.092592ms)
+✖ service rejects writes, auth routes, hidden files and traversal (1.61182ms)
+✖ optional live reader must return the requested address and live structured data (1.733479ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 23
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.20041
+
+✖ failing tests:
+
+test at test/server.test.mjs:9:1
+✖ light service returns rules, capabilities, Skill and website without wallet authorization (18.043792ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at test/server.test.mjs:10:1
+✖ missing live ABI returns 503 instead of mock chain results; invalid addresses fail (6.092592ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at test/server.test.mjs:11:1
+✖ service rejects writes, auth routes, hidden files and traversal (1.61182ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at test/server.test.mjs:12:1
+✖ optional live reader must return the requested address and live structured data (1.733479ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }

@@ -1,0 +1,10 @@
+PASS settled tier and collection survive a fresh adapter instance
+PASS adapter connects and prepares without submitting a transaction
+PASS Reserve maintenance interface reads immutable Treasury and rejects premature settlement without broadcast
+PASS wallet changes invalidate a prepared action before broadcast
+PASS confirmed free claim and metadata produce three actual Emoji
+PASS native quote, wallet signing and separate LP receipt
+PASS burn preview is not a transaction; confirmed burn opens the reward choice
+PASS claim preserves the approved raw minimum; fresh adapter restores authoritative progress
+PASS current global state remains authoritative after adapter transactions
+REPORT passed 9 checks
