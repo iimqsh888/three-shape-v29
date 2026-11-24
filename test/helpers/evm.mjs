@@ -6,8 +6,8 @@ const output=JSON.parse(fs.readFileSync('artifacts/compiler-output.json','utf8')
 const source='contracts/ThreeShapeV29.sol';
 const artifact=(file,name)=>output.contracts[file][name];
 const UNIT=10n**18n;
-async function fixture(accounts=12,{registryFile='contracts/test/MocksV29.sol',registryName='MockRegistry',treasuryName=null,treasuryFile='contracts/test/MocksV29.sol'}={}){
- const engine=ganache.provider({logging:{quiet:true},wallet:{totalAccounts:accounts},miner:{blockGasLimit:60000000}});
+async function fixture(accounts=12,{chainId=1337,registryFile='contracts/test/MocksV29.sol',registryName='MockRegistry',treasuryName=null,treasuryFile='contracts/test/MocksV29.sol'}={}){
+ const engine=ganache.provider({logging:{quiet:true},chain:{chainId},wallet:{totalAccounts:accounts},miner:{blockGasLimit:60000000}});
  const provider=new ethers.BrowserProvider(engine,'any',{cacheTimeout:-1});provider.pollingInterval=10;
  const signer=await provider.getSigner(),address=await signer.getAddress();
  async function deploy(file,name,args=[]){const a=artifact(file,name);const c=await new ethers.ContractFactory(a.abi,'0x'+a.evm.bytecode.object,signer).deploy(...args);await c.waitForDeployment();return c;}

@@ -1,0 +1,68 @@
+name: Verify authorized BSC deployments
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_directory:
+        description: Saved verification bundle directory in this revision
+        required: true
+        type: string
+      chain_id:
+        description: Must match the saved deployment
+        required: true
+        type: choice
+        options: ['56', '97']
+      deployment_run_id:
+        description: Optional authorized deployment run containing the bsc-source-verification artifact
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      bundle_directory:
+        required: true
+        type: string
+      chain_id:
+        required: true
+        type: string
+      deployment_run_id:
+        required: false
+        type: string
+        default: ''
+    secrets:
+      ETHERSCAN_API_KEY:
+        required: true
+      BSC_RPC_URL:
+        required: false
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        if: inputs.deployment_run_id != ''
+        with:
+          name: bsc-source-verification
+          run-id: ${{ inputs.deployment_run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ inputs.bundle_directory }}
+      - name: Verify saved sources only; no deployment or wallet signing
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          BSC_RPC_URL: ${{ secrets.BSC_RPC_URL }}
+          VERIFY_DIRECTORY: ${{ inputs.bundle_directory }}
+          VERIFY_CHAIN_ID: ${{ inputs.chain_id }}
+        run: node scripts/verify-bsc.mjs --bundle "$VERIFY_DIRECTORY" --chain-id "$VERIFY_CHAIN_ID"
+      - name: Preserve reports, public ABI and manual-upload fallback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsc-source-verification-results
+          path: ${{ inputs.bundle_directory }}
+          if-no-files-found: warn

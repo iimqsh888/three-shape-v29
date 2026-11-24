@@ -22,3 +22,23 @@ for(const name of ['ThreeShapeGameV29','ThreeShapeNFTV29','ThreeShapeTokenV29','
 }
 
 manifest.abi=publishedAbi;await writeFile(new URL('agent-manifest.json',root),JSON.stringify(manifest,null,2)+'\n');
+
+// Optional source-verified address/ABI export, separate from merely compiled ABIs.
+const verifiedRoot=new URL('verification/',root);await rm(verifiedRoot,{recursive:true,force:true});
+if(process.env.THREE_SHAPE_VERIFICATION_DIR){
+ const {loadBundle,recordFingerprint,chainConfig}=await import('./verification/records.mjs');
+ const path=await import('node:path');const directory=path.resolve(process.env.THREE_SHAPE_VERIFICATION_DIR);
+ const {bundle}=loadBundle(directory),report=JSON.parse(await readFile(path.join(directory,'report.json'),'utf8'));
+ if(report.explorerMode!=='live-explorer')throw Error('Test explorer reports cannot be published as real source verification');
+ if(report.chainId!==bundle.chainId||report.inputSha256!==bundle.inputSha256)throw Error('Source-verification report belongs to a different deployment');
+ const published=[];await mkdir(new URL('abi/',verifiedRoot),{recursive:true});
+ for(const row of report.contracts??[]){
+  const record=bundle.records.find(r=>r.id===row.id);
+  if(row.status!=='Verified'||!record||row.fingerprint!==recordFingerprint(bundle,record)||row.evidence?.exactSourceConfirmed!==true)continue;
+  await writeFile(new URL(`abi/${row.id}.json`,verifiedRoot),JSON.stringify(row.evidence.abi,null,2)+'\n');
+  published.push({id:row.id,address:record.address,status:'Verified',url:chainConfig(bundle.chainId).explorer+'/address/'+record.address+'#code',abi:`./abi/${row.id}.json`});
+ }
+ await writeFile(new URL('contracts.json',verifiedRoot),JSON.stringify({chainId:bundle.chainId,contracts:published},null,2)+'\n');
+ manifest.verifiedContracts='./verification/contracts.json';
+}else manifest.verifiedContracts=null;
+await writeFile(new URL('agent-manifest.json',root),JSON.stringify(manifest,null,2)+'\n');

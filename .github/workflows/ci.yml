@@ -17,6 +17,8 @@ jobs:
       - name: Fruit market contract and model tests
         run: npm run test:market
 
+      - name: Source-verification HTTP and factory-bundle tests
+        run: node --test --test-isolation=none test/source-verification.test.mjs
       - name: Ganache EVM contract integration
         run: npm run test:evm
       - name: Contract security regressions

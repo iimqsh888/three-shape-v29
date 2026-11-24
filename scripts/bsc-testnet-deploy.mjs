@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {Wallet,Contract,ContractFactory,formatEther} from 'ethers';
 import {testnetProvider,requireTestnet,RPC} from './lib/bsc-testnet-rpc.mjs';
+import {freezeBuild} from './verification/build.mjs';
+import {afterAuthorizedDeployment} from './verification/post-deploy.mjs';
 
 const directory=path.resolve(process.env.THREE_SHAPE_DEPLOYMENT_DIR??'deployments/bsc-testnet-settlement');fs.mkdirSync(directory,{recursive:true});
 const manifestFile=path.join(directory,'deployment.json');
@@ -20,7 +22,8 @@ const secretDirectory='/workspace/.secrets/three-shape-bsc-testnet';
 const wallet=(await Wallet.fromEncryptedJson(fs.readFileSync(path.join(secretDirectory,'wallet.keystore.json'),'utf8'),fs.readFileSync(path.join(secretDirectory,'wallet.password'),'utf8').trim())).connect(provider);
 assert.equal(wallet.address,'0x835C38108c54Bbb4fdcD49573EF113BEDB4ca3A3');manifest.deployer=wallet.address;
 for(const f of ['contracts/ThreeShapeV29.sol','contracts/ThreeShapeDeploymentV29.sol','contracts/test/MocksV29.sol']){const hash=createHash('sha256').update(fs.readFileSync(f)).digest('hex');if(manifest.sources[f])assert.equal(hash,manifest.sources[f],'Source differs from existing immutable deployment; use a new deployment directory');else manifest.sources[f]=hash;}
-const a=name=>JSON.parse(fs.readFileSync(`artifacts/${name}.json`));
+const frozenBuild=freezeBuild(path.join(directory,'verification','build'));
+const a=name=>frozenBuild.artifact(name);
 const feeData=await provider.getFeeData();const gasPrice=feeData.gasPrice;
 assert(gasPrice&&gasPrice<=3_000_000_000n,'Unexpected gas price; stop before spending');
 assert(await provider.getBalance(wallet.address)>=5_000_000_000_000_000n,'At least 0.005 test BNB required for deployment/testing');
@@ -32,11 +35,11 @@ async function send(label,fn){
  const receipt=await tx.wait(2,120000);assert.equal(receipt.status,1);
  Object.assign(manifest.transactions.at(-1),{status:'confirmed',blockNumber:receipt.blockNumber,gasUsed:String(receipt.gasUsed)});save();return receipt;
 }
-async function deploy(key,name){
+async function deploy(key,name,args=[]){
  if(manifest.contracts[key]){assert.notEqual(await provider.getCode(manifest.contracts[key]),'0x');return new Contract(manifest.contracts[key],a(name).abi,wallet);}
  const artifact=a(name),factory=new ContractFactory(artifact.abi,artifact.bytecode,wallet);
  let c;
- const receipt=await send('deploy '+key,async overrides=>{c=await factory.deploy(overrides);manifest.contracts[key]=await c.getAddress();save();return c.deploymentTransaction();});
+ const receipt=await send('deploy '+key,async overrides=>{c=await factory.deploy(...args,overrides);manifest.contracts[key]=await c.getAddress();save();return c.deploymentTransaction();});
  assert.equal(receipt.contractAddress,manifest.contracts[key]);return c;
 }
 try{
@@ -57,10 +60,12 @@ try{
  for(const [i,key]of ['token','nft','reserve','game','liquidity'].entries()){
   manifest.contracts[key]=await deployment.predicted(i+1);assert.notEqual(await provider.getCode(manifest.contracts[key]),'0x');
  }
+ if(process.env.THREE_SHAPE_DEPLOY_MARKET==='1')await deploy('market','ThreeShapeFruitMarketV29',[manifest.contracts.nft,manifest.contracts.token]);
  manifest.deploymentBlock=manifest.transactions.find(x=>x.label==='deploy five immutable production contracts').blockNumber;
  const game=new Contract(manifest.contracts.game,a('ThreeShapeGameV29').abi,provider);
  for(const [method,expected]of [['registry',manifest.contracts.testIdentityRegistry],['treasury',manifest.treasury],['token',manifest.contracts.token],['nft',manifest.contracts.nft]])assert.equal((await game[method]()).toLowerCase(),expected.toLowerCase());
- manifest.status='deployed';manifest.verifiedAt=new Date().toISOString();save();
+ manifest.status='deployed';manifest.deploymentCheckedAt=new Date().toISOString();save();
  manifest.compiler=a('ThreeShapeGameV29').compiler;manifest.payment={symbol:'BNB',decimals:18,initialWei:'10000000000000000',stepWei:'5000000000000000',stepSales:1000};save();
  console.log(JSON.stringify({status:manifest.status,contracts:manifest.contracts},null,2));
+ try{const report=await afterAuthorizedDeployment({manifest,directory,provider});manifest.sourceVerification={report:'verification/report.json',allRequiredContractsVerified:report.allRequiredContractsVerified};save();console.log('Source verification report saved; incomplete verification can be retried without redeploying.');}catch{manifest.sourceVerification={status:'PreparationFailed',retryableWithoutRedeployment:true};save();console.error('Deployment remains confirmed. Source verification preparation failed; recover the original build and retry separately.');}
 }finally{provider.destroy();}

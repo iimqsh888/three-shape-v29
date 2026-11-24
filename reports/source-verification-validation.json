@@ -1,0 +1,77 @@
+{
+  "scope": "BSC source verification tooling only; no core/season contract or economic rule changes",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "compilerApiVersion": "v0.8.24+commit.e11b9ed9",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "shanghai",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode.object",
+          "evm.deployedBytecode.object",
+          "evm.deployedBytecode.immutableReferences",
+          "storageLayout"
+        ]
+      }
+    }
+  },
+  "inputSha256": "50f0b4dd0f1427b5d123f84ef748cac125519246ea95e8c38a79401826617fed",
+  "capturedSourceFiles": 25,
+  "soliditySourceUnchanged": {
+    "contracts/ThreeShapeDeploymentV29.sol": "35f29fe1268b75f789565d59a2f7dbd7d2a9f8b84662d702f46c9243608159da",
+    "contracts/ThreeShapeV29.sol": "93b2c91b43bc383ec0feaeec2a5d2b1338c61b34b04746efc766611b2640816d",
+    "contracts/ThreeShapeFruitMarketV29.sol": "d37d8da315ba52999fd8347ff0e7a5207e857981e90a4ad2b00616ba361aac69",
+    "contracts/test/MarketActorsV29.sol": "8bb4fd0fdccaef6bc9ed848be06dfba62c81962f348d73ceff35900be86de2ee",
+    "contracts/test/MocksV29.sol": "506cfbeac408e58328b9a3b8154c869f941808fcca6fd58cbef38e9fcca88f6b",
+    "contracts/test/SecurityV29.sol": "2dcff66b201f9de4c055bf75dfb6f0aca192cb28e110248237d391cf5ee476a7"
+  },
+  "chineseCommentsInOwnedSolidity": 0,
+  "checks": {
+    "sourceVerification": {
+      "passed": 22,
+      "failed": 0,
+      "mode": "real local Ganache deployments plus simulated HTTP explorer; not real BscScan verification"
+    },
+    "root": {
+      "passed": 27,
+      "failed": 0
+    },
+    "frontend": {
+      "passed": 72,
+      "failed": 0
+    },
+    "coreEvmAndAbiCompatibility": {
+      "passed": 9,
+      "failed": 0
+    },
+    "staticHosting": {
+      "passed": 3,
+      "failed": 0
+    },
+    "build": "solc, TypeScript, Vite and public-reference audit passed"
+  },
+  "coverage": [
+    "56/97 chain checks",
+    "13 individual factory/core/market address records",
+    "complete compiler input reproduction",
+    "constructor and ABI capture",
+    "bounded HTTP/429/503 retries",
+    "pending GUID resume and failed GUID retry",
+    "duplicate verification confirmation",
+    "no false Verified on empty source/compiler/ABI/constructor mismatch",
+    "test reports cannot be published as real verification",
+    "immutable source/input/artifact integrity",
+    "missing API key keeps manual fallback and unverified status"
+  ],
+  "liveVerificationPerformed": false,
+  "mainnetDeploymentPerformed": false,
+  "publicTransactionsSent": 0,
+  "realExplorerStatus": "Not verified in this development session; ETHERSCAN_API_KEY unavailable",
+  "workflow": ".github/workflows/verify-bsc.yml",
+  "manualInput": "artifacts/standard-input.json"
+}

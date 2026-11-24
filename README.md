@@ -29,6 +29,12 @@ Chain ID **97**，仅使用测试 BNB；主网未部署。
 
 使用真实 PancakeSwap V2 测试网 Router / Factory / WBNB。身份 Registry 为**隔离测试夹具**，不是官方 Binance .ai Agent ID。[部署记录](deployments/bsc-testnet-settlement/deployment.json)保留地址、源码哈希和回执。旧 USDT 部署仅作为历史记录。
 
+## BSC 自动源码验证
+
+授权部署完成后自动冻结编译输入、真实构造参数和交易资料，逐个提交工厂及其子合约源码，支持 BSC 56／97。独立运行 `npm run verify:bsc -- --bundle <verification目录>` 可重试，无需重新部署。验证成功必须由 BscScan API V2 的已验证源码／ABI 确认，本地编译或 runtime 比对不等同于 Verified。详见 [源码验证说明](docs/BSC_SOURCE_VERIFICATION.zh-CN.md)。
+
+GitHub Actions 从 Secrets 读取 ETHERSCAN_API_KEY；缺少 Key 时保留未验证状态及 Standard JSON 人工上传备用文件。本次没有部署主网或修改合约经济模型。
+
 ## 自有服务器静态部署
 
 不启用托管平台专属部署。运行 `npm ci`、`npm --prefix web ci` 后执行 `npm run package:static`，将生成的 `dist-static/` 内容部署到自己的 HTTPS 静态服务器。详细步骤见 [静态部署说明](docs/STATIC_HOSTING.zh-CN.md)。Skill、规则、能力、ABI 和市场资源都从本站相对路径读取，无固定预览域名。

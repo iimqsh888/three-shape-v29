@@ -28,7 +28,10 @@
     "test:market:contract": "node --test test/market.evm.test.mjs",
     "check:public": "node scripts/check-public-resources.mjs",
     "test:static": "node --test test/static-hosting.test.mjs",
-    "package:static": "npm run compile && npm run build:card && npm run check:public && node scripts/package-static.mjs"
+    "package:static": "npm run compile && npm run build:card && npm run check:public && node scripts/package-static.mjs",
+    "prepare:verification": "node scripts/prepare-bsc-verification.mjs",
+    "verify:bsc": "node scripts/verify-bsc.mjs",
+    "test:verification": "npm run compile && node --test --test-isolation=none test/source-verification.test.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",
