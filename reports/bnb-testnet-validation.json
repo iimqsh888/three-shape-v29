@@ -47,10 +47,10 @@
   "unverified": [
     "Official Binance .ai ID on chain97 (test fixture used)",
     "Official .ai address resolver and end-to-end .ai transfer UI",
-    "AI Pro/Agentic Wallet real execution on chain97 (not listed by official docs)",
-    "Actual inline React rendering inside Binance AI Pro",
+    "Agent 宿主/Agentic Wallet real execution on chain97 (not listed by official docs)",
+    "Actual inline React rendering inside Binance Agent 宿主",
     "BSC mainnet fork",
-    "Browser/mobile visual QA (Sites managed browser helper unavailable)",
+    "Browser/mobile visual QA (历史静态托管 managed browser helper unavailable)",
     "Source verification on BscScan (runtime bytecode matched locally instead)"
   ],
   "latestRecordedState": {

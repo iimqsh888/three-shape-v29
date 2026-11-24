@@ -1,0 +1,22 @@
+# Add the project's real domain and TLS certificate configuration before public use.
+server {
+    listen 80;
+    server_name _;
+    root /var/www/three-shape;
+    index index.html;
+    include mime.types;
+    location / { try_files $uri $uri/ =404; }
+    location ~ \.mjs$ {
+        types { application/javascript mjs; }
+        try_files $uri =404;
+    }
+    location ~ \.md$ {
+        default_type text/markdown;
+        try_files $uri =404;
+    }
+    location = /api/game {
+        default_type application/json;
+        return 503 '{"error":"LIVE_NOT_CONFIGURED"}';
+    }
+    location ~ /\. { deny all; }
+}

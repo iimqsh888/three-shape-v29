@@ -49,6 +49,6 @@ Fork 扩展测试首次遇到地址校验和大小写断言差异，改为地址
 
 此前用户接受的首次加池储备污染限制仍保留：空 Pair 预先接收 WBNB 并 sync，可能阻断初次 LP；购星仍可成功。当前售罄规则也明确允许最后 LP 失败后余款结算至 T，关闭标记不代表最后 LP 一定成功。
 
-官方 .ai 身份、官方 .ai 名称解析、AI Pro / Agentic Wallet 在 chainId 97 的实际执行未验证；不能把隔离测试 EOA 或 Registry 冒充官方接入。未完成独立安全审计或形式化证明。Sites 托管环境缺少必需的 cua_repl.js，浏览器扩展和移动端视觉验收未验证，未绕过其工作流启动替代预览。
+官方 .ai 身份、官方 .ai 名称解析、Agent 宿主 / Agentic Wallet 在 chainId 97 的实际执行未验证；不能把隔离测试 EOA 或 Registry 冒充官方接入。未完成独立安全审计或形式化证明。历史静态托管 托管环境缺少必需的 宿主浏览器工具，浏览器扩展和移动端视觉验收未验证，未绕过其工作流启动替代预览。
 
 部署和回执：`deployments/bsc-testnet-settlement/`。资金账目：`final-state-and-budget.json`。来源及测试日志：`reports/logs/settlement-public-*.log`。

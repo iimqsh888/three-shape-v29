@@ -33,12 +33,12 @@ Solidity 编译、TypeScript、Vite 构建及生产资源隔离检查通过。�
 
 ## 未验证与保留边界
 
-- 身份为隔离测试 Registry，不是官方 .ai ID；官方 Agentic Wallet 文档未列 chainId 97，未验证其在 AI Pro 中真实签名执行。
+- 身份为隔离测试 Registry，不是官方 .ai ID；官方 Agentic Wallet 文档未列 chainId 97，未验证其在 Agent 宿主 中真实签名执行。
 - 官方 .ai 解析未接入，不能宣称网站 .ai 转送端到端已完成；普通 NFT 转移与 Adapter 调用已验证。
 - React 卡片／MCP Apps 可复用边界保留，未宣称币安已支持第三方内嵌卡片。
 - 已销毁 NFT 的历史 Emoji 在新设备刷新后可能无法恢复；不虚构结果。完整历史显示仍需索引器／归档节点，奖励和档位则由真实合约及 Claimed 恢复。
 - BSC 主网 Fork、BscScan 源码认证和独立安全审计未完成。
-- Sites 托管环境未提供必需的 cua_repl.js 浏览器工具，依据 Sites 工作流未绕过该限制启动其他浏览器路径；真实移动端视觉和浏览器钱包扩展验收未完成。DOM、会话与布局约束回归已通过。
+- 历史静态托管 托管环境未提供必需的 宿主浏览器工具，依据 历史静态托管 工作流未绕过该限制启动其他浏览器路径；真实移动端视觉和浏览器钱包扩展验收未完成。DOM、会话与布局约束回归已通过。
 - 用户此前接受的首次加池储备污染问题保持既有逻辑，仍是已知限制，不视为已修复。
 
 机器可读汇总：`reports/bnb-testnet-validation.json`。回执和历史尝试：`deployments/bsc-testnet-bnb/`。执行日志：`reports/logs/bnb-*.log`。

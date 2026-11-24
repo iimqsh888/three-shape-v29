@@ -24,7 +24,11 @@
     "test:identity": "npm run compile && node --test --test-isolation=none test/identity.integration.test.mjs",
     "test:identity:fork": "node scripts/test-identity-mainnet-fork.mjs",
     "build:market": "node scripts/build-market.mjs",
-    "test:market": "node --test test/market.model.test.mjs test/market.identity.test.mjs"
+    "test:market": "node --test test/market.evm.test.mjs test/market.model.test.mjs test/market.identity.test.mjs",
+    "test:market:contract": "node --test test/market.evm.test.mjs",
+    "check:public": "node scripts/check-public-resources.mjs",
+    "test:static": "node --test test/static-hosting.test.mjs",
+    "package:static": "npm run compile && npm run build:card && npm run check:public && node scripts/package-static.mjs"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "5.0.2",

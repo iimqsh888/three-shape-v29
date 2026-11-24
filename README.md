@@ -1,6 +1,6 @@
 # Three Shape V2.9
 
-原生 BNB 合约、React + TypeScript 游戏卡片、双语文字 + Emoji Skill、只读轻量服务。卡片保持手机尺寸及浅绿色风格；保留聊天宿主和 MCP Apps 扩展边界。
+独立开放的链上游戏：原生 BNB 合约、React + TypeScript 游戏卡片、平台无关的双语文字 + Emoji Skill、可选只读服务。卡片保持手机尺寸及浅绿色风格；保留聊天宿主和 MCP Apps 扩展边界。
 
 Star 起价 **0.01 BNB**，每售出 **1,000** 枚上涨 **0.005 BNB**，最后区间 0.505 BNB。每钱包累计最多六枚，总销售十万枚。80% Reserve / 20% Treasury；LP 为 3SHAPE/WBNB。详见 [经济模型](docs/RULES_AND_ECONOMICS.zh-CN.md) 和 [BNB 迁移说明](docs/BNB_CONTRACT_MIGRATION.zh-CN.md)。
 
@@ -28,6 +28,12 @@ Chain ID **97**，仅使用测试 BNB；主网未部署。
 | Pair | `0xEFD6ebC03A0e039332BCE6c4D56470103ba55479` |
 
 使用真实 PancakeSwap V2 测试网 Router / Factory / WBNB。身份 Registry 为**隔离测试夹具**，不是官方 Binance .ai Agent ID。[部署记录](deployments/bsc-testnet-settlement/deployment.json)保留地址、源码哈希和回执。旧 USDT 部署仅作为历史记录。
+
+## 自有服务器静态部署
+
+不启用托管平台专属部署。运行 `npm ci`、`npm --prefix web ci` 后执行 `npm run package:static`，将生成的 `dist-static/` 内容部署到自己的 HTTPS 静态服务器。详细步骤见 [静态部署说明](docs/STATIC_HOSTING.zh-CN.md)。Skill、规则、能力、ABI 和市场资源都从本站相对路径读取，无固定预览域名。
+
+默认产物为未配置正式入口，缺少可信 ABI／部署或用户钱包时不执行交易。测试网可在构建时明确选择，不把测试身份当作官方身份。水果迷阵保留入口和规则预览，页面跳转暂停。
 
 ## 运行与验证
 
@@ -71,17 +77,17 @@ npm run serve:testnet
 
 ## 水果交易市场
 
-首页赛季入口上方恢复独立水果市场，访问 `./fruit-market.html`。市场前端来自 `feat/fruit-market-v29` 的 `f87459afc4c00bda3d7a082497e5902151c0fa74`，不再与交换帖入口混淆。市场页面、商铺列表、Star 永久激活说明及上架／购买／取消流程保持该模块原设计。独立市场合约仍在[功能分支](https://github.com/iimqsh888/three-shape-v29/blob/feat/fruit-market-v29/contracts/ThreeShapeFruitMarketV29.sol)，本次恢复前端，不部署或修改任何合约。
+首页赛季入口上方恢复独立水果市场，访问 `./fruit-market.html`。市场前端来自 `feat/fruit-market-v29` 的 `f87459afc4c00bda3d7a082497e5902151c0fa74`，不再与交换帖入口混淆。市场页面、商铺列表、Star 永久激活说明及上架／购买／取消流程保持该模块原设计。独立市场合约原文件已纳入 contracts/ThreeShapeFruitMarketV29.sol 并做本地合约测试，不部署或修改其规则。
 
 `web/market-config.mjs` 仍未配置市场地址；当前商铺／价格是明确标注的只读布局示例，不能交易，不使用原游戏地址冒充市场地址。主网市场需独立验证部署后配置。原游戏测试网与市场配置相互独立。
 
-构建网站会先生成市场资源；开发入口也会同步生成。`npm run test:market` 验证模型／身份显示；完整合约测试和原交付报告见功能分支，不能用旧报告冒充本次验证。轻量静态服务支持市场配置 `.mjs`，保持只读。
+构建网站会先生成市场资源；开发入口也会同步生成。`npm run test:market` 验证市场合约、模型与身份显示；以本次实际报告为准。轻量静态服务支持市场配置 `.mjs`，保持只读。
 
 ## Agent 接入
 
 下载 `skills/three-shape/SKILL.md` / `SKILL.en.md`。 中英文 Skill 包含自然语言意图转换、Emoji 状态与收藏面板、挑战补齐建议、购买／转赠／销毁／领奖确认、交易进度和恢复反馈。入口指令采用玩家口吻，可编辑自己的需求后复制；导入 Skill 不授予钱包权限。Agent 先核对网络、依赖、规则及当前用户钱包，再按用户确认准备操作。接口为 `/api/rules`、`/api/capabilities`、`/api/deployment.json`、`/api/game?address=…`。
 
-官方 Agentic Wallet 当前文档未列出 chainId 97；普通测试钱包不等于官方 Agentic Wallet。官方 .ai Registry 的主网读取与隔离 Fork 资格验证见身份验证报告；网站登录、.ai 转送解析和 AI Pro 内真实钱包执行仍待接入验收。未宣称币安已开放第三方 React 卡片渲染或 MCP 注册。
+任何支持 Skill 的 Agent 均可读取同一规则；实际查询与交易能力由宿主和用户钱包决定，不依赖特定模型账户或专属工具。缺少工具时只说明规则或准备操作，不伪造链上结果。每笔链上操作先预览并获得用户确认。
 
 新增维护接口 getReserveState / settleReserve 与只读 /api/reserve；结算需单独钱包签名，没有新增卡片管理员按钮。
 

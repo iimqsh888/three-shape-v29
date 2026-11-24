@@ -13,3 +13,10 @@ web/public/market-config.mjs
 web/public/market.css
 
 dist/
+
+dist-static/
+releases/
+web/public/agent-manifest.json
+web/public/SKILL.md
+web/public/SKILL.en.md
+web/public/contracts/

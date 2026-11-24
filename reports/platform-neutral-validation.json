@@ -1,0 +1,72 @@
+{
+  "version": "2.9",
+  "hosting": "self-hosted static server; no hosted preview or Pages publication performed",
+  "season": {
+    "entryRetained": true,
+    "navigationPaused": true,
+    "rulesPreviewRetained": true
+  },
+  "contracts": {
+    "unchangedSourceSha256": {
+      "contracts/ThreeShapeDeploymentV29.sol": "35f29fe1268b75f789565d59a2f7dbd7d2a9f8b84662d702f46c9243608159da",
+      "contracts/ThreeShapeV29.sol": "93b2c91b43bc383ec0feaeec2a5d2b1338c61b34b04746efc766611b2640816d",
+      "contracts/ThreeShapeFruitMarketV29.sol": "d37d8da315ba52999fd8347ff0e7a5207e857981e90a4ad2b00616ba361aac69",
+      "contracts/test/MarketActorsV29.sol": "8bb4fd0fdccaef6bc9ed848be06dfba62c81962f348d73ceff35900be86de2ee",
+      "contracts/test/MocksV29.sol": "506cfbeac408e58328b9a3b8154c869f941808fcca6fd58cbef38e9fcca88f6b",
+      "contracts/test/SecurityV29.sol": "2dcff66b201f9de4c055bf75dfb6f0aca192cb28e110248237d391cf5ee476a7"
+    },
+    "marketSourceMatchesOriginalFeatureBlob": true,
+    "publicTransactionsSent": 0
+  },
+  "checks": {
+    "marketEvm": {
+      "subtestsPassed": 21,
+      "parentPassed": 1,
+      "failed": 0
+    },
+    "marketModelAndIdentity": {
+      "passed": 7,
+      "failed": 0
+    },
+    "frontend": {
+      "passed": 72,
+      "failed": 0
+    },
+    "root": {
+      "passed": 27,
+      "failed": 0
+    },
+    "staticHostingAndMarketAbi": {
+      "passed": 3,
+      "failed": 0
+    },
+    "coreAbiCompatibility": {
+      "passed": 3,
+      "failed": 0
+    },
+    "builds": [
+      "TypeScript",
+      "market bundle",
+      "formal Vite build",
+      "testnet Vite build",
+      "production fixture isolation"
+    ],
+    "publicReferenceAudit": "passed; the audit deny-list is the only necessary reference to blocked names"
+  },
+  "changes": [
+    "Portable bilingual Skill with explicit capability checks, previews, confirmations and user-controlled signing",
+    "Removed obsolete platform/domain references from public source and historical publication metadata",
+    "Relative same-origin Skill, rules, capabilities, market and ABI discovery",
+    "Self-hosted static directory and deployment instructions",
+    "Frontend market list ABI return type aligned to unchanged contract"
+  ],
+  "notVerified": [
+    "Real server/domain deployment: server not supplied yet",
+    "Real wallet and external Agent end-to-end execution",
+    "Public BSC market deployment and transactions",
+    "Browser visual QA; DOM and HTTP tests are not browser verification"
+  ],
+  "issuesResolvedDuringValidation": [
+    "The ABI compatibility test caught a missing list return type in the frontend declaration; corrected to match the unchanged contract and revalidated"
+  ]
+}

@@ -11,9 +11,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: npm install --no-audit --no-fund
+      - run: npm ci
       - run: npm test
       - run: npm run compile
+      - name: Fruit market contract and model tests
+        run: npm run test:market
 
       - name: Ganache EVM contract integration
         run: npm run test:evm
@@ -30,7 +32,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - run: npm ci
+      - run: npm run compile
       - run: npm --prefix web ci --ignore-scripts
       - run: npm run build:card
       - run: npm run build:card:testnet
       - run: npm run test:card
+
+      - run: npm run test:static
+      - run: npm run check:public
