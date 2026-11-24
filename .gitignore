@@ -6,3 +6,10 @@ coverage/
 web/public/api/
 web/public/skills/
 web/src/generated/
+
+web/public/fruit-market.html
+web/public/market.bundle.js
+web/public/market-config.mjs
+web/public/market.css
+
+dist/

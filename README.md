@@ -69,6 +69,14 @@ npm run serve:testnet
 - .ai 转送须注入官方解析器。测试网解析未接通时阻止发送，不能虚构映射；底层 NFT 转移按真实 ABI 签名。
 - RESULT 仅使用确认回执及链上元数据。已销毁 NFT 在新设备刷新后可能无法恢复历史 Emoji；此时不虚构结果，阶段和奖励仍可从合约恢复。完整历史展示需要索引器或归档节点。
 
+## 水果交易市场
+
+首页赛季入口上方恢复独立水果市场，访问 `./fruit-market.html`。市场前端来自 `feat/fruit-market-v29` 的 `f87459afc4c00bda3d7a082497e5902151c0fa74`，不再与交换帖入口混淆。市场页面、商铺列表、Star 永久激活说明及上架／购买／取消流程保持该模块原设计。独立市场合约仍在[功能分支](https://github.com/iimqsh888/three-shape-v29/blob/feat/fruit-market-v29/contracts/ThreeShapeFruitMarketV29.sol)，本次恢复前端，不部署或修改任何合约。
+
+`web/market-config.mjs` 仍未配置市场地址；当前商铺／价格是明确标注的只读布局示例，不能交易，不使用原游戏地址冒充市场地址。主网市场需独立验证部署后配置。原游戏测试网与市场配置相互独立。
+
+构建网站会先生成市场资源；开发入口也会同步生成。`npm run test:market` 验证模型／身份显示；完整合约测试和原交付报告见功能分支，不能用旧报告冒充本次验证。轻量静态服务支持市场配置 `.mjs`，保持只读。
+
 ## Agent 接入
 
 下载 `skills/three-shape/SKILL.md` / `SKILL.en.md`。 中英文 Skill 包含自然语言意图转换、Emoji 状态与收藏面板、挑战补齐建议、购买／转赠／销毁／领奖确认、交易进度和恢复反馈。入口指令采用玩家口吻，可编辑自己的需求后复制；导入 Skill 不授予钱包权限。Agent 先核对网络、依赖、规则及当前用户钱包，再按用户确认准备操作。接口为 `/api/rules`、`/api/capabilities`、`/api/deployment.json`、`/api/game?address=…`。

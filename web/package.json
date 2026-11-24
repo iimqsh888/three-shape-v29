@@ -8,9 +8,9 @@
     "build": "tsc --noEmit && vite build && node ../scripts/check-production.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
-    "prebuild": "node ../scripts/export-public.mjs",
+    "prebuild": "node ../scripts/build-market.mjs && node ../scripts/export-public.mjs",
     "pretest": "node ../scripts/export-public.mjs",
-    "predev": "node ../scripts/export-public.mjs"
+    "predev": "node ../scripts/build-market.mjs && node ../scripts/export-public.mjs"
   },
   "dependencies": {
     "ethers": "6.13.5",

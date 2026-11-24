@@ -2,7 +2,7 @@ import {readFile} from 'node:fs/promises';
 import {resolve,relative,extname} from 'node:path';
 import {rules,capabilities} from './rules.mjs';
 const skillFile=new URL('../skills/three-shape/SKILL.md',import.meta.url);
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown; charset=utf-8','.ico':'image/x-icon'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown; charset=utf-8','.ico':'image/x-icon'};
 /** Public read-only service. liveReader must perform its own authoritative chain reads.
  * No server route signs, broadcasts, pairs wallets or enables developer mode. */
 export function createHandler({staticDirectory=new URL('../web/dist',import.meta.url).pathname,liveReader=null,reserveReader=null,ruleSet=rules,capabilitySet=capabilities,deployment=null}={}){

@@ -1,0 +1,34 @@
+{
+  "sourceBranch": "feat/fruit-market-v29",
+  "sourceCommit": "f87459afc4c00bda3d7a082497e5902151c0fa74",
+  "scope": "Restore the independent market frontend and build resources above the season portal; no core or market contract changed/deployed",
+  "entry": "./fruit-market.html",
+  "configuration": "market/nft/token addresses remain empty; explicitly labelled read-only layout examples, not executable orders",
+  "checks": {
+    "frontend": {
+      "passed": 72,
+      "failed": 0
+    },
+    "marketModelAndIdentity": {
+      "passed": 7,
+      "failed": 0
+    },
+    "root": {
+      "passed": 27,
+      "failed": 0
+    },
+    "build": "TypeScript, market bundle, Vite and production checks passed",
+    "http": [
+      "market HTML 200",
+      "bundle JavaScript 200",
+      "external configuration JavaScript 200 with JavaScript MIME",
+      "market CSS 200",
+      "server transaction POST rejected with 405"
+    ]
+  },
+  "notVerified": [
+    "Production wallet market transactions and BSC deployment",
+    "Browser visual QA: no cua_repl.js tool available; DOM tests are not browser or real-wallet validation"
+  ],
+  "publicTransactionsSent": 0
+}

@@ -204,6 +204,14 @@ Status: coming soon. The website entry expands on click; text hosts can show thi
 
 Show only the published preview above. Detailed gameplay, moves, fees, token locks, settlement destinations, rankings and prize distribution, prize-pool increments and first-season medal requirements remain unannounced. Do not restore details from the previous preview, request seasonal wallet authorization or claim an executable seasonal interface exists. Retain the independent third-party notice.
 
+## Independent Fruit Market
+
+Use the existing Agent entry and `./fruit-market.html`; do not create a new backend or hold keys. Activation transfers one owned kind-9 Star into the market permanently. The NFT is not burned and cannot be extracted or redeemed by anyone. This does not replace season eligibility. Only kinds 1–8 trade, only in 3SHAPE, with no fee. BNB is only for network gas.
+
+For sell requests identify an owned fruit and ask for any missing price; never guess. “500 万” means exactly 5,000,000 tokens, converted using token decimals and integer arithmetic. For cancellation identify the seller's active listing. For cheapest-fruit requests query all relevant bounded listing pages and compare integer prices, or explicitly limit the result to loaded pages. Confirm token ID, seller, amount and operation before wallet approval/signing. Verify the configured market's `nft()`, `paymentToken()`, `activated(wallet)` and chain. Use `buy(listingId,expectedPrice)` and wait for receipts before reporting success. The static website has no natural-language backend router: if the host cannot query/sign reliably, guide the user through the market page and never claim execution.
+
+When market deployment addresses are unconfigured, only explicitly labelled layout examples are available; trading is unavailable. Never treat example shops/prices or the core game's deployment addresses as a configured market.
+
 ## Project notice
 
 An independent, long-term on-chain experiment around Binance Agent ID. This project is not affiliated with or partnered with Binance. 3Shape has no practical utility and promises no value or returns.
