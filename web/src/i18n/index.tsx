@@ -2,6 +2,15 @@ import {createContext,useContext} from 'react';
 export type Language='zh'|'en';
 export const LanguageContext=createContext<Language>('zh');
 const english:Record<string,string>={
+ "查看项目合约地址":"View contract addresses",
+ "游戏合约":"Game contract",
+ "代币合约":"Token contract",
+ "水果 NFT 合约":"Fruit NFT contract",
+ "储备合约":"Reserve contract",
+ "加池合约":"Liquidity contract",
+ "交易对合约":"Pair contract",
+ "待配置":"Not configured",
+ "项目合约地址待配置。":"Project contract addresses are not configured.",
  '售罄后，Reserve 余款可单独结算给固定 T；最后 LP 失败的余额也包含在内。T 拒收则留存，可重试。':'After sellout, remaining Reserve BNB can be settled separately to the fixed Treasury, including funds retained after the final LP attempt fails. A refused transfer leaves funds available for retry.',
  '此钱包未持有 .ai ID':'This wallet does not hold an .ai ID','待处理交易结果尚未确认，请核实后重试；不会自动重发':'The pending transaction is unresolved. Verify it before retrying; it will not be resent automatically.','请先恢复待核实交易':'Recover the pending transaction first',
  '本钱包已完成领奖，不能重复领取。':'This wallet has already claimed its reward.','奖励份额已耗尽。':'All reward shares have been claimed.','免费领取 3 枚水果，收集后开启挑战。':'Claim 3 free fruit NFTs, then build your challenge collection.','已满足当前档条件，点击开始挑战查看销毁清单；确认后才执行。':'You meet this tier’s requirements. Start a challenge to review and confirm the burn list.','尚未凑齐：普通水果需同种，至少 1 枚；可用 Star 补齐，或生成交换／收购帖。':'Not enough matching NFTs. Keep at least one ordinary fruit; add Stars or create a trade/buy post.','销毁不可撤销；当前查询和销毁都不预留奖励份额。领奖前份额可能被其他钱包用完。':'Burning is irreversible and does not reserve reward shares. Other wallets may claim the remaining shares first.',

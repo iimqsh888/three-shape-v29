@@ -12,3 +12,4 @@ export {decodeGameState} from './contracts/adapter/stateMapping';
 
 export {EthersThreeShapeAdapter,type NativeDeployment} from './contracts/adapter/EthersThreeShapeAdapter';
 export {InjectedWalletAdapter} from './contracts/adapter/InjectedWalletAdapter';
+export type {ContractAddressInfo} from './components/ProjectDetails';
