@@ -52,11 +52,15 @@ it('shows successful wallet authorization when the page regains focus',async()=>
  vi.stubGlobal('fetch',vi.fn(async (_url,options)=>new Response(JSON.stringify(options.method==='POST'
   ? {urlForWeb:'https://app.binance.com/uni-qr/Example123',pairingCode:'012345',expireAt:Date.now()+60_000}
   : authorized?{status:'authorized',address}:{status:'pending'}))));
- fireEvent.click(renderEntry());
+ render(<LanguageContext.Provider value="zh"><AgenticWalletEntry>{wallet=><>
+  <button onClick={()=>void wallet?.connect()}>{wallet?.label??'连接钱包'}</button>
+  {wallet?.details}
+ </>}</AgenticWalletEntry></LanguageContext.Provider>);
+ fireEvent.click(screen.getByRole('button',{name:'连接钱包'}));
  await screen.findByText('等待币安 App 确认');
  authorized=true;
  fireEvent.focus(window);
- expect(await screen.findByText(/钱包授权成功/)).toBeVisible();
- expect(screen.getByText(address)).toBeVisible();
+ expect(await screen.findByRole('button',{name:'已登录 · 领取水果'})).toBeVisible();
+ expect(screen.queryByText(address)).toBeNull();
  expect(screen.queryByRole('link',{name:'打开币安授权'})).toBeNull();
 });
