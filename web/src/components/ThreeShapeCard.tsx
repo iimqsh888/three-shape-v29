@@ -1,5 +1,5 @@
 import { useI18n } from '../i18n';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ContractAdapter } from '../contracts/adapter/ContractAdapter';
 import { metadata, formatAmount } from '../contracts/config/metadata';
 import type { Action, Mode, NFTItem, PlayPreview, StarQuote, ThreeShapeAdapter } from '../contracts/types';
@@ -17,10 +17,11 @@ export interface ThreeShapeCardProps {
     walletAddress?: string | null;
     adapter?: ThreeShapeAdapter;
     onAction?: (action: string) => void;
+    walletConnect?: {connect:()=>Promise<void>; busy:boolean; details:ReactNode};
     onWalletChange?: (address: string | null) => void;
 }
 const states = { disconnected: 'READY', ready: 'READY', playing: 'PENDING', confirming: 'CONFIRMING', result: 'RESULT', reward_available: 'RESULT', claiming: 'PENDING', claimed: 'RESULT', error: 'ERROR' };
-export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onAction, onWalletChange, deployment }: ThreeShapeCardProps) {
+export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onAction, onWalletChange, deployment, walletConnect }: ThreeShapeCardProps) {
     const { t } = useI18n();
     const adapter = useMemo<ThreeShapeAdapter>(() => provided ?? new ContractAdapter(), [provided, mode]);
     const unavailable = adapter.readiness === 'unconfigured';
@@ -45,7 +46,7 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
     const start = async () => {
         if (!state.address) {
             emit('connectWallet');
-            await state.connect();
+            await (walletConnect ? walletConnect.connect() : state.connect());
             return;
         }
         if (!adapter.preparePlay) {
@@ -92,7 +93,8 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
   <nav aria-label={t("卡片导航")}>{(['game', 'collection', 'rewards'] as const).map((tabKey, i) => <button key={tabKey} aria-pressed={tab === tabKey} onClick={() => { setTab(tabKey); emit(tabKey); }}>{[t("开始游戏"), t("查看收藏"), t("查看奖励")][i]}</button>)}</nav>
   {tab === 'game' && <section className="ts-play"><div className="ts-eyebrow">A LITTLE FRUIT. A BIG POSSIBILITY.</div><h1>{t("好事，凑成三。")}</h1><p>{t("免费领取水果 NFT，挑战最高")}<strong>{t("1 亿代币")}</strong></p><div className={'ts-reels ' + (pending ? 'spinning' : '')} aria-label={pending ? t("等待交易确认") : t("NFT 展示")}>{(pending ? ['🍏', '🍋', '🍇'] : s?.game.result ?? ['🍏', '🍋', '🍇']).map((emoji, i) => <div key={i}><span>{emoji}</span></div>)}</div>
    <div className="ts-state" role="status"><i />{states[state.status]}<span>{unavailable ? t("等待真实 ABI 与钱包接入") : pending ? t("等待授权与确认") : s?.reward.claimed ? t("奖励已领取") : s?.game.phase === 'choice' ? t(`第 ${s.game.tier} 档匹配已确认`) : t("收集你的下一份惊喜")}</span></div>
-   <button className="ts-primary" disabled={unavailable || busy || Boolean(plan) || Boolean(state.address && !s?.game.canPlay)} onClick={() => void start()}>{busy ? t("正在处理…") : primary}</button>
+   <button className="ts-primary" disabled={unavailable || busy || walletConnect?.busy || Boolean(plan) || Boolean(state.address && !s?.game.canPlay)} onClick={() => void start()}>{busy || walletConnect?.busy ? t("正在处理…") : primary}</button>
+   {!state.address && walletConnect?.details}
    {plan && <div className="ts-confirm"><h3>{plan.kind === 'burn' ? t("确认销毁 NFT") : (mode === 'mock' ? t("确认模拟领取") : t("确认领取水果"))}</h3><p>{t(plan.warning)}</p>{plan.tokenIds.length > 0 && <p>{t("NFT ID：")}{plan.tokenIds.join(', ')}<br />{t("当前剩余份额：")}{s?.game.remainingShares.toLocaleString()}</p>}<div className="ts-actions"><button onClick={() => setPlan(null)}>{t("取消")}</button><button className="ts-primary" disabled={busy} onClick={() => { setPlan(null); act('play'); }}>{mode === 'mock' ? t("确认并继续") : t("确认并请求钱包签名")}</button></div></div>}
    {s?.game.phase === 'choice' && <div className="ts-reward"><small>{t("第")}{s.game.tier}{t("档 · 当前可领取")}</small><h2>{amount(s.reward.amount)}<span><img className="ts-token-logo" src={new URL('../../public/three-shape-logo-v2.jpg', import.meta.url).href} alt="3Shape token logo"/>3SHAPE</span></h2><div className="ts-actions"><button className="ts-primary" disabled={busy || !s.reward.eligible} onClick={() => act('claimReward')}>{t("领取奖励")}</button>{s.game.tier < 3 && <button disabled={busy || !s.game.canContinue} onClick={() => act('continueChallenge')}>{t("继续挑战 →")}</button>}</div><p>{t("继续不兑现旧档奖励；领奖时才消耗份额。")}</p></div>}
    {s && <p className="ts-game-note">{t(s.game.message)}</p>}

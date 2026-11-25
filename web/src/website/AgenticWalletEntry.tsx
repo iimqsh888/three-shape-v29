@@ -1,9 +1,9 @@
-import {useState} from 'react';
+import {useState,type ReactNode} from 'react';
 import {useI18n} from '../i18n';
 
 type Pairing = {urlForWeb:string; pairingCode:string; expireAt:number};
 
-export function AgenticWalletEntry(){
+export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=>Promise<void>; busy:boolean; details:ReactNode})=>ReactNode}){
  const {language}=useI18n();
  const en=language==='en';
  const enabled=import.meta.env.VITE_THREE_SHAPE_AGENTIC_PAIRING==='enabled';
@@ -62,13 +62,7 @@ export function AgenticWalletEntry(){
   }
  }
 
- return <section className="agent-start" aria-label={en?'Agentic Wallet':'Agentic Wallet 授权'}>
-  <div className="agent-start-actions">
-   <button type="button" disabled={!enabled||busy} onClick={()=>void start()}>
-    {busy?(en?'Creating pairing…':'正在创建配对…'):(en?'Connect Agentic Wallet':'连接 Agentic Wallet')}
-   </button>
-  </div>
-  {!enabled&&<p>{en?'Website authorization is not available yet.':'官网授权暂未开放。'}</p>}
+ const details=<>
   {failed&&<p role="alert">{en?'Could not create a pairing. Try again.':'暂时无法生成配对，请重试。'}</p>}
   {status&&<p role="status">{status}</p>}
   {pairing&&<div>
@@ -76,5 +70,12 @@ export function AgenticWalletEntry(){
    <a href={pairing.urlForWeb} target="_blank" rel="noopener noreferrer">{en?'Open Binance authorization':'打开币安授权页'}</a>
    <button type="button" disabled={busy} onClick={()=>void check()}>{en?'Check authorization':'我已确认，检查授权'}</button>
   </div>}
+ </>;
+ if(children)return children(enabled?{connect:start,busy,details}:undefined);
+ return <section className="agent-start" aria-label={en?'Agentic Wallet':'Agentic Wallet 授权'}>
+  <button type="button" disabled={!enabled||busy} onClick={()=>void start()}>
+   {en?'Connect Agentic Wallet':'连接 Agentic Wallet'}
+  </button>
+  {details}
  </section>;
 }
