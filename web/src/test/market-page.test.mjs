@@ -23,9 +23,8 @@ it('the restored market runs its shop page and disables example purchases when u
  expect(document.querySelector('#list')).toBeDisabled();
  expect(document.querySelector('#activate')).toBeDisabled();
 });
-it('an unavailable wallet cannot be reported as connected or execute a market transaction',async()=>{
+it('the market has no separate wallet connection action',async()=>{
  await import('../../market.mjs');
- document.querySelector('#connect').click();
- await vi.waitFor(()=>expect(document.querySelector('#message')).toHaveTextContent('未检测到钱包'));
- expect(document.querySelector('#activation')).toHaveTextContent('请连接钱包');
+ expect(document.querySelector('#connect')).toHaveAttribute('href','./#game');
+ expect(document.querySelector('#connect').onclick).toBeNull();
 });

@@ -1,7 +1,7 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>水果交易市场 · Three Shape</title><link rel="stylesheet" href="market.css"></head><body>
-<main><article class="market-card"><header class="market-head"><a href="./" class="back" aria-label="返回首页">‹</a><div><span class="eyebrow">THREE SHAPE</span><h1>水果交易市场</h1></div><button id="connect">连接钱包</button></header>
+<main><article class="market-card"><header class="market-head"><a href="./" class="back" aria-label="返回首页">‹</a><div><span class="eyebrow">THREE SHAPE</span><h1>水果交易市场</h1></div><a id="connect" href="./#game" hidden>返回首页授权</a></header>
 <p id="message" role="status" aria-live="polite"></p>
-<section id="marketGate"><h3>市场激活状态</h3><p id="activation">请连接钱包</p><p>进入水果市场需转入 1 枚 Star，永久保留在市场合约中，不销毁、不可提取或赎回。</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button><button id="moreStars">加载下一段 NFT</button></section>
+<section id="marketGate"><h3>市场激活状态</h3><p id="activation">正在检查首页授权</p><p>进入水果市场需转入 1 枚 Star，永久保留在市场合约中，不销毁、不可提取或赎回。</p><label>选择 Star <select id="stars"></select></label><button id="activate">永久锁定并激活</button><button id="moreStars">加载下一段 NFT</button></section>
 <div id="marketContent" hidden><div class="market-meta"><span>🍏 水果自由集市</span><span>3SHAPE · 零手续费</span></div>
 <div class="market-toolbar"><label class="filter-label">水果 <select id="filter"><option value="0">全部水果</option></select></label><button id="openMyShop">我的商铺</button><button id="refresh">刷新</button><button id="network">BSC</button></div>
 <p id="cheapest"></p><p id="demoNotice" hidden>布局示例 · 店铺与价格均为示意，非真实挂单，不能交易。</p>
