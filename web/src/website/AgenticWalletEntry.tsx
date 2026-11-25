@@ -20,15 +20,17 @@ export function AgenticWalletEntry(){
     method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},
    });
    if(!response.ok)throw new Error('Pairing unavailable');
-   const data:Partial<Pairing>=await response.json();
+   const data:Partial<Omit<Pairing,'expireAt'>> & {expireAt?:number|string}=await response.json();
    const url=new URL(data.urlForWeb??'');
-   if(url.origin!=='https://web3.binance.com'||url.username||url.password||
-      !/^\/(?:[a-z-]+\/)?agent-login\/?$/i.test(url.pathname)||
+   const officialPage=(url.origin==='https://web3.binance.com'&&/^\/(?:[a-z-]+\/)?agent-login\/?$/i.test(url.pathname))||
+     (url.origin==='https://app.binance.com'&&/^\/uni-qr\/[a-z0-9_-]+\/?$/i.test(url.pathname));
+   const expireAt=Number(data.expireAt);
+   if(!officialPage||url.username||url.password||
       typeof data.urlForWeb!=='string'||typeof data.pairingCode!=='string'||!data.pairingCode.trim()||
-      typeof data.expireAt!=='number'||!Number.isFinite(data.expireAt)||data.expireAt<=Date.now()){
+      !Number.isFinite(expireAt)||expireAt<=Date.now()){
     throw new Error('Invalid pairing response');
    }
-   setPairing({urlForWeb:data.urlForWeb,pairingCode:data.pairingCode,expireAt:data.expireAt});
+   setPairing({urlForWeb:data.urlForWeb,pairingCode:data.pairingCode,expireAt});
   }catch{
    setFailed(true);
   }finally{

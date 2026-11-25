@@ -19,11 +19,13 @@ it('does not start pairing on a static site without the authorization service',(
  expect(renderEntry()).toBeDisabled();
 });
 
-it('shows the pairing code with the exact official URL returned by the service',async()=>{
+it.each([
+ 'https://web3.binance.com/en/agent-login?url=example%2Bvalue',
+ 'https://app.binance.com/uni-qr/Example123',
+])('preserves the exact official pairing URL %s',async urlForWeb=>{
  vi.stubEnv('VITE_THREE_SHAPE_AGENTIC_PAIRING','enabled');
- const urlForWeb='https://web3.binance.com/en/agent-login?url=example%2Bvalue';
  const fetcher=vi.fn().mockResolvedValue(new Response(JSON.stringify({
-  urlForWeb,pairingCode:'012345',expireAt:Date.now()+60_000,
+  urlForWeb,pairingCode:'012345',expireAt:String(Date.now()+60_000),
  })));
  vi.stubGlobal('fetch',fetcher);
  fireEvent.click(renderEntry());
