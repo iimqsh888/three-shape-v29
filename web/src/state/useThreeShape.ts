@@ -1,7 +1,7 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import type {Action,Status,ThreeShapeAdapter,TransactionResult,TransactionReceipt} from '../contracts/types';
 import type {GameSnapshot as Snapshot} from '../game/presentation';
-export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean){
+export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean,externalWallet=false,refreshKey=false){
  const [address,setAddress]=useState<string|null>(addressProp??null),[status,setStatus]=useState<Status>('disconnected'),[snapshot,setSnapshot]=useState<Snapshot|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[hash,setHash]=useState<string>(),[receipt,setReceipt]=useState<TransactionReceipt|null>(null);
  const epoch=useRef(0),locked=useRef(false),current=useRef<string|null>(addressProp??null);
  const key=(a:string)=>'three-shape-preview-pending:'+(adapter.pendingScope?adapter.pendingScope+':':'')+a.toLowerCase();
@@ -15,12 +15,12 @@ export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|
   const ticket=++epoch.current;current.current=a;locked.current=Boolean(a);setAddress(a);setSnapshot(null);setError('');setHash(undefined);setReceipt(null);setBusy(Boolean(a));setStatus(a?'ready':'disconnected');
   if(a)void reload(a,ticket).catch(e=>{if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}).finally(()=>{if(ticket===epoch.current){locked.current=false;setBusy(false);}});
  },[reload]);
- useEffect(()=>{change(addressProp??null);return()=>{++epoch.current;};},[addressProp,change]);
- useEffect(()=>adapter.subscribe?.(s=>change(s.address)),[adapter,change]);
+ useEffect(()=>{change(addressProp??null);return()=>{++epoch.current;};},[addressProp,change,refreshKey]);
+ useEffect(()=>{if(!externalWallet)return adapter.subscribe?.(s=>change(s.address));},[adapter,change,externalWallet]);
  const connect=async()=>{if(locked.current)return;locked.current=true;setBusy(true);const ticket=epoch.current;try{const a=await adapter.connectWallet();if(ticket===epoch.current)change(a);}catch(e){if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}finally{if(ticket===epoch.current){locked.current=false;setBusy(false);}}};
  const refresh=async()=>{if(locked.current||!current.current)return;locked.current=true;setBusy(true);setError('');const ticket=epoch.current;try{await reload(current.current,ticket);}catch(e){if(ticket===epoch.current){setStatus('error');setError(e instanceof Error?e.message:String(e));}}finally{if(ticket===epoch.current){locked.current=false;setBusy(false);}}};
  const execute=async(name:Action|'buyStars'|'transferNFT',task:()=>Promise<TransactionResult>)=>{
-  const a=current.current;if(locked.current||!a||!snapshot)return;
+  const a=current.current;if(externalWallet||locked.current||!a||!snapshot)return;
   if(!snapshot.game.eligible){setError('此钱包未持有 .ai ID');return;}
   if(live&&localStorage.getItem(key(a))){setError('请先恢复待核实交易');return;}
   const ticket=epoch.current;locked.current=true;setBusy(true);setError('');setHash(undefined);setReceipt(null);setStatus(name==='claimReward'?'claiming':'playing');let known=false,confirmedChange=false;

@@ -1,4 +1,4 @@
-import {Contract,Interface,getAddress,zeroPadValue} from 'ethers';
+import {Contract,Interface,getAddress,zeroPadValue,ZeroHash} from 'ethers';
 import type {AbstractProvider,Signer,InterfaceAbi,TransactionResponse,TransactionReceipt as EthersReceipt} from 'ethers';
 import type {ThreeShapeAdapter,GameState,NFTCollection,RewardState,PlayPreview,StarQuote,TransactionResult,TransactionReceipt} from '../types/index.ts';
 
@@ -31,7 +31,7 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
  private game:Contract;private nft:Contract;private token:Contract;private lp:Interface;
  private plans=new Map<string,Plan>();
  private inflight=new Map<string,Promise<Snapshot>>();
- private received=new Map<string,{through:number;ids:Set<string>}>();
+ private received=new Map<string,{through:number;ids:Set<string>;mints:Map<string,Set<string>>}>();
  private results=new Map<string,string[]>();
  private activeAddress:string|null=null;
  resolveRecipient?:ThreeShapeAdapter['resolveRecipient'];
@@ -63,16 +63,24 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
  synchronizeWalletSession(address:string|null){this.activeAddress=address?getAddress(address):null;this.plans.clear();}
  connectWallet=async()=>{const address=getAddress(await(await this.wallet()).getAddress());this.synchronizeWalletSession(address);return address;};
  disconnect=async()=>{this.synchronizeWalletSession(null);};
- /** Address/topic-filtered windows stay below PublicNode's 50k block limit. */
+ /** Address/topic-filtered windows stay below PublicNode's 10k block limit. */
  private async logs(address:string,topics:(string|null)[],from:number,to:number){
-  const logs=[];for(let start=from;start<=to;start+=45000)logs.push(...await this.provider.getLogs({address,topics,fromBlock:start,toBlock:Math.min(start+44999,to)}));return logs;
+  const logs=[];for(let start=from;start<=to;start+=9000)logs.push(...await this.provider.getLogs({address,topics,fromBlock:start,toBlock:Math.min(start+8999,to)}));return logs;
  }
  private async index(address:string,block:number){
-  const key=address.toLowerCase(),previous=this.received.get(key),ids=new Set(previous?.ids??[]);
+  const key=address.toLowerCase(),previous=this.received.get(key),ids=new Set(previous?.ids??[]),mints=new Map(previous?.mints??[]);
   const transfer=this.nft.interface.getEvent('Transfer')!;
   const incoming=await this.logs(this.nft.target as string,[transfer.topicHash,null,zeroPadValue(address,32)],previous?Math.max(this.config.deploymentBlock,previous.through-64):this.config.deploymentBlock,block);
-  for(const log of incoming)ids.add(BigInt(log.topics[3]).toString());
-  this.received.set(key,{through:block,ids});return ids;
+  for(const log of incoming){
+   const tokenId=BigInt(log.topics[3]).toString();
+   ids.add(tokenId);
+   if(log.topics[1]===ZeroHash){
+    const batch=mints.get(log.transactionHash)??new Set<string>();
+    batch.add(tokenId);
+    mints.set(log.transactionHash,batch);
+   }
+  }
+  this.received.set(key,{through:block,ids,mints});return ids;
  }
  private async collection(address:string,block:number):Promise<NFTCollection>{
   const ids=await this.index(address,block);
@@ -86,6 +94,21 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
   }));
   for(const item of items)item.tokenIds.sort((a,b)=>BigInt(a)<BigInt(b)?-1:1);
   return items;
+ }
+ private async freeClaimResult(address:string,collection:NFTCollection){
+  const key=address.toLowerCase();
+  const cached=this.results.get(key);
+  if(cached)return cached;
+  const claimSelector=this.game.interface.getFunction('claimFree')!.selector;
+  for(const [hash,ids] of this.received.get(key)?.mints??[]){
+   if(ids.size!==3)continue;
+   const tx=await this.provider.getTransaction(hash);
+   if(!tx?.to||!same(tx.to,this.config.contracts.game)||!same(tx.from,address)||tx.data!==claimSelector)continue;
+   const symbols=[...ids].map(id=>collection.find(item=>item.tokenIds.includes(id))?.emoji??'—');
+   if(symbols.every(symbol=>symbol!=='—'))this.results.set(key,symbols);
+   return symbols;
+  }
+  return null;
  }
  private select(collection:NFTCollection,tier:number){
   const stars=collection.find(x=>x.type===9)?.tokenIds??[],required=tier*3,minStars=tier===1?0:tier===2?1:3;
@@ -115,7 +138,8 @@ export class EthersThreeShapeAdapter implements ThreeShapeAdapter {
   const rewardTiers=await Promise.all([1,2,3].map(t=>this.game.reward(t,stage,at).then((x:bigint)=>BigInt(x))));
   const reward={eligible:eligible&&!ended&&phase==='choice',claimed:phase==='settled',amount:phase==='settled'?claimedAmount:rewardTiers[tier-1]};
   const message=!eligible?'此钱包未持有 .ai ID':phase==='settled'?'本钱包已完成领奖，不能重复领取。':ended?'奖励份额已耗尽。':phase==='choice'?`第 ${tier} 档匹配已确认，选择领取或继续。`:!free?'免费领取 3 枚水果，收集后开启挑战。':canMatch?'已满足当前档条件，点击开始挑战查看销毁清单；确认后才执行。':'尚未凑齐：普通水果需同种，至少 1 枚；可用 Star 补齐，或生成交换／收购帖。';
-  return {blockNumber:block,collection,reward,balance:BigInt(balance),game:{tier,phase,freeClaimed:Boolean(free),eligible,canPlay:eligible&&!ended&&phase==='ready',canMatch,canContinue:eligible&&!ended&&phase==='choice'&&tier<3,result:this.results.get(address.toLowerCase())??null,globalStage:Number(stage),remainingShares:Number(remaining),starsSold:Number(sold),starsBought:Number(bought),rewardTiers,message}};
+  const result=free?await this.freeClaimResult(address,collection).catch(()=>null):null;
+  return {blockNumber:block,collection,reward,balance:BigInt(balance),game:{tier,phase,freeClaimed:Boolean(free),eligible,canPlay:eligible&&!ended&&phase==='ready',canMatch,canContinue:eligible&&!ended&&phase==='choice'&&tier<3,result,globalStage:Number(stage),remainingShares:Number(remaining),starsSold:Number(sold),starsBought:Number(bought),rewardTiers,message}};
  }
  getGameState=async(a:string)=>(await this.snapshot(a)).game;
  getCollection=async(a:string)=>(await this.snapshot(a)).collection;

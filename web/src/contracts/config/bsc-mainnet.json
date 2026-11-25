@@ -4,7 +4,7 @@
   "treasury": "0x19a00449a5af7a51279b401dfe3bf92cb90a2751",
   "router": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
   "paymentAsset": "BNB",
-  "rpc": "https://bsc-dataseed.bnbchain.org",
+  "rpc": "https://bsc-rpc.publicnode.com",
   "network": "BNB Smart Chain",
   "status": "deployed",
   "dependencyNotice": "Official .ai Agent ID is required for game actions. Purchases use native BNB.",

@@ -3,7 +3,7 @@ import {useI18n} from '../i18n';
 
 type Pairing = {urlForWeb:string; pairingCode:string; expireAt:number};
 
-export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean})=>ReactNode}){
+export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean; pending?:boolean; claimed?:boolean})=>ReactNode}){
  const {language}=useI18n();
  const en=language==='en';
  const enabled=import.meta.env.VITE_THREE_SHAPE_AGENTIC_PAIRING==='enabled';
@@ -92,7 +92,7 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
   };
  },[enabled,busy,Boolean(children),pairing,check]);
 
- const claimPending=['app-confirmation','submitted','unknown'].includes(claimState);
+ const claimPending=['submitting','app-confirmation','submitted','unknown'].includes(claimState);
  useEffect(()=>{
   if(!address||!claimPending)return;
   const controller=new AbortController();
@@ -110,6 +110,7 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  },[address,claimPending,endpoint]);
 
  async function handleClaim(confirm=false){
+  if(confirm)setClaimState('submitting');
   setBusy(true);
   try{
    const response=await fetch(endpoint+'?action='+(confirm?'claim-execute':'claim-preview'),{
@@ -131,12 +132,14 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  }
 
  const claimNote:Record<string,string>=en?{
+  submitting:'Submitting the claim.',
   'developer-mode':'Enable Developer Mode in Binance App → Agentic Wallet → Settings, then try again.',
   'app-confirmation':'Confirm the transaction in the Binance App.',
   submitted:'Waiting for on-chain confirmation.',
   unknown:'Checking the chain for a submitted claim.',
   expired:'Session expired. Reconnect your wallet.',
  }:{
+  submitting:'正在提交领取交易。',
   'developer-mode':'请在币安 App → Agentic Wallet → 设置中开启开发者模式，再重试。',
   'app-confirmation':'请去币安 App 确认这笔交易。',
   submitted:'正在等待链上确认。',
@@ -166,7 +169,7 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  if(children)return children(enabled?{
   connect:address?()=>handleClaim():start,busy,details,address,
   label:address?(claimState==='claimed'?(en?'Fruit claimed':'水果已领取'):claimPending?(en?'Claim in progress':'正在领取…'):(en?'Authorized · Claim fruit':'已登录 · 领取水果')):undefined,
-  blocked:Boolean(preview)||claimPending||claimState==='claimed',
+  blocked:Boolean(preview)||claimPending||claimState==='claimed',pending:claimPending,claimed:claimState==='claimed',
  }:undefined);
  return <section className="agent-start" aria-label={en?'Agentic Wallet':'Agentic Wallet 授权'}>
   <button type="button" disabled={!enabled||busy} onClick={()=>void start()}>
