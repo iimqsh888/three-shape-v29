@@ -10,13 +10,16 @@ export function AgenticWalletEntry(){
  const [pairing,setPairing]=useState<Pairing|null>(null);
  const [busy,setBusy]=useState(false);
  const [failed,setFailed]=useState(false);
+ const [status,setStatus]=useState('');
+ const endpoint=new URL('./api/agentic-wallet/pairing',window.location.href);
 
  async function start(){
   setPairing(null);
   setFailed(false);
+  setStatus('');
   setBusy(true);
   try{
-   const response=await fetch(new URL('./api/agentic-wallet/pairing',window.location.href),{
+   const response=await fetch(endpoint,{
     method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},
    });
    if(!response.ok)throw new Error('Pairing unavailable');
@@ -38,6 +41,27 @@ export function AgenticWalletEntry(){
   }
  }
 
+ async function check(){
+  setBusy(true);
+  try{
+   const response=await fetch(endpoint,{credentials:'same-origin',cache:'no-store'});
+   const {status:state,address}=await response.json();
+   if(response.ok&&state==='authorized'&&typeof address==='string'&&/^0x[a-f0-9]{40}$/i.test(address)){
+    setPairing(null);
+    setStatus(en?`Authorization verified for ${address}. Game signing is not yet connected.`:`已验证授权地址 ${address}。游戏签名尚未接入。`);
+   }else if(response.ok&&state==='pending'){
+    setStatus(en?'Waiting for confirmation in the Binance App.':'等待你在币安 App 确认。');
+   }else{
+    setPairing(null);
+    setStatus(en?'Pairing expired or failed. Start again.':'配对已过期或失败，请重新连接。');
+   }
+  }catch{
+   setStatus(en?'Could not check authorization. Try again.':'暂时无法检查授权，请重试。');
+  }finally{
+   setBusy(false);
+  }
+ }
+
  return <section className="agent-start" aria-label={en?'Agentic Wallet':'Agentic Wallet 授权'}>
   <div className="agent-start-actions">
    <button type="button" disabled={!enabled||busy} onClick={()=>void start()}>
@@ -46,9 +70,11 @@ export function AgenticWalletEntry(){
   </div>
   {!enabled&&<p>{en?'Website authorization is not available yet.':'官网授权暂未开放。'}</p>}
   {failed&&<p role="alert">{en?'Could not create a pairing. Try again.':'暂时无法生成配对，请重试。'}</p>}
+  {status&&<p role="status">{status}</p>}
   {pairing&&<div>
    <p role="status">{en?'Verify this code in the Binance app':'请在币安 App 核对配对码'} <strong>{pairing.pairingCode}</strong></p>
    <a href={pairing.urlForWeb} target="_blank" rel="noopener noreferrer">{en?'Open Binance authorization':'打开币安授权页'}</a>
+   <button type="button" disabled={busy} onClick={()=>void check()}>{en?'Check authorization':'我已确认，检查授权'}</button>
   </div>}
  </section>;
 }
