@@ -7,12 +7,13 @@ import {explorer,report,verifyFile} from './verify.mjs';
 // This entry point must only be invoked after human deployment authorization.
 if(process.env.DEPLOY_AUTHORIZED!=='yes') throw new Error('Human authorization required: DEPLOY_AUTHORIZED=yes');
 if(!process.env.ETHERSCAN_API_KEY) throw new Error('ETHERSCAN_API_KEY required before deployment');
-const provider=new ethers.JsonRpcProvider(process.env.BSC_RPC_URL);
+const provider=new ethers.JsonRpcProvider(process.env.BSC_RPC_URL,undefined,{cacheTimeout:-1});
 const chainId=Number((await provider.getNetwork()).chainId);
 explorer(chainId);
 if(Number(process.env.CHAIN_ID)!==chainId) throw new Error('CHAIN_ID does not match RPC');
 const config=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
 for(const k of ['usdt','registry','treasury','router','pair']) if(!ethers.isAddress(config[k]) || config[k]===ethers.ZeroAddress) throw new Error('Invalid '+k);
+for(const k of ['usdt','registry','router','pair']) if(await provider.getCode(config[k])==='0x') throw new Error('Dependency has no code: '+k);
 const signer=new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY,provider);
 const build=compile();
 const dir=process.env.DEPLOYMENT_DIR ?? `deployments/${chainId}-${Date.now()}`;
@@ -39,6 +40,12 @@ if(artifact.evm.deployedBytecode.object.length/2>24576 || artifact.evm.bytecode.
   const [token,nft,reserve,game,liquidity]=addresses;
   const argumentsList=[[game,liquidity],[game],[config.usdt,liquidity],[token,nft,config.usdt,config.registry,reserve,config.treasury,liquidity],[token,config.usdt,game,reserve,config.router,config.pair]];
   const names=['ThreeShapeTokenV29','ThreeShapeNFTV29','ThreeShapeReserveV29','ThreeShapeGameV29','ThreeShapeLiquidityV29'];
+  const pairContract=new ethers.Contract(config.pair,['function token0() view returns(address)','function token1() view returns(address)'],provider);
+  const assets=[(await pairContract.token0()).toLowerCase(),(await pairContract.token1()).toLowerCase()];
+  if(!assets.includes(token.toLowerCase()) || !assets.includes(config.usdt.toLowerCase())) throw new Error('Pair does not match predicted Token and USDT; no transactions sent');
+  const routerContract=new ethers.Contract(config.router,['function factory() view returns(address)'],provider);
+  const amm=new ethers.Contract(await routerContract.factory(),['function getPair(address,address) view returns(address)'],provider);
+  if((await amm.getPair(token,config.usdt)).toLowerCase()!==config.pair.toLowerCase()) throw new Error('Router factory pair mismatch; no transactions sent');
   manifest.deploymentMode='EOA CREATE (existing factory exceeds EVM size limit)';
   manifest.plannedContracts=names.map((name,i)=>entry(name,addresses[i],argumentsList[i],null));
   save();
@@ -62,6 +69,7 @@ const factoryTx=factory.deploymentTransaction();
 manifest.transactions.push({role:'factory',hash:factoryTx.hash});
 manifest.contracts.push(entry(factoryName,await factory.getAddress(),[],factoryTx.hash,factoryFile)); save();
 await factory.waitForDeployment();
+manifest.contracts[0].blockNumber=(await provider.getTransactionReceipt(factoryTx.hash)).blockNumber;save();
 const addresses=await Promise.all([1,2,3,4,5].map(n=>factory.predicted(n)));
 const [token,nft,reserve,game,liquidity]=addresses;
 const args=[ [game,liquidity],[game],[config.usdt,liquidity],[token,nft,config.usdt,config.registry,reserve,config.treasury,liquidity],[token,config.usdt,game,reserve,config.router,config.pair] ];
@@ -72,7 +80,7 @@ for(let i=0;i<names.length;i++) manifest.contracts.push({...entry(names[i],addre
 save();
 const receipt=await tx.wait();
 if(receipt.status!==1) throw new Error('Factory deployment failed');
-for(const c of manifest.contracts){if(await provider.getCode(c.address)==='0x') throw new Error('No deployed code at '+c.address);c.blockNumber=receipt.blockNumber;}
+for(const c of manifest.contracts){if(await provider.getCode(c.address)==='0x') throw new Error('No deployed code at '+c.address);c.blockNumber??=receipt.blockNumber;}
 save();
 if(!await verifyFile(file)) process.exitCode=1;
 console.log(`Deployment records and verification report: ${dir}`);

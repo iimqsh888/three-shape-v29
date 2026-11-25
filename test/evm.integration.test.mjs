@@ -8,7 +8,7 @@ const output=compile(['contracts/test/MocksV29.sol']);
 function artifact(file,name){return output.contracts[file][name];}
 
 test('deploy five contracts and execute real EVM Star sale + LP + metadata + free claim',async()=>{
-  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8},miner:{blockGasLimit:60000000}}));
+  const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8},miner:{blockGasLimit:60000000}}),undefined,{cacheTimeout:-1});
   provider.pollingInterval=20;
   const signer=await provider.getSigner(0);
   const addr=await signer.getAddress();
@@ -81,7 +81,7 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
 
 test('production EOA CREATE graph works with standard EVM size limits',async()=>{
   const rpc=ganache.provider({logging:{quiet:true},wallet:{totalAccounts:2}});
-  const provider=new ethers.BrowserProvider(rpc);provider.pollingInterval=20;
+  const provider=new ethers.BrowserProvider(rpc,undefined,{cacheTimeout:-1});provider.pollingInterval=20;
   const signer=await provider.getSigner();
   async function deploy(file,name,args=[],nonce){
     const a=artifact(file,name);
