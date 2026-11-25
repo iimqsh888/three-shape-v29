@@ -18,7 +18,11 @@ const ttl=360_000;
 const gameAddress='0xDd127f91943C8a406A1e6577a9313526D950b99E';
 const claimData=selector('claimFree()').slice(0,10);
 const rpc=new JsonRpcProvider(process.env.THREE_SHAPE_BSC_RPC??'https://bsc-dataseed.bnbchain.org',56,{batchMaxCount:1});
-const game=new Contract(gameAddress,['function freeClaimed(address) view returns(bool)'],rpc);
+const game=new Contract(gameAddress,[
+ 'function freeClaimed(address) view returns(bool)','function starsBought(address) view returns(uint8)',
+ 'function quoteStars(uint256) view returns(uint256)','function buyStars(uint256,uint256) payable',
+],rpc);
+const operations=new Set(['claim','star']);
 
 async function closeSession(session){
  if(!session.directory)return;
@@ -60,11 +64,20 @@ async function verify(session,directory,qrCodeId){
  }
 }
 
-async function claim(session,action,req,res){
+async function transaction(session,operation,action,query,req,res){
  if(session?.status!=='authorized'||!session.directory||session.expired)return result(res,401,{status:'expired'});
- if(action==='claim-status'){
+ if(action==='status'){
   try{
-   if(await game.freeClaimed(session.address))return result(res,200,{status:'claimed'});
+   if(operation==='claim'&&await game.freeClaimed(session.address)){
+    if(session.claim?.operation==='claim')session.claim=null;
+    return result(res,200,{status:'claimed'});
+   }
+   if(operation==='star'&&session.claim?.operation==='star'&&
+      Number(await game.starsBought(session.address))>=session.claim.before+session.claim.quantity){
+    session.claim=null;
+    return result(res,200,{status:'star-purchased'});
+   }
+   if(session.claim?.operation!==operation)return result(res,200,{status:'ready'});
    if(session.claim?.hash&&(await rpc.getTransactionReceipt(session.claim.hash))?.status===0){
     session.claim=null;
     return result(res,200,{status:'failed'});
@@ -75,32 +88,50 @@ async function claim(session,action,req,res){
  if(session.claimBusy||session.claim)return result(res,409,{status:'busy'});
  session.claimBusy=true;
  try{
-  if(action==='claim-preview'){
+  if(action==='preview'){
    session.preview=null;
    const {devMode}=await cli(session.directory,['wallet','settings']);
    if(!devMode?.enabled||Number(devMode.expiresAt)<=Date.now())return result(res,409,{status:'developer-mode'});
-   if(await game.freeClaimed(session.address))return result(res,200,{status:'claimed'});
-   const preview=await cli(session.directory,['contract-call','preview','--binanceChainId','56','--from',session.address,'--to',gameAddress,'--value','0','--inputData',claimData]);
+   let data=claimData,value=0n,before=0,quantity=0;
+   if(operation==='claim'){
+    if(await game.freeClaimed(session.address))return result(res,200,{status:'claimed'});
+   }else{
+    const requested=query.get('quantity'), quoted=query.get('payment');
+    if(!/^[1-6]$/.test(requested??'')||!/^\d{1,20}$/.test(quoted??''))return result(res,400,{status:'invalid-quantity'});
+    quantity=Number(requested);
+    before=Number(await game.starsBought(session.address));
+    if(before+quantity>6)return result(res,409,{status:'wallet-limit'});
+    value=await game.quoteStars(quantity);
+    if(value!==BigInt(quoted))return result(res,409,{status:'quote-changed'});
+    data=game.interface.encodeFunctionData('buyStars',[quantity,value]);
+   }
+   const preview=await cli(session.directory,['contract-call','preview','--binanceChainId','56','--from',session.address,'--to',gameAddress,'--value',value.toString(),'--inputData',data]);
    const expiresAt=Math.min(Number(preview.expiresAt),session.expiresAt);
    if(typeof preview.requestId!=='string'||!preview.requestId||!Number.isFinite(expiresAt)||expiresAt<=Date.now()||
       (preview.simulationResult?.authorityChanges?.length??0)>0){
     return result(res,409,{status:'preview-rejected'});
    }
    const token=randomBytes(24).toString('hex');
-   session.preview={token,requestId:preview.requestId,expiresAt};
+   session.preview={token,requestId:preview.requestId,expiresAt,operation,quantity,before,value};
    const risks=[...(preview.risks?.riskDetails??[]),...Object.values(preview.risks?.addresses??{}).flatMap(a=>a.riskDetails??[])];
-   return result(res,200,{status:'preview',token,from:session.address,to:gameAddress,gas:preview.simulationResult?.gasTokenFromData,
+   return result(res,200,{status:'preview',token,from:session.address,to:gameAddress,quantity,value:value.toString(),
     risks:risks.map(({title,description})=>({title,description})), appConfirmation:preview.requireConfirmation===true});
   }
   const preview=session.preview;
-  if(!preview||preview.token!==req.headers['x-claim-preview']||preview.expiresAt<=Date.now())return result(res,409,{status:'preview-expired'});
+  if(!preview||preview.operation!==operation||preview.token!==req.headers['x-claim-preview']||preview.expiresAt<=Date.now())return result(res,409,{status:'preview-expired'});
   session.preview=null;
-  session.claim={status:'unknown'};
+  if(operation==='star'&&(
+     await game.quoteStars(preview.quantity)!==preview.value||
+     Number(await game.starsBought(session.address))!==preview.before)){
+   return result(res,409,{status:'quote-changed'});
+  }
+  const purchase={operation,before:preview.before,quantity:preview.quantity};
+  session.claim={...purchase,status:'unknown'};
   const executed=await cli(session.directory,['contract-call','execute','--requestId',preview.requestId]);
   const hash=/^0x[0-9a-f]{64}$/i.test(executed.txHash??'')?executed.txHash:undefined;
   const status=executed.status==='PENDING_CONFIRMATION'?'app-confirmation':executed.status==='BROADCASTED'&&hash?'submitted':'unknown';
-  session.claim={status,hash};
-  return result(res,200,session.claim);
+  session.claim={...purchase,status,hash};
+  return result(res,200,{status,hash});
  }catch{
   return result(res,502,{status:session.claim?.status??'preview-failed'});
  }finally{
@@ -114,13 +145,16 @@ const server=createServer(async(req,res)=>{
  if(pathname!==route)return result(res,404,{status:'unavailable'});
  const id=req.headers.cookie?.split('; ').find(v=>v.startsWith(cookie+'='))?.slice(cookie.length+1);
  const current=sessions.get(id);
- const action=new URLSearchParams(query).get('action');
- if(action==='claim-status'&&req.method==='GET')return claim(current,action,req,res);
- if(['claim-preview','claim-execute'].includes(action)&&req.method==='POST'){
+ const params=new URLSearchParams(query);
+ const requested=params.get('action');
+ if(requested){
+  const [operation,action]=requested.split('-');
+  if(!operations.has(operation)||!['status','preview','execute'].includes(action))return result(res,404,{status:'unavailable'});
+  if(action==='status'&&req.method==='GET')return transaction(current,operation,action,params,req,res);
+  if(action==='status'||req.method!=='POST')return result(res,405,{status:'unavailable'});
   if(req.headers.origin!==origin)return result(res,403,{status:'unavailable'});
-  return claim(current,action,req,res);
+  return transaction(current,operation,action,params,req,res);
  }
- if(action)return result(res,405,{status:'unavailable'});
  if(req.method==='GET')return current
   ? result(res,200,{status:current.status,...(current.address&&{address:current.address})})
   : result(res,404,{status:'expired'});

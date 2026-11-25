@@ -1,7 +1,7 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import type {Action,Status,ThreeShapeAdapter,TransactionResult,TransactionReceipt} from '../contracts/types';
 import type {GameSnapshot as Snapshot} from '../game/presentation';
-export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean,externalWallet=false,refreshKey=false){
+export function useThreeShape(adapter:ThreeShapeAdapter,addressProp:string|null|undefined,live:boolean,externalWallet=false,refreshKey=0){
  const [address,setAddress]=useState<string|null>(addressProp??null),[status,setStatus]=useState<Status>('disconnected'),[snapshot,setSnapshot]=useState<Snapshot|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[hash,setHash]=useState<string>(),[receipt,setReceipt]=useState<TransactionReceipt|null>(null);
  const epoch=useRef(0),locked=useRef(false),current=useRef<string|null>(addressProp??null);
  const key=(a:string)=>'three-shape-preview-pending:'+(adapter.pendingScope?adapter.pendingScope+':':'')+a.toLowerCase();

@@ -1,9 +1,10 @@
+import {formatEther} from 'ethers';
 import {useCallback,useEffect,useState,type ReactNode} from 'react';
 import {useI18n} from '../i18n';
 
 type Pairing = {urlForWeb:string; pairingCode:string; expireAt:number};
 
-export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean; pending?:boolean; claimed?:boolean})=>ReactNode}){
+export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean; pending?:boolean; claimed?:boolean; refreshKey?:number; purchase?:(quantity:number,payment:bigint)=>Promise<void>})=>ReactNode}){
  const {language}=useI18n();
  const en=language==='en';
  const enabled=import.meta.env.VITE_THREE_SHAPE_AGENTIC_PAIRING==='enabled';
@@ -13,7 +14,9 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  const [status,setStatus]=useState('');
  const [address,setAddress]=useState<string|null>(null);
  const [claimState,setClaimState]=useState('');
- const [preview,setPreview]=useState<{token:string;from:string;to:string;gas?:unknown;risks?:{title?:string;description?:string}[];appConfirmation?:boolean}|null>(null);
+ const [operation,setOperation]=useState<'claim'|'star'>('claim');
+ const [refreshKey,setRefreshKey]=useState(0);
+ const [preview,setPreview]=useState<{token:string;from:string;to:string;quantity?:number;value?:string;risks?:{title?:string;description?:string}[];appConfirmation?:boolean}|null>(null);
  const endpoint=new URL('./api/agentic-wallet/pairing',window.location.href).href;
 
  async function start(){
@@ -92,28 +95,40 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
   };
  },[enabled,busy,Boolean(children),pairing,check]);
 
- const claimPending=['submitting','app-confirmation','submitted','unknown'].includes(claimState);
+ const claimPending=['app-confirmation','submitted','unknown'].includes(claimState);
+ const transactionPending=claimState==='submitting'||claimPending;
  useEffect(()=>{
   if(!address||!claimPending)return;
   const controller=new AbortController();
+  let checking=false;
   const refresh=async()=>{
+   if(checking||document.hidden)return;
+   checking=true;
    try{
-    const response=await fetch(endpoint+'?action=claim-status',{signal:controller.signal,cache:'no-store'});
+    const response=await fetch(endpoint+'?action='+operation+'-status',{signal:controller.signal,cache:'no-store'});
     const {status:next}=await response.json();
-    if(!controller.signal.aborted&&['claimed','failed','expired'].includes(next))setClaimState(next);
-   }catch{}
+    if(!controller.signal.aborted&&['claimed','star-purchased','failed','expired'].includes(next)){
+     setClaimState(next);
+     if(next==='claimed'||next==='star-purchased')setRefreshKey(n=>n+1);
+    }
+   }catch{}finally{checking=false;}
   };
   void refresh();
   const timer=window.setInterval(refresh,3500);
   window.addEventListener('focus',refresh);
-  return ()=>{controller.abort();window.clearInterval(timer);window.removeEventListener('focus',refresh);};
- },[address,claimPending,endpoint]);
+  document.addEventListener('visibilitychange',refresh);
+  return ()=>{controller.abort();window.clearInterval(timer);window.removeEventListener('focus',refresh);document.removeEventListener('visibilitychange',refresh);};
+ },[address,claimPending,endpoint,operation]);
 
- async function handleClaim(confirm=false){
+ async function handleClaim(confirm=false,star?:{quantity:number;payment:bigint}){
+  const nextOperation=confirm?operation:star?'star':'claim';
+  setOperation(nextOperation);
   if(confirm)setClaimState('submitting');
   setBusy(true);
   try{
-   const response=await fetch(endpoint+'?action='+(confirm?'claim-execute':'claim-preview'),{
+   const params=new URLSearchParams({action:nextOperation+(confirm?'-execute':'-preview')});
+   if(star){params.set('quantity',String(star.quantity));params.set('payment',star.payment.toString());}
+   const response=await fetch(endpoint+'?'+params,{
     method:'POST',headers:confirm&&preview?{'X-Claim-Preview':preview.token}:undefined,
    });
    const data=await response.json();
@@ -123,6 +138,7 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
    }else{
     setPreview(null);
     setClaimState(data.status||'failed');
+    if(data.status==='claimed'||data.status==='star-purchased')setRefreshKey(n=>n+1);
     if(data.status==='expired'&&!confirm)setAddress(null);
    }
   }catch{
@@ -132,14 +148,20 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  }
 
  const claimNote:Record<string,string>=en?{
-  submitting:'Submitting the claim.',
+  submitting:'Submitting transaction.',
+  'star-purchased':'Star purchase confirmed.',
+  'quote-changed':'The Star quote changed. Request a new quote.',
+  'wallet-limit':'This wallet has reached its Star purchase limit.',
   'developer-mode':'Enable Developer Mode in Binance App → Agentic Wallet → Settings, then try again.',
   'app-confirmation':'Confirm the transaction in the Binance App.',
   submitted:'Waiting for on-chain confirmation.',
   unknown:'Checking the chain for a submitted claim.',
   expired:'Session expired. Reconnect your wallet.',
  }:{
-  submitting:'正在提交领取交易。',
+  submitting:'正在提交交易。',
+  'star-purchased':'Star 购买已确认。',
+  'quote-changed':'Star 价格或购买额度已变动，请重新报价。',
+  'wallet-limit':'已达到本钱包的 Star 购买上限。',
   'developer-mode':'请在币安 App → Agentic Wallet → 设置中开启开发者模式，再重试。',
   'app-confirmation':'请去币安 App 确认这笔交易。',
   submitted:'正在等待链上确认。',
@@ -149,14 +171,14 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  const details=(failed||status||pairing||preview||(claimState&&claimState!=='claimed'))&&<div className="ts-wallet-panel">
   {failed&&<p role="alert">{en?'Could not create a pairing. Try again.':'暂时无法生成配对，请重试。'}</p>}
   {preview&&<div className="ts-wallet-success">
-   <strong>{en?'Confirm free fruit claim':'确认领取水果'}</strong>
-   <small>BNB Smart Chain · 0 BNB {en?'plus gas':'，另付网络费'}</small>
+   <strong>{operation==='star' ? (en?'Confirm Star purchase':'确认购买 Star') : (en?'Confirm free fruit claim':'确认领取水果')}</strong>
+   <small>BNB Smart Chain · {operation==='star'?preview.quantity+' Star · ':''}{formatEther(BigInt(preview.value??'0'))} BNB {en?'plus gas':'，另付网络费'}</small>
    <code>{preview.from} → {preview.to}</code>
    {preview.risks?.map((risk,index)=><small key={index}>{risk.title} {risk.description}</small>)}
    {preview.appConfirmation&&<small>{en?'Binance App confirmation will be required.':'提交后还需在币安 App 确认。'}</small>}
-   <div className="ts-wallet-actions"><button type="button" disabled={busy} onClick={()=>setPreview(null)}>{en?'Cancel':'取消'}</button><button type="button" disabled={busy} onClick={()=>void handleClaim(true)}>{en?'Confirm claim':'确认领取'}</button></div>
+   <div className="ts-wallet-actions"><button type="button" disabled={busy} onClick={()=>setPreview(null)}>{en?'Cancel':'取消'}</button><button type="button" disabled={busy} onClick={()=>void handleClaim(true)}>{operation==='star'?(en?'Confirm purchase':'确认购买'):(en?'Confirm claim':'确认领取')}</button></div>
   </div>}
-  {claimState&&claimState!=='claimed'&&<small role="status">{claimNote[claimState]??(en?'Could not prepare the claim. Try again.':'暂时无法领取，请检查资格和 BNB 网络费后重试。')}</small>}
+  {claimState&&claimState!=='claimed'&&<small role="status">{claimNote[claimState]??(en?'Could not prepare the transaction. Try again.':'暂时无法准备交易，请检查资格和 BNB 网络费后重试。')}</small>}
   {pairing&&<>
    <div className="ts-wallet-code"><span>{en?'Confirm this code in Binance':'请在币安 App 核对配对码'}</span><strong>{pairing.pairingCode}</strong></div>
    <div className="ts-wallet-actions">
@@ -169,7 +191,8 @@ export function AgenticWalletEntry({children}:{children?:(controls?:{connect:()=
  if(children)return children(enabled?{
   connect:address?()=>handleClaim():start,busy,details,address,
   label:address?(claimState==='claimed'?(en?'Fruit claimed':'水果已领取'):claimPending?(en?'Claim in progress':'正在领取…'):(en?'Authorized · Claim fruit':'已登录 · 领取水果')):undefined,
-  blocked:Boolean(preview)||claimPending||claimState==='claimed',pending:claimPending,claimed:claimState==='claimed',
+  blocked:Boolean(preview)||transactionPending||claimState==='claimed',pending:operation==='claim'&&transactionPending,claimed:operation==='claim'&&claimState==='claimed',
+  refreshKey,purchase:(quantity,payment)=>handleClaim(false,{quantity,payment}),
  }:undefined);
  return <section className="agent-start" aria-label={en?'Agentic Wallet':'Agentic Wallet 授权'}>
   <button type="button" disabled={!enabled||busy} onClick={()=>void start()}>

@@ -17,7 +17,7 @@ export interface ThreeShapeCardProps {
     walletAddress?: string | null;
     adapter?: ThreeShapeAdapter;
     onAction?: (action: string) => void;
-    walletConnect?: {connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean; pending?:boolean; claimed?:boolean};
+    walletConnect?: {connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null; label?:string; blocked?:boolean; pending?:boolean; claimed?:boolean; refreshKey?:number; purchase?:(quantity:number,payment:bigint)=>Promise<void>};
     onWalletChange?: (address: string | null) => void;
 }
 const states = { disconnected: 'READY', ready: 'READY', playing: 'PENDING', confirming: 'CONFIRMING', result: 'RESULT', reward_available: 'RESULT', claiming: 'PENDING', claimed: 'RESULT', error: 'ERROR' };
@@ -26,11 +26,11 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
     const adapter = useMemo<ThreeShapeAdapter>(() => provided ?? new ContractAdapter(), [provided, mode]);
     const unavailable = adapter.readiness === 'unconfigured';
     const agentic = Boolean(walletConnect);
-    const state = useThreeShape(adapter, agentic ? walletConnect?.address : walletAddress, mode === 'live', agentic, walletConnect?.claimed), s = state.snapshot;
+    const state = useThreeShape(adapter, agentic ? walletConnect?.address : walletAddress, mode === 'live', agentic, walletConnect?.refreshKey), s = state.snapshot;
     const [tab, setTab] = useState<'game' | 'collection' | 'rewards'>('game'), [selected, setSelected] = useState<NFTItem | null>(null), [plan, setPlan] = useState<PlayPreview | null>(null), [preparing, setPreparing] = useState(false), [readError, setReadError] = useState(''), [quantity, setQuantity] = useState(1), [quote, setQuote] = useState<StarQuote | null>(null), [starsOpen, setStarsOpen] = useState(false);
     useEffect(() => { onWalletChange?.(state.address); }, [state.address, onWalletChange]);
     const generation = useRef(0);
-    const canBuyStars = !agentic && Boolean(state.address && s && adapter.quoteStars && adapter.buyStars && canPurchaseStars(s.game, s.reward));
+    const canBuyStars = Boolean(state.address && s && adapter.quoteStars && (agentic ? walletConnect?.purchase : adapter.buyStars) && canPurchaseStars(s.game, s.reward));
     const maxPurchase = s ? Math.max(0, Math.min(6 - s.game.starsBought, 100000 - s.game.starsSold)) : 0;
     useEffect(() => { setQuantity(current => Math.max(1, Math.min(current, maxPurchase))); setQuote(null); }, [maxPurchase]);
     useEffect(() => { if (!canBuyStars) {
@@ -89,7 +89,7 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
         if (ticket === generation.current)
             setPreparing(false);
     } };
-    const busy = state.busy || preparing, pending = Boolean(walletConnect?.pending) || ['playing', 'confirming', 'claiming'].includes(state.status);
+    const busy = state.busy || preparing || Boolean(walletConnect?.busy), pending = Boolean(walletConnect?.pending) || ['playing', 'confirming', 'claiming'].includes(state.status);
     const reelSymbols = pending ? ['🍏', '🍋', '🍇'] : s?.game.result ?? (s?.game.freeClaimed || walletConnect?.claimed ? ['—', '—', '—'] : ['🍏', '🍋', '🍇']);
     const amount = (value: bigint) => formatAmount(value, adapter.tokenDecimals ?? 18);
     const primary = unavailable ? t("等待合约接入") : !state.address ? t("连接钱包开始 →") : s?.game.phase === 'settled' ? t("本次挑战已完成") : s?.game.phase === 'choice' ? t("请选择领取或继续") : !s?.game.freeClaimed ? t("免费领取水果 →") : t("开始挑战 →");
@@ -113,7 +113,7 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
   {tab === 'collection' && <section className="ts-panel"><div className="ts-panel-title"><h2>{t("我的水果收藏")}</h2><span>{s ? s.collection.filter(n => n.quantity > 0n).length : '—'} / 9</span></div><p>{t("每一种水果，都是一份小惊喜。")}</p>{s ? <div className="ts-grid">{s.collection.map(n => <button key={n.type} disabled={n.quantity === 0n} className={n.quantity === 0n ? 'unowned' : ''} onClick={() => setSelected(n)}><span role="img" aria-label={n.name}>{n.emoji}</span><small>{n.quantity > 0n ? t(`已收藏 · ×${n.quantity}`) : t("未收藏 · ×0")}</small></button>)}</div> : <div className="ts-grid">{metadata.map(n => <button key={n.kind} disabled aria-label={n.name}><span>{n.symbol}</span><small>{t("数量待查询 · —")}</small></button>)}</div>}{selected && <div className="ts-detail"><button className="ts-close" aria-label={t("关闭 NFT 详情")} onClick={() => setSelected(null)}>×</button>{agentic ? <p>{selected.emoji} {selected.name} · ×{selected.quantity.toString()}</p> : <CollectionTransfer key={selected.type} item={selected} adapter={adapter} busy={busy} execute={task => { emit('transferNFT'); return state.execute('transferNFT', task); }}/>}</div>}</section>}
   {tab === 'rewards' && <section className="ts-panel"><div className="ts-eyebrow">YOUR REWARD JOURNEY</div><h2>{t("每一步，更近一点。")}</h2><p>{t("当前第")}{s?.game.globalStage ?? '—'}{t("个全局阶段，金额随成功领奖次数变化。")}</p><div className="ts-tier-list">{[1, 2, 3].map((tier, i) => <div className={s?.game.tier === tier ? 'active' : ''} key={tier}><span>0{tier}<small>{[t("3 枚 NFT · 至少 1 枚同种水果"), t("6 枚 NFT · 至少 1 枚 Star"), t("9 枚 NFT · 至少 3 枚 Star")][i]}</small></span><strong>{s ? amount(s.game.rewardTiers[i]) : '—'}<small>3SHAPE</small></strong></div>)}</div><p>{t("每钱包仅领取一档，奖励不叠加。销毁不预留份额。")}</p>{s && <p>{t("剩余份额")} {s.game.remainingShares.toLocaleString()}</p>}{s && <p>{t(mode === 'mock' ? "模拟 Token 余额：" : "Token 余额：")}{amount(s.balance)}</p>}</section>}
   {canBuyStars && <section className="ts-star"><button disabled={busy} onClick={() => { setStarsOpen(!starsOpen); setQuote(null); }}>{t("\uD83C\uDF1F 购买 Star")}</button>{starsOpen && <div className="ts-confirm"><h3>{t("点亮下一档挑战")}</h3><p>{t("0.01 BNB 起，每售出 1,000 枚上涨 0.005 BNB。每钱包累计最多购买 6 枚。")}</p><label>{t("购买数量")}<select aria-label={t("购买 Star 数量")} value={quantity} disabled={busy} onChange={e => { setQuantity(Number(e.target.value)); setQuote(null); }}>{Array.from({length:maxPurchase},(_,i)=>i+1).map(n => <option key={n}>{n}</option>)}</select></label><button disabled={busy || !s?.game.eligible} onClick={() => void price()}>{t("查看报价")}</button>{quote && <><p>{quote.quantity}{t("枚 Star · 最高")}{formatAmount(quote.payment, adapter.paymentDecimals ?? 18)} BNB<br />80% Reserve · 20% Treasury<br />{mode === 'mock' ? t("本次仅模拟余额与收藏，不执行真实授权或 LP。") : t("操作需用户钱包签名，以链上回执确认结果。")}</p><button className="ts-primary" disabled={busy} onClick={() => { if (!canBuyStars)
-        return; const q = quote; setQuote(null); emit('buyStars'); void state.execute('buyStars', () => adapter.buyStars!(q)); }}>{mode === 'mock' ? t("确认模拟购买") : t("确认购买并请求钱包签名")}</button></>}</div>}</section>}
+        return; const q = quote; setQuote(null); emit('buyStars'); if(walletConnect?.purchase){setTab('game');void walletConnect.purchase(q.quantity,q.payment);}else void state.execute('buyStars', () => adapter.buyStars!(q)); }}>{agentic ? (language==='en'?'Review Star purchase':'预览 Star 交易') : mode === 'mock' ? t("确认模拟购买") : t("确认购买并请求钱包签名")}</button></>}</div>}</section>}
   {(state.error || readError) && <div className="ts-error" role="alert"><strong>{t("操作未完成")}</strong><p>{t(state.error || readError)}</p><button disabled={busy} onClick={() => { setReadError(''); void (state.address ? state.refresh() : state.connect()); }}>{t("重试 / 刷新状态")}</button></div>}
   {state.receipt?.success&&state.receipt.liquidity&&<p className="ts-receipt" role="status">{t(state.receipt.liquidity==='added'?'购星已确认；本次 LP 已完成':state.receipt.liquidity==='failed'?'购星已确认；本次 LP 未完成':'购星已确认；LP 状态待核实')}</p>}
   {state.receipt?.success&&state.receipt.message&&<p className="ts-receipt" role="status">{t(state.receipt.message)}</p>}
