@@ -4,6 +4,7 @@ import {useI18n} from '../i18n';
 export interface ContractAddressInfo {
     chainId: number;
     network: string;
+    rpc?: string;
     contracts: {
         game?: string;
         token?: string;
@@ -11,6 +12,7 @@ export interface ContractAddressInfo {
         reserve?: string;
         liquidity?: string;
         pair?: string;
+        market?: string;
     };
 }
 const entries = [

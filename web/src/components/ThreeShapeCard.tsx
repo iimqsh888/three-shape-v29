@@ -17,12 +17,12 @@ export interface ThreeShapeCardProps {
     walletAddress?: string | null;
     adapter?: ThreeShapeAdapter;
     onAction?: (action: string) => void;
-    walletConnect?: {connect:()=>Promise<void>; busy:boolean; details:ReactNode};
+    walletConnect?: {connect:()=>Promise<void>; busy:boolean; details:ReactNode; address:string|null};
     onWalletChange?: (address: string | null) => void;
 }
 const states = { disconnected: 'READY', ready: 'READY', playing: 'PENDING', confirming: 'CONFIRMING', result: 'RESULT', reward_available: 'RESULT', claiming: 'PENDING', claimed: 'RESULT', error: 'ERROR' };
 export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onAction, onWalletChange, deployment, walletConnect }: ThreeShapeCardProps) {
-    const { t } = useI18n();
+    const { t, language } = useI18n();
     const adapter = useMemo<ThreeShapeAdapter>(() => provided ?? new ContractAdapter(), [provided, mode]);
     const unavailable = adapter.readiness === 'unconfigured';
     const state = useThreeShape(adapter, walletAddress, mode === 'live'), s = state.snapshot;
@@ -93,7 +93,7 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
   <nav aria-label={t("卡片导航")}>{(['game', 'collection', 'rewards'] as const).map((tabKey, i) => <button key={tabKey} aria-pressed={tab === tabKey} onClick={() => { setTab(tabKey); emit(tabKey); }}>{[t("开始游戏"), t("查看收藏"), t("查看奖励")][i]}</button>)}</nav>
   {tab === 'game' && <section className="ts-play"><div className="ts-eyebrow">A LITTLE FRUIT. A BIG POSSIBILITY.</div><h1>{t("好事，凑成三。")}</h1><p>{t("免费领取水果 NFT，挑战最高")}<strong>{t("1 亿代币")}</strong></p><div className={'ts-reels ' + (pending ? 'spinning' : '')} aria-label={pending ? t("等待交易确认") : t("NFT 展示")}>{(pending ? ['🍏', '🍋', '🍇'] : s?.game.result ?? ['🍏', '🍋', '🍇']).map((emoji, i) => <div key={i}><span>{emoji}</span></div>)}</div>
    <div className="ts-state" role="status"><i />{states[state.status]}<span>{unavailable ? t("等待真实 ABI 与钱包接入") : pending ? t("等待授权与确认") : s?.reward.claimed ? t("奖励已领取") : s?.game.phase === 'choice' ? t(`第 ${s.game.tier} 档匹配已确认`) : t("收集你的下一份惊喜")}</span></div>
-   <button className="ts-primary" disabled={unavailable || busy || walletConnect?.busy || Boolean(plan) || Boolean(state.address && !s?.game.canPlay)} onClick={() => void start()}>{busy || walletConnect?.busy ? t("正在处理…") : primary}</button>
+   <button className="ts-primary" disabled={unavailable || busy || walletConnect?.busy || Boolean(!state.address && walletConnect?.address) || Boolean(plan) || Boolean(state.address && !s?.game.canPlay)} onClick={() => void start()}>{busy || walletConnect?.busy ? t("正在处理…") : !state.address && walletConnect?.address ? (language==='en'?'Wallet authorized':'钱包已授权') : primary}</button>
    {!state.address && walletConnect?.details}
    {plan && <div className="ts-confirm"><h3>{plan.kind === 'burn' ? t("确认销毁 NFT") : (mode === 'mock' ? t("确认模拟领取") : t("确认领取水果"))}</h3><p>{t(plan.warning)}</p>{plan.tokenIds.length > 0 && <p>{t("NFT ID：")}{plan.tokenIds.join(', ')}<br />{t("当前剩余份额：")}{s?.game.remainingShares.toLocaleString()}</p>}<div className="ts-actions"><button onClick={() => setPlan(null)}>{t("取消")}</button><button className="ts-primary" disabled={busy} onClick={() => { setPlan(null); act('play'); }}>{mode === 'mock' ? t("确认并继续") : t("确认并请求钱包签名")}</button></div></div>}
    {s?.game.phase === 'choice' && <div className="ts-reward"><small>{t("第")}{s.game.tier}{t("档 · 当前可领取")}</small><h2>{amount(s.reward.amount)}<span><img className="ts-token-logo" src={new URL('../../public/three-shape-logo-v2.jpg', import.meta.url).href} alt="3Shape token logo"/>3SHAPE</span></h2><div className="ts-actions"><button className="ts-primary" disabled={busy || !s.reward.eligible} onClick={() => act('claimReward')}>{t("领取奖励")}</button>{s.game.tier < 3 && <button disabled={busy || !s.game.canContinue} onClick={() => act('continueChallenge')}>{t("继续挑战 →")}</button>}</div><p>{t("继续不兑现旧档奖励；领奖时才消耗份额。")}</p></div>}
@@ -111,6 +111,6 @@ export function ThreeShapeCard({ mode, walletAddress, adapter: provided, onActio
   {state.receipt?.success&&state.receipt.message&&<p className="ts-receipt" role="status">{t(state.receipt.message)}</p>}
   {state.hash && <p className="ts-hash">{mode === 'mock' ? t("模拟交易") : t("交易")}：{state.hash}</p>}
   {state.address && <button className="ts-refresh" disabled={busy} onClick={() => void state.refresh()}>{t("刷新状态")}</button>}
-  <footer><div className="ts-disclaimer">{unavailable ? t("等待真实 ABI 与钱包接入") : mode === 'mock' ? t("ⓘ 本地模拟 · 无真实资产 · 未经链上验证") : t("ⓘ 以链上状态为准 · 交易须用户钱包签名")}</div><FruitMarketPortal /><MysteryPortal /><ProjectDetails deployment={deployment}><p>{t("免费领取、销毁、继续、领奖和购星均需持有 .ai ID。免费领取仍有 gas 成本。")}</p><p>{t("三档独立销毁 3 / 6 / 9 枚 NFT。第一档允许 Star 补齐，三档都至少含 1 枚普通水果且普通水果必须同种；后两档分别至少含 1 / 3 枚 Star。走完三档共销毁 18 枚 NFT。")}</p><p>{t("总奖励份额 55,000；实际领奖金额随全局十阶段变化。成功销毁后仍可能因份额耗尽无法领奖。")}</p><p>{t("Token 玩家与 LP 铸币上限各 1.43 万亿。Star 总量 100,000，最高价格 0.505 BNB。")}</p><p>{t("每枚 Star 本笔最多解锁 1,430 万 Token 的 LP 额度；未用额度立即过期，未用 BNB 保留。购星和 LP 结果应分别核实；LP 凭证发送至销毁地址。")}</p><p>{t("售罄后，Reserve 余款可单独结算给固定 T；最后 LP 失败的余额也包含在内。T 拒收则留存，可重试。")}</p></ProjectDetails><p className="ts-project-notice">{t("本项目围绕 Binance Agent ID 的一项长期链上实验，由第三方独立发起，与 Binance 无任何隶属或合作关系。3Shape没有任何实际用途，也不承诺任何价值或收益。")}</p></footer>
+  <footer><div className="ts-disclaimer">{unavailable ? t("等待真实 ABI 与钱包接入") : mode === 'mock' ? t("ⓘ 本地模拟 · 无真实资产 · 未经链上验证") : t("ⓘ 以链上状态为准 · 交易须用户钱包签名")}</div><FruitMarketPortal address={walletConnect?.address??state.address} deployment={deployment}/><MysteryPortal /><ProjectDetails deployment={deployment}><p>{t("免费领取、销毁、继续、领奖和购星均需持有 .ai ID。免费领取仍有 gas 成本。")}</p><p>{t("三档独立销毁 3 / 6 / 9 枚 NFT。第一档允许 Star 补齐，三档都至少含 1 枚普通水果且普通水果必须同种；后两档分别至少含 1 / 3 枚 Star。走完三档共销毁 18 枚 NFT。")}</p><p>{t("总奖励份额 55,000；实际领奖金额随全局十阶段变化。成功销毁后仍可能因份额耗尽无法领奖。")}</p><p>{t("Token 玩家与 LP 铸币上限各 1.43 万亿。Star 总量 100,000，最高价格 0.505 BNB。")}</p><p>{t("每枚 Star 本笔最多解锁 1,430 万 Token 的 LP 额度；未用额度立即过期，未用 BNB 保留。购星和 LP 结果应分别核实；LP 凭证发送至销毁地址。")}</p><p>{t("售罄后，Reserve 余款可单独结算给固定 T；最后 LP 失败的余额也包含在内。T 拒收则留存，可重试。")}</p></ProjectDetails><p className="ts-project-notice">{t("本项目围绕 Binance Agent ID 的一项长期链上实验，由第三方独立发起，与 Binance 无任何隶属或合作关系。3Shape没有任何实际用途，也不承诺任何价值或收益。")}</p></footer>
  </article>;
 }

@@ -1,4 +1,4 @@
-import {render,screen} from '@testing-library/react';
+import {fireEvent,render,screen} from '@testing-library/react';
 import {describe,it,expect} from 'vitest';
 import {ThreeShapeCard} from '../components/ThreeShapeCard';
 describe('market entry',()=>{
@@ -10,5 +10,7 @@ describe('market entry',()=>{
   expect(market.parentElement?.nextElementSibling).toBe(season.parentElement);
   expect(market.children.length).toBe(season.children.length);
   expect(market.querySelector('small')).toHaveTextContent('永久开启');
+  fireEvent.click(market);
+  expect(screen.getByText('请先在上方完成钱包授权。')).toBeVisible();
  });
 });
