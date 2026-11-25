@@ -1,25 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
-import solc from 'solc';
+import {compile} from '../scripts/build.mjs';
 import ganache from 'ganache';
 import {ethers} from 'ethers';
 
-const sources={};
-for(const p of ['contracts/ThreeShapeV29.sol','contracts/ThreeShapeDeploymentV29.sol','contracts/test/MocksV29.sol'])
-  sources[p]={content:fs.readFileSync(p,'utf8')};
-const input={language:'Solidity',sources,settings:{optimizer:{enabled:true,runs:200},outputSelection:{'*':{'*':['abi','evm.bytecode.object']}}}};
-const output=JSON.parse(solc.compile(JSON.stringify(input),{import:(name)=>{
-  const p=path.join('node_modules',name);
-  return fs.existsSync(p)?{contents:fs.readFileSync(p,'utf8')}:{error:'Missing import: '+name};
-}}));
-const errors=(output.errors??[]).filter(x=>x.severity==='error');
-assert.deepEqual(errors.map(x=>x.formattedMessage),[],'Solidity compilation failed');
+const output=compile(['contracts/test/MocksV29.sol']);
 function artifact(file,name){return output.contracts[file][name];}
 
 test('deploy five contracts and execute real EVM Star sale + LP + metadata + free claim',async()=>{
   const provider=new ethers.BrowserProvider(ganache.provider({logging:{quiet:true},chain:{allowUnlimitedContractSize:true,allowUnlimitedInitCodeSize:true},wallet:{totalAccounts:8},miner:{blockGasLimit:60000000}}));
+  provider.pollingInterval=20;
   const signer=await provider.getSigner(0);
   const addr=await signer.getAddress();
   async function deploy(file,name,args=[]){
@@ -86,4 +76,39 @@ test('deploy five contracts and execute real EVM Star sale + LP + metadata + fre
   await (await game.buyStars(1,10_000_000n)).wait();
   assert.equal(await token.lpMinted(),28_600_000n*10n**18n);
   assert.equal(await game.lpBudgetExpired(),28_600_000n*10n**18n);
+});
+
+
+test('production EOA CREATE graph works with standard EVM size limits',async()=>{
+  const rpc=ganache.provider({logging:{quiet:true},wallet:{totalAccounts:2}});
+  const provider=new ethers.BrowserProvider(rpc);provider.pollingInterval=20;
+  const signer=await provider.getSigner();
+  async function deploy(file,name,args=[],nonce){
+    const a=artifact(file,name);
+    const c=await new ethers.ContractFactory(a.abi,'0x'+a.evm.bytecode.object,signer).deploy(...args,nonce===undefined?{}:{nonce});
+    await c.waitForDeployment();return c;
+  }
+  try {
+    const usdt=await deploy('contracts/test/MocksV29.sol','MockUSDT');
+    const registry=await deploy('contracts/test/MocksV29.sol','MockRegistry');
+    const start=await provider.getTransactionCount(await signer.getAddress(),'pending')+3;
+    const addresses=Array.from({length:5},(_,i)=>ethers.getCreateAddress({from:signer.address,nonce:start+i}));
+    const [token,nft,reserve,game,liquidity]=addresses;
+    const pair=await deploy('contracts/test/MocksV29.sol','MockPair',[token,await usdt.getAddress()]);
+    const amm=await deploy('contracts/test/MocksV29.sol','MockFactory',[await pair.getAddress()]);
+    const router=await deploy('contracts/test/MocksV29.sol','MockRouter',[await amm.getAddress(),await pair.getAddress()]);
+    const external=await registry.getAddress();
+    const args=[[game,liquidity],[game],[await usdt.getAddress(),liquidity],[token,nft,await usdt.getAddress(),external,reserve,signer.address,liquidity],[token,await usdt.getAddress(),game,reserve,await router.getAddress(),await pair.getAddress()]];
+    const names=['ThreeShapeTokenV29','ThreeShapeNFTV29','ThreeShapeReserveV29','ThreeShapeGameV29','ThreeShapeLiquidityV29'];
+    for(let i=0;i<names.length;i++){
+      const c=await deploy('contracts/ThreeShapeV29.sol',names[i],args[i],start+i);
+      assert.equal(await c.getAddress(),addresses[i]);
+      const a=artifact('contracts/ThreeShapeV29.sol',names[i]);
+      const encoded=new ethers.Interface(a.abi).encodeDeploy(args[i]);
+      const tx=await provider.getTransaction(c.deploymentTransaction().hash);
+      assert.equal(tx.data,'0x'+a.evm.bytecode.object+encoded.slice(2));
+    }
+    const t=new ethers.Contract(token,artifact('contracts/ThreeShapeV29.sol','ThreeShapeTokenV29').abi,signer);
+    assert.equal(await t.game(),game);assert.equal(await t.liquidity(),liquidity);
+  } finally {await rpc.disconnect();}
 });

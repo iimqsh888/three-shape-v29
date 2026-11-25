@@ -1,0 +1,33 @@
+name: Verify existing BSC deployment
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Committed deployment manifest path (no private keys)
+        required: true
+        default: deployments/97/manifest.json
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - name: Verify without deployment
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          MANIFEST: ${{ inputs.manifest }}
+        run: node scripts/verify.mjs "$MANIFEST"
+      - name: Publish addresses, ABIs, Standard JSON and status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsc-verification-report
+          path: deployments/
+      - name: Job summary
+        if: always()
+        run: find deployments -name report.md -exec cat {} \; >> "$GITHUB_STEP_SUMMARY"

@@ -32,3 +32,36 @@ Before NFT destruction, the Agent must read remaining shares, warn that shares a
 - The Game constructor accepts the BSC .ai Agent ID NFT registry contract address as `registry_`; no separate adapter is required if the deployed registry exposes `balanceOf(address) returns (uint256)`.
 - `claimFree()` requires `registry.balanceOf(msg.sender) > 0` and allows one free claim per wallet. A wallet without an Agent ID cannot claim.
 - The intended BSC mainnet registry address must be independently confirmed against verified contract code and ABI before deployment. No address is hardcoded into the Game.
+
+## BSC deployment and automatic source verification
+
+No deployment has been performed by this change. Only invoke deployment after explicit human authorization. The economics and factory CREATE order remain unchanged. Compilation uses pinned Solidity 0.8.24, optimizer 200 and `viaIR: true` to address the existing factory's stack-depth compilation error. The NFT display name now includes its existing fruit/Star name, matching the existing metadata tests.
+
+```sh
+npm ci
+npm test
+npm run compile
+npm run test:evm
+```
+
+Create a JSON configuration with real `usdt`, `registry`, `treasury`, `router`, and `pair` addresses. Independently confirm these dependencies before authorization. Set `BSC_RPC_URL`, `CHAIN_ID` (56 or 97), `DEPLOYER_PRIVATE_KEY`, and `ETHERSCAN_API_KEY` in the execution environment; never commit credentials. After authorization:
+
+```sh
+DEPLOY_AUTHORIZED=yes npm run deploy -- deployment-config.json
+```
+
+The script checks chain ID and EVM size limits before broadcasting, uses the existing Deployment Factory when it fits chain size limits, saves transaction hashes immediately after broadcast, and automatically verifies the factory and its five CREATE children after confirmation. The child constructor arguments are ABI encoded separately; they are not taken from the outer factory transaction calldata. The current factory runtime is 26,978 bytes (above 24,576). In that case the script deploys the same five unchanged contracts sequentially from an exclusive EOA with precomputed CREATE addresses and explicit nonces. Do not send other transactions from that wallet during deployment. No unused factory is deployed or claimed as verified. Partial deployments retain their records; inspect them before any further deployment. Independent verification never sends transactions.
+
+Each timestamped `deployments/` directory contains a manifest with addresses, transaction hashes, constructor arguments (decoded and encoded), ABI, full compiler version, optimization settings and complete Standard JSON Input including OpenZeppelin dependencies. `standard-input.json` can be uploaded manually to BscScan with the manifest's compiler version, fully qualified contract name and encoded arguments. `report.md` links to each address on BscScan; individual `*.abi.json` files expose the actual compiled interfaces. These files contain no private key or API key. Publish this directory through your approved release process to make addresses and ABIs publicly available; artifacts of a private repository are not publicly accessible.
+
+Retry verification without deploying or recompiling:
+
+```sh
+ETHERSCAN_API_KEY=... npm run verify -- deployments/<chain-and-time>/manifest.json
+```
+
+Verification uses Etherscan API V2 with `chainid=56` or `97`, which serves BscScan verification for both networks. Legacy BscScan API V1 endpoints are deprecated and are not used. An API key/plan supporting the chosen chain is required. Requests use bounded retry/backoff for network failures, HTTP 429/5xx and API rate limits. GUIDs persist across runs; failures do not stop attempts for other contracts. Pending or failed results produce a nonzero exit code. An accepted submission, a successful GUID poll or a previously saved status alone never marks a contract `Verified`: the BscScan-backed source API must return published source and a valid ABI. Each rerun checks again, including duplicate/already-verified responses.
+
+GitHub Actions **Verify existing BSC deployment** accepts a committed manifest path and reads `secrets.ETHERSCAN_API_KEY`. It never deploys or needs a deployer key. It uploads reports, ABIs, manifests and manual-upload inputs even on verification failure and adds the report to the job summary. The authorized deployment CLI automatically calls the same verifier; a later workflow run can retry the saved manifest independently.
+
+Inventory: Token, NFT, Reserve, Game, Liquidity Manager and actual Deployment Factory are covered. **Fruit Market does not exist in the V2.9 repository** and is explicitly reported as not implemented; no address or `Verified` status is invented. Adding its business logic or the nine-fruit maze is outside this change. Solidity files contain no Chinese comments.

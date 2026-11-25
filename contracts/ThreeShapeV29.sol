@@ -49,7 +49,7 @@ contract ThreeShapeNFTV29 is ERC721 {
         string[9] memory symbols=[unicode"🍏",unicode"🍋",unicode"🍇",unicode"🍒",unicode"🍓",unicode"🍐",unicode"🥭",unicode"🍉",unicode"🌟"];
         string[9] memory names=["Green Apple","Lemon","Grapes","Cherries","Strawberry","Pear","Mango","Watermelon","Star"];
         string memory symbol=symbols[k-1];
-        bytes memory json=abi.encodePacked('{"name":"Three Shape #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
+        bytes memory json=abi.encodePacked('{"name":"Three Shape ',names[k-1],' #',Strings.toString(id),'","description":"On-chain fruit or Star collectible","symbol":"',symbol,'","attributes":[{"trait_type":"kind","value":"',Strings.toString(k),'"},{"trait_type":"fruit","value":"',names[k-1],'"}]}');
         return string.concat("data:application/json;base64,",Base64.encode(json));
     }
     function burnMatch(address from,uint256 id) external {
