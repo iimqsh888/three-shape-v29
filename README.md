@@ -47,6 +47,18 @@ Star 以 BNB 购买，起价 0.01 BNB，每售出 1,000 枚涨价 0.005 BNB。�
 
 主网地址与 ABI 见 [部署配置](https://github.com/iimqsh888/three-shape-v29/blob/feat/bsc-source-verification/web/src/contracts/config/bsc-mainnet.json)。3SHAPE 的玩家奖励与自动加池各由部署时固定的合约限额铸币。Reserve 的最终结算规则见[售罄结算说明](https://github.com/iimqsh888/three-shape-v29/blob/feat/bsc-source-verification/docs/RESERVE_FINAL_SETTLEMENT.zh-CN.md)。
 
+## 一次添加 MCP，在 Agent 内玩
+
+远程服务部署后，官网「复制 MCP 地址」会复制 `https://3shape.cc/mcp`。在支持远程 MCP 的客户端添加该地址一次，再对 Agent 说「打开 Three Shape 游戏卡片」，并提供 BSC 公开钱包地址。支持 MCP Apps 的客户端可显示互动卡片，其他兼容客户端可使用文字工具。
+
+在 Codex 中也可注册该入口：
+
+```sh
+codex mcp add three-shape --url https://3shape.cc/mcp
+```
+
+MCP 提供链上查询和未签名交易预览。实际交易需由兼容钱包签名并经用户确认。如果客户端没有第三方 MCP 接入入口，可用官网「复制给 Agent」将玩法指令粘贴进对话。
+
 ## 本地开发
 
 建议使用 Node.js 24。主网配置和对应测试位于 [`feat/bsc-source-verification`](https://github.com/iimqsh888/three-shape-v29/tree/feat/bsc-source-verification)。
