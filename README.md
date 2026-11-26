@@ -49,7 +49,7 @@ Star 以 BNB 购买，起价 0.01 BNB，每售出 1,000 枚涨价 0.005 BNB。�
 
 ## 一次添加 MCP，在 Agent 内玩
 
-远程服务部署后，官网「复制 MCP 地址」会复制 `https://3shape.cc/mcp`。在支持远程 MCP 的客户端添加该地址一次，再对 Agent 说「打开 Three Shape 游戏卡片」，并提供 BSC 公开钱包地址。支持 MCP Apps 的客户端可显示互动卡片，其他兼容客户端可使用文字工具。
+远程服务部署后，官网「复制 MCP 指令」会复制下方的 Codex 接入命令。其他客户端可直接使用 `https://3shape.cc/mcp`。在支持远程 MCP 的客户端添加该地址一次，再对 Agent 说「打开 Three Shape 游戏卡片」，并提供 BSC 公开钱包地址。支持 MCP Apps 的客户端可显示互动卡片，其他兼容客户端可使用文字工具。
 
 在 Codex 中也可注册该入口：
 
